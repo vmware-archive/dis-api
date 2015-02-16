@@ -1,4 +1,4 @@
-# dis Inception Notes
+# dis
 
 ## Project Description
 
