@@ -11,7 +11,7 @@ env:
   - TESTS=dis-client
 
 before_script:
-  - '[ "${TESTS}" = "dis-client" ] && ci/script/dis-client-before.sh || true'
+  - '[ "${TESTS}" = "dis-client" ] && dis-client/ci/script/before.sh || true'
 
 script:
   - '[ "${TESTS}" = "dis-client" ] && (cd dis-client && ./gradlew test connectedAndroidTest) || true'
