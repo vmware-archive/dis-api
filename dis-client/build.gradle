@@ -24,8 +24,8 @@ android {
     defaultConfig {
         minSdkVersion 18
         targetSdkVersion 18
-        versionCode 2
-        versionName "1.0.0-SNAPSHOT"
+        versionCode 9000
+        versionName "0.0.1"
         applicationId "io.pivotal.dis"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
