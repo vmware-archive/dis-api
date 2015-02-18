@@ -15,4 +15,4 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-    - ./dis-client/gradlew test connectedAndroidTest
+    - dis-client/gradlew test connectedAndroidTest
