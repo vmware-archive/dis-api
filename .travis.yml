@@ -9,9 +9,11 @@ android:
     - sys-img-armeabi-v7a-android-19
 env:
   - TESTS=dis-client
+  - TESTS=dis-server
 
 before_script:
   - '[ "${TESTS}" = "dis-client" ] && dis-client/ci/script/before.sh || true'
 
 script:
   - '[ "${TESTS}" = "dis-client" ] && (cd dis-client && ./gradlew test connectedAndroidTest) || true'
+  - '[ "${TESTS}" = "dis-server" ] && (cd dis-server && ./gradlew test) || true'
