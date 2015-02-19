@@ -8,12 +8,12 @@ android:
     - android-19
     - sys-img-armeabi-v7a-android-19
 env:
-  - TESTS=dis-client
-  - TESTS=dis-server
+  - COMPONENT=dis-client
+  - COMPONENT=dis-server
 
 before_script:
-  - '[ "${TESTS}" = "dis-client" ] && dis-client/ci/script/before.sh || true'
+  - '[ "${COMPONENT}" = "dis-client" ] && dis-client/ci/script/before.sh || true'
 
 script:
-  - '[ "${TESTS}" = "dis-client" ] && (cd dis-client && ./gradlew test connectedAndroidTest) || true'
-  - '[ "${TESTS}" = "dis-server" ] && (cd dis-server && ./gradlew test) || true'
+  - '[ "${COMPONENT}" = "dis-client" ] && (cd dis-client && ./gradlew test connectedAndroidTest) || true'
+  - '[ "${COMPONENT}" = "dis-server" ] && (cd dis-server && ./gradlew test) || true'
