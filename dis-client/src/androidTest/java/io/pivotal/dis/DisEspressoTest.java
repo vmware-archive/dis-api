@@ -24,6 +24,6 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     }
 
     public void testActivityShouldHaveText() throws InterruptedException {
-        onView(withId(R.id.text)).check(matches(withText("Hello Espresso!")));
+        onView(withId(R.id.text)).check(matches(withText("Welcome to Dis!")));
     }
 }
