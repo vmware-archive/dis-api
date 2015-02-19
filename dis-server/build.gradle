@@ -20,9 +20,13 @@ repositories {
 dependencies {
     compile("org.springframework.boot:spring-boot")
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.json:json:20141113")
+    compile("org.apache.directory.studio:org.apache.commons.io:2.4")
+
     testCompile("junit:junit")
     testCompile("org.springframework:spring-test")
     testCompile("com.jayway.jsonpath:json-path:1.2.0")
+    testCompile("com.squareup.okhttp:mockwebserver:2.2.0")
 }
 
 task wrapper(type: Wrapper) {

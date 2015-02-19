@@ -3,3 +3,5 @@ build
 *.ipr
 *.iws
 .gradle
+src/main/resources/application.properties
+.idea/
