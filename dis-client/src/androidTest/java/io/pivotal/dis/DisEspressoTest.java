@@ -36,7 +36,7 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
   public void setUp() throws Exception {
     super.setUp();
 
-    DisApplication.overrideModule(new DisEspressoTestModule());
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule());
     getActivity();
   }
 
