@@ -26,6 +26,7 @@ public class DisActivity extends GuiceActivity {
     setContentView(R.layout.dis);
 
     lines = (ListView) findViewById(R.id.lines);
+    lines.setEmptyView(findViewById(R.id.empty_view));
 
     final LinesDataSource linesDataSource = new LinesDataSource(linesClient);
 

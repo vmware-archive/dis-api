@@ -4,9 +4,18 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/empty_view"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/no_disruptions"
+        android:textSize="24sp"/>
+
     <ListView
         android:id="@+id/lines"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
+
 </LinearLayout>
