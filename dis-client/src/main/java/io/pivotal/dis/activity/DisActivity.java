@@ -7,8 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.inject.Inject;
-
-import org.json.JSONException;
+import java.util.List;
 
 import io.pivotal.dis.R;
 import io.pivotal.dis.lines.ILinesClient;
@@ -30,17 +29,35 @@ public class DisActivity extends GuiceActivity {
 
     final LinesDataSource linesDataSource = new LinesDataSource(linesClient);
 
-    final ArrayAdapter<String> linesAdapter;
-    try {
-      linesAdapter = new ArrayAdapter<String>(
-          this,
-          android.R.layout.simple_list_item_1,
-          linesDataSource.getDisruptedLineNames().toArray(new String[] {})
-      );
+    AsyncTask<Void, Void, List<String>> displayDisruptions = new AsyncTask<Void, Void, List<String>>() {
+      @Override
+      protected List<String> doInBackground(Void... params) {
+        try {
+          return linesDataSource.getDisruptedLineNames();
+        } catch (Exception e) {
+          e.printStackTrace();
+          throw new RuntimeException(e);
+        }
+      }
 
-      lines.setAdapter(linesAdapter);
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
+      @Override
+      protected void onPostExecute(List<String> disruptedLines) {
+        final ArrayAdapter<String> linesAdapter;
+        try {
+          linesAdapter = new ArrayAdapter<String>(
+              DisActivity.this,
+              android.R.layout.simple_list_item_1,
+              disruptedLines.toArray(new String[] {})
+          );
+
+          lines.setAdapter(linesAdapter);
+        } catch (Exception e) {
+          e.printStackTrace();
+          throw new RuntimeException(e);
+        }
+      }
+    };
+
+    displayDisruptions.execute();
   }
 }

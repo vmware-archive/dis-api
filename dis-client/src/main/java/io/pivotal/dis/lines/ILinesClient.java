@@ -4,5 +4,5 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface ILinesClient {
-  public JSONObject fetchDisruptedLines() throws JSONException;
+  public JSONObject fetchDisruptedLines() throws Exception;
 }

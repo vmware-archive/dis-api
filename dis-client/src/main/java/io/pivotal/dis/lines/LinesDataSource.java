@@ -15,7 +15,7 @@ public class LinesDataSource {
     this.client = client;
   }
 
-  public List<String> getDisruptedLineNames() throws JSONException {
+  public List<String> getDisruptedLineNames() throws Exception {
     JSONObject response = client.fetchDisruptedLines();
 
     JSONArray disruptions = response.getJSONArray("disruptions");

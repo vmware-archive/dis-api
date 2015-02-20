@@ -54,6 +54,7 @@ dependencies {
     testCompile 'org.hamcrest:hamcrest-core:1.1'
     testCompile 'org.hamcrest:hamcrest-library:1.1'
     testCompile 'org.hamcrest:hamcrest-integration:1.1'
+    testCompile 'com.squareup.okhttp:mockwebserver:2.2.0'
     // TODO: requires special build of robolectric right now. working on this...
     testCompile('org.robolectric:robolectric:2.4') {
         exclude module: 'classworlds'
