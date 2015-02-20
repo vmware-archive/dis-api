@@ -4,10 +4,9 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/text"
+    <ListView
+        android:id="@+id/lines"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/splash_screen_text"
         />
 </LinearLayout>
