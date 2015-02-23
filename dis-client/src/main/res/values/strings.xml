@@ -3,4 +3,5 @@
     <string name="splash_screen_text">Welcome to Dis!</string>
     <string name="app_name">Dis</string>
     <string name="no_disruptions">No disruptions</string>
+    <string name="refresh_disruptions">Refresh disruptions</string>
 </resources>

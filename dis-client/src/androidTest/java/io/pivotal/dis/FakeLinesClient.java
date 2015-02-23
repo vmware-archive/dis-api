@@ -28,4 +28,8 @@ public class FakeLinesClient implements ILinesClient {
     root.put("disruptions", disruptions);
     return root;
   }
+
+  public void setDisruptedLines(List<String> lineNames) {
+    this.lineNames = lineNames;
+  }
 }

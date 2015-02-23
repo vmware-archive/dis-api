@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:showAsAction="always" android:id="@+id/refresh_disruptions"
+        android:title="@string/refresh_disruptions" android:icon="@drawable/ic_action_refresh" />
+</menu>
