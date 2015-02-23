@@ -13,3 +13,7 @@ also a hope to be able to contribute back to the Android ecosystem.
 ## Backlog
 
 The backlog for the project can be found [here](https://www.pivotaltracker.com/n/projects/1278296).
+
+## Releases
+
+You can download releases of the Dis Android app on our Github releases page [here](https://github.com/pivotal/dis/releases).
