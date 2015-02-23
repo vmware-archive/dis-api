@@ -1,7 +1,6 @@
 package io.pivotal.dis.controller;
 
-import io.pivotal.dis.provider.TflUrlProvider;
-import org.apache.commons.io.IOUtils;
+import io.pivotal.dis.service.DisruptedLinesService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,14 +17,15 @@ import java.util.Map;
 public class TflProxyController {
 
     @Autowired
-    private TflUrlProvider tflUrlProvider;
+    private DisruptedLinesService disruptedLinesService;
 
     @RequestMapping("/lines/disruptions")
     public Map<String, List<Map<String, String>>> lineDisruptions() throws IOException {
-        InputStream inputStream = tflUrlProvider.get().openConnection().getInputStream();
-        String jsonString = IOUtils.toString(inputStream);
-        
-        JSONArray lines = new JSONArray(jsonString);
+        return getDisruptedLinesResponse();
+    }
+
+    private Map<String, List<Map<String, String>>> getDisruptedLinesResponse() throws IOException {
+        JSONArray lines = disruptedLinesService.getDisruptedLinesJson();
         List<Map<String, String>> disruptedLines = new ArrayList<>();
 
         for (int i = 0; i < lines.length(); i++) {
@@ -45,4 +43,5 @@ public class TflProxyController {
         response.put("disruptions", disruptedLines);
         return response;
     }
+
 }
