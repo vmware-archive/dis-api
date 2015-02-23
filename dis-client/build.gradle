@@ -25,7 +25,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 18
         versionCode 9000
-        versionName "0.1.0"
+        versionName "0.2.0"
         applicationId "io.pivotal.dis"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
