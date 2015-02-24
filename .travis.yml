@@ -10,6 +10,7 @@ android:
 env:
   - COMPONENT=dis-client
   - COMPONENT=dis-server
+  - COMPONENT=dis-ingest
 
 before_script:
   - '[ "${COMPONENT}" = "dis-client" ] && dis-client/ci/script/before.sh || true'
@@ -17,3 +18,4 @@ before_script:
 script:
   - '[ "${COMPONENT}" = "dis-client" ] && (cd dis-client && ./gradlew test connectedAndroidTest) || true'
   - '[ "${COMPONENT}" = "dis-server" ] && (cd dis-server && ./gradlew test) || true'
+  - '[ "${COMPONENT}" = "dis-ingest" ] && (cd dis-ingest && ./gradlew test) || true'
