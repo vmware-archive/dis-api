@@ -23,7 +23,6 @@ public class DisplayDisruptionsAsyncTask extends AsyncTask<Void, Void, List<Stri
   @Override
   protected void onPreExecute() {
     super.onPreExecute();
-//    progressDialog.setIndeterminate(true);
     progressDialog.show();
   }
 
