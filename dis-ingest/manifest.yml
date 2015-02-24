@@ -1,0 +1,5 @@
+name: dis-ingest
+no-route: true
+instances: 1
+memory: 512MB
+path: build/libs/dis-ingest-1.0.0.jar
