@@ -12,11 +12,11 @@ import static org.hamcrest.Matchers.not;
 
 public class Macchiato {
 
-  public static void hasText(String text) {
+  public static void assertHasText(String text) {
     viewWithText(text).check(matches(isDisplayed()));
   }
 
-  public static void hasNoText(String text) {
+  public static void assertDoesNotHaveText(String text) {
     viewWithText(text).check(matches(not(isDisplayed())));
   }
 
@@ -24,11 +24,11 @@ public class Macchiato {
     return onView(withId(id));
   }
 
-  public static ViewInteraction viewWithText(String text) {
+  private static ViewInteraction viewWithText(String text) {
     return onView(withText(text));
   }
 
-  public static ViewInteraction clickOnViewWithId(int id) {
+  public static ViewInteraction clickOn(int id) {
     return viewWithId(id).perform(click());
   }
 }
