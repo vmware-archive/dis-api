@@ -1,4 +1,4 @@
-package io.pivotal.dis.ingest.services;
+package io.pivotal.dis.ingest.service.tfl;
 
 import java.net.URL;
 

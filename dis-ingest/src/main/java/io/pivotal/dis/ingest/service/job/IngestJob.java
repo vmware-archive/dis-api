@@ -1,5 +1,7 @@
-package io.pivotal.dis.ingest.services;
+package io.pivotal.dis.ingest.service.job;
 
+import io.pivotal.dis.ingest.service.tfl.UrlProvider;
+import io.pivotal.dis.ingest.service.store.FileStore;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -1,6 +1,7 @@
-package io.pivotal.dis.ingest.services;
+package io.pivotal.dis.ingest.service;
 
 import io.pivotal.dis.ingest.config.ApplicationConfig;
+import io.pivotal.dis.ingest.service.tfl.UrlProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

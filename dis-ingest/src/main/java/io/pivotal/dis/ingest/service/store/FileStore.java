@@ -1,4 +1,4 @@
-package io.pivotal.dis.ingest.services;
+package io.pivotal.dis.ingest.service.store;
 
 public interface FileStore {
     void save(String input);

@@ -1,7 +1,10 @@
-package io.pivotal.dis.ingest.services;
+package io.pivotal.dis.ingest.service;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import io.pivotal.dis.ingest.service.job.IngestJob;
+import io.pivotal.dis.ingest.service.store.FileStore;
+import io.pivotal.dis.ingest.service.tfl.UrlProviderImpl;
 import org.junit.Test;
 
 import java.io.IOException;
