@@ -1,5 +1,6 @@
 package io.pivotal.dis.task;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -11,10 +12,19 @@ import io.pivotal.dis.lines.LinesDataSource;
 public class DisplayDisruptionsAsyncTask extends AsyncTask<Void, Void, List<String>> {
   private final LinesDataSource linesDataSource;
   private final ListView viewToUpdate;
+  private ProgressDialog progressDialog;
 
-  public DisplayDisruptionsAsyncTask(LinesDataSource linesDataSource, ListView viewToUpdate) {
+  public DisplayDisruptionsAsyncTask(LinesDataSource linesDataSource, ListView viewToUpdate, ProgressDialog progressDialog) {
     this.linesDataSource = linesDataSource;
     this.viewToUpdate = viewToUpdate;
+    this.progressDialog = progressDialog;
+  }
+
+  @Override
+  protected void onPreExecute() {
+    super.onPreExecute();
+//    progressDialog.setIndeterminate(true);
+    progressDialog.show();
   }
 
   @Override
@@ -40,6 +50,9 @@ public class DisplayDisruptionsAsyncTask extends AsyncTask<Void, Void, List<Stri
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
+    }
+    finally {
+      progressDialog.hide();
     }
   }
 }

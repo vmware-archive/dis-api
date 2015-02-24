@@ -1,5 +1,6 @@
 package io.pivotal.dis.activity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +21,7 @@ public class DisActivity extends GuiceActivity {
 
   private ListView disruptedLinesView;
   private LinesDataSource linesDataSource;
+  private ProgressDialog progressDialog;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -32,7 +34,7 @@ public class DisActivity extends GuiceActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.refresh_disruptions:
-        new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView).execute();
+        new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView, progressDialog).execute();
         return true;
       default:
         return super.onOptionsItemSelected(item);
@@ -43,13 +45,11 @@ public class DisActivity extends GuiceActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.dis);
-
+    progressDialog = new ProgressDialog(this);
     disruptedLinesView = (ListView) findViewById(R.id.lines);
     disruptedLinesView.setEmptyView(findViewById(R.id.empty_view));
-
     linesDataSource = new LinesDataSource(linesClient);
-
-    new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView).execute();
+    new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView, progressDialog).execute();
   }
 
 }
