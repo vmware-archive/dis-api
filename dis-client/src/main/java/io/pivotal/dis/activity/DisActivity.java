@@ -45,7 +45,10 @@ public class DisActivity extends GuiceActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.dis);
+
     progressDialog = new ProgressDialog(this);
+    progressDialog.setMessage("Checking for disruptions…");
+
     disruptedLinesView = (ListView) findViewById(R.id.lines);
     disruptedLinesView.setEmptyView(findViewById(R.id.empty_view));
     linesDataSource = new LinesDataSource(linesClient);
