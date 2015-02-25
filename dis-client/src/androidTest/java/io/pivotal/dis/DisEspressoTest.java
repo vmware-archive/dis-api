@@ -76,7 +76,7 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     ILinesClient slowLinesClient = new SlowLinesClient();
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(slowLinesClient));
     getActivity();
-    assertHasText("Refresh failed");
+    assertHasText("Couldn't retrieve data from server :(");
   }
 
   private class DisEspressoTestModule extends AbstractModule {
