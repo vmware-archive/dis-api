@@ -23,6 +23,7 @@ import static io.pivotal.dis.Macchiato.assertDoesNotHaveText;
 import static io.pivotal.dis.Macchiato.assertHasText;
 import static io.pivotal.dis.Macchiato.clickOn;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 
 public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivity> {
 
@@ -40,17 +41,21 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Arrays.asList("Central", "District"))));
     getActivity();
 
-    assertDoesNotHaveText("No disruptions");
-
     assertHasText("Central");
     assertHasText("District");
-
+    assertDoesNotHaveText("No disruptions");
   }
 
   public void testShowsRefreshButtonInActionBar() throws InterruptedException {
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Collections.<String>emptyList())));
     getActivity();
     onView(withId(R.id.refresh_disruptions)).check(matches(allOf(isDisplayed(), isClickable())));
+  }
+
+  public void testProgressBarGoneAfterContentLoaded() throws InterruptedException {
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Arrays.asList("Central", "District"))));
+    getActivity();
+    onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())));
   }
 
   public void testClickingRefreshButtonFetchesUpdatedDisruptions() {
@@ -91,5 +96,6 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     protected void configure() {
       bind(ILinesClient.class).toInstance(fakeLinesClient);
     }
+
   }
 }
