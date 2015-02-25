@@ -32,9 +32,11 @@ public class TflProxyController {
             JSONObject line = lines.getJSONObject(i);
             JSONObject lineStatus = line.getJSONArray("lineStatuses").getJSONObject(0);
 
-            if (!lineStatus.get("statusSeverityDescription").equals("Good Service")) {
+            String statusSeverityDescription = lineStatus.getString("statusSeverityDescription");
+            if (!statusSeverityDescription.equals("Good Service")) {
                 HashMap<String, String> disruptedLine = new HashMap<>();
                 disruptedLine.put("line", line.getString("name"));
+                disruptedLine.put("status", statusSeverityDescription);
                 disruptedLines.add(disruptedLine);
             }
         }
