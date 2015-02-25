@@ -1,7 +1,6 @@
 package io.pivotal.dis.lines;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -15,15 +14,16 @@ public class LinesDataSource {
     this.client = client;
   }
 
-  public List<String> getDisruptedLineNames() throws Exception {
+  public List<Line> getDisruptedLines() throws Exception {
     JSONObject response = client.fetchDisruptedLines();
 
     JSONArray disruptions = response.getJSONArray("disruptions");
-    List<String> names = new ArrayList<String>();
+    List<Line> lines = new ArrayList<>();
     for (int i = 0; i < disruptions.length(); i++) {
-      names.add(disruptions.getJSONObject(i).getString("line"));
+      lines.add(new Line(disruptions.getJSONObject(i).getString("line"), disruptions.getJSONObject(i).getString("status")));
     }
 
-    return names;
+    return lines;
   }
+
 }

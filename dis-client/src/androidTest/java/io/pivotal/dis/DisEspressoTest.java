@@ -13,6 +13,7 @@ import java.util.Collections;
 
 import io.pivotal.dis.activity.DisActivity;
 import io.pivotal.dis.lines.ILinesClient;
+import io.pivotal.dis.lines.Line;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -32,13 +33,13 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
   }
 
   public void testShowsNoDisruptions_whenThereAreNoDisruptions() {
-    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Collections.EMPTY_LIST)));
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Collections.<Line>emptyList())));
     getActivity();
     assertHasText("No disruptions");
   }
 
-  public void testShowsDisruptedLines_whenThereAreDisruptions() throws InterruptedException, IOException {
-    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Arrays.asList("Central", "District"))));
+  public void testShowsDisruptedLineNames_whenThereAreDisruptions() throws InterruptedException, IOException {
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Arrays.asList(new Line("Central", "Severe Delays"), new Line("District", "Part Suspended")))));
     getActivity();
 
     assertHasText("Central");
@@ -46,24 +47,33 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     assertDoesNotHaveText("No disruptions");
   }
 
+  public void testShowsDisruptedLineStatuses_whenThereAreDisruptions() throws InterruptedException, IOException {
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Arrays.asList(new Line("Central", "Severe Delays"), new Line("District", "Part Suspended")))));
+    getActivity();
+
+    assertHasText("Severe Delays");
+    assertHasText("Part Suspended");
+    assertDoesNotHaveText("No disruptions");
+  }
+
   public void testShowsRefreshButtonInActionBar() throws InterruptedException {
-    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Collections.<String>emptyList())));
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Collections.<Line>emptyList())));
     getActivity();
     onView(withId(R.id.refresh_disruptions)).check(matches(allOf(isDisplayed(), isClickable())));
   }
 
   public void testProgressBarGoneAfterContentLoaded() throws InterruptedException {
-    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Arrays.asList("Central", "District"))));
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Arrays.asList(new Line("Central", "Severe Delays"), new Line("District", "Part Suspended")))));
     getActivity();
     onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())));
   }
 
   public void testClickingRefreshButtonFetchesUpdatedDisruptions() {
-    FakeLinesClient linesClient = new FakeLinesClient(Collections.EMPTY_LIST);
+    FakeLinesClient linesClient = new FakeLinesClient(Collections.<Line>emptyList());
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(linesClient));
     getActivity();
     assertHasText("No disruptions");
-    linesClient.setDisruptedLines(Arrays.asList("Central", "District"));
+    linesClient.setDisruptedLines(Arrays.asList(new Line("Central", "Severe Delays"), new Line("District", "Part Suspended")));
     assertHasText("No disruptions");
     clickOn(R.id.refresh_disruptions);
     assertHasText("Central");

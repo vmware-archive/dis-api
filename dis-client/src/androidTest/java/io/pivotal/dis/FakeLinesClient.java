@@ -4,16 +4,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
 
 import io.pivotal.dis.lines.ILinesClient;
+import io.pivotal.dis.lines.Line;
 
 public class FakeLinesClient implements ILinesClient {
-  private List<String> lineNames;
+  private List<Line> lines;
 
-  FakeLinesClient(List<String> lineNames) {
-    this.lineNames = lineNames;
+  FakeLinesClient(List<Line> lines) {
+    this.lines = lines;
   }
 
   @Override
@@ -21,15 +21,15 @@ public class FakeLinesClient implements ILinesClient {
     JSONObject root = new JSONObject();
     JSONArray disruptions = new JSONArray();
     
-    for (String lineName : lineNames) {
-      disruptions.put(new JSONObject("{ \"line\": \"" + lineName + "\" }"));
+    for (Line line : lines) {
+      disruptions.put(new JSONObject("{ \"line\": \"" + line.getName() + "\", \"status\": \"" + line.getStatus() + "\" }"));
     }
 
     root.put("disruptions", disruptions);
     return root;
   }
 
-  public void setDisruptedLines(List<String> lineNames) {
-    this.lineNames = lineNames;
+  public void setDisruptedLines(List<Line> lines) {
+    this.lines = lines;
   }
 }
