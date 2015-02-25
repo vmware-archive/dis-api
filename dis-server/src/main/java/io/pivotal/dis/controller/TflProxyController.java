@@ -1,6 +1,7 @@
 package io.pivotal.dis.controller;
 
 import io.pivotal.dis.service.DisruptedLinesService;
+import io.pivotal.dis.service.FakeDisruptedLinesService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,20 @@ public class TflProxyController {
     @Autowired
     private DisruptedLinesService disruptedLinesService;
 
+    @Autowired
+    private FakeDisruptedLinesService fakeDisruptedLinesService;
+
     @RequestMapping("/lines/disruptions")
     public Map<String, List<Map<String, String>>> lineDisruptions() throws IOException {
-        return getDisruptedLinesResponse();
+        return convertJsonArrayToList(disruptedLinesService.getDisruptedLinesJson());
     }
 
-    private Map<String, List<Map<String, String>>> getDisruptedLinesResponse() throws IOException {
-        JSONArray lines = disruptedLinesService.getDisruptedLinesJson();
+    @RequestMapping("/test/lines/disruptions")
+    public Map<String, List<Map<String, String>>> fakeLineDisruptions() throws IOException {
+        return convertJsonArrayToList(fakeDisruptedLinesService.getDisruptedLinesJson());
+    }
+
+    private Map<String, List<Map<String, String>>> convertJsonArrayToList(JSONArray lines) {
         List<Map<String, String>> disruptedLines = new ArrayList<>();
 
         for (int i = 0; i < lines.length(); i++) {
