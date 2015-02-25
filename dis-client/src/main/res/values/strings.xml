@@ -4,4 +4,5 @@
     <string name="app_name">Dis</string>
     <string name="no_disruptions">No disruptions</string>
     <string name="refresh_disruptions">Refresh disruptions</string>
+    <string name="refresh_failed">Refresh failed</string>
 </resources>
