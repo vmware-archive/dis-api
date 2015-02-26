@@ -10,6 +10,6 @@ public class GuiceActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    DisApplication.getInjector().injectMembers(this);
+    DisApplication.getInjector(this.getApplicationContext()).injectMembers(this);
   }
 }

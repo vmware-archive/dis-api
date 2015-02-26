@@ -6,13 +6,16 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
+import io.pivotal.dis.provider.UrlProvider;
+
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 public class LinesClientTest {
@@ -27,7 +30,7 @@ public class LinesClientTest {
 
     mockWebServer.play();
     URL serverUrl = mockWebServer.getUrl("");
-    LinesClient linesClient = new LinesClient(serverUrl);
+    LinesClient linesClient = new LinesClient(new UrlProvider(Robolectric.application, serverUrl, serverUrl));
     JSONObject lines = linesClient.fetchDisruptedLines();
     assertThat(lines.getJSONArray("disruptions").length(), equalTo(0));
   }
@@ -43,9 +46,8 @@ public class LinesClientTest {
 
     mockWebServer.play();
     URL serverUrl = mockWebServer.getUrl("");
-    LinesClient linesClient = new LinesClient(serverUrl, 0, 100);
+    LinesClient linesClient = new LinesClient(new UrlProvider(Robolectric.application, serverUrl, serverUrl), 0, 100);
     JSONObject lines = linesClient.fetchDisruptedLines();
     assertThat(lines.getJSONArray("disruptions").length(), equalTo(0));
   }
-
 }
