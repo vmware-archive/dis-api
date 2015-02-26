@@ -8,6 +8,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.name.Names;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -49,20 +50,25 @@ public class DisApplication extends Application {
         bind(URL.class).annotatedWith(Names.named("realUrl")).toInstance(new URL("http://dis-server.cfapps.io/lines/disruptions"));
         bind(URL.class).annotatedWith(Names.named("testUrl")).toInstance(new URL("http://dis-server.cfapps.io/test/lines/disruptions"));
         bindLinesClient();
+        bindDebugProperties();
 
-        // Controls what debug options are available - see src/debug/res/raw for the version used in debug builds,
-        // and src/main/res/raw for the one used in release builds.
-        InputStream inputStream = context.getResources().openRawResource(R.raw.debug);
-        try {
-          Properties properties = new Properties();
-          properties.load(new InputStreamReader(inputStream));
-          bind(Properties.class).annotatedWith(Names.named("debug")).toInstance(properties);
-        }
-        finally {
-          if (inputStream != null) inputStream.close();
-        }
+
       } catch (java.io.IOException e) {
         e.printStackTrace();
+      }
+    }
+
+    private void bindDebugProperties() throws IOException {
+      // Controls what debug options are available - see src/debug/res/raw for the version used in debug builds,
+      // and src/main/res/raw for the one used in release builds.
+      InputStream inputStream = context.getResources().openRawResource(R.raw.debug);
+      try {
+        Properties properties = new Properties();
+        properties.load(new InputStreamReader(inputStream));
+        bind(Properties.class).annotatedWith(Names.named("debug")).toInstance(properties);
+      }
+      finally {
+        if (inputStream != null) inputStream.close();
       }
     }
 

@@ -3,8 +3,13 @@ package io.pivotal.dis;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.test.espresso.NoMatchingViewException;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.CheckBox;
+
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 
 import org.json.JSONObject;
 
@@ -12,6 +17,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Properties;
 
 import io.pivotal.dis.activity.DisActivity;
 import io.pivotal.dis.lines.ILinesClient;
@@ -158,6 +164,21 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(), slowLinesClient));
     getActivity();
     assertHasText("Couldn't retrieve data from server :(");
+  }
+
+  public void testTestModeNotAvailableWhenDebugEnableTestModePropertyIsNotTrue() {
+    Injector injector = DisApplication.getInjector(getInstrumentation().getTargetContext());
+    Properties properties = injector.getBinding(Key.get(Properties.class, Names.named("debug"))).getProvider().get();
+    properties.setProperty("debug.enable.testMode", "false");
+    getActivity();
+    try {
+      openActionBarOverflowOrOptionsMenu(getActivity().getApplicationContext());
+      onView(withText("Test mode"));
+      fail("Test mode button must not be present");
+    }
+    catch(NoMatchingViewException e) {
+      // Pass
+    }
   }
 
   private class DisEspressoTestModule extends DisApplication.DisModule {
