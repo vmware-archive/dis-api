@@ -5,8 +5,8 @@ import io.pivotal.dis.service.FakeDisruptedLinesService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +31,17 @@ public class TflProxyController {
     @RequestMapping("/test/lines/disruptions")
     public Map<String, List<Map<String, String>>> fakeLineDisruptions() throws IOException {
         return convertJsonArrayToList(fakeDisruptedLinesService.getDisruptedLinesJson());
+    }
+
+    @RequestMapping(value = "/test/lines/disruptions", method = RequestMethod.POST)
+    public ModelAndView setFakeLineDisruptions(@RequestParam JSONArray jsonArray) throws IOException {
+        this.fakeDisruptedLinesService.setDisruptedLinesJson(jsonArray);
+        return new ModelAndView("redirect:/test");
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public ModelAndView fakeLineDisruptionsIndex() throws IOException {
+        return new ModelAndView("fake_disruptions");
     }
 
     private Map<String, List<Map<String, String>>> convertJsonArrayToList(JSONArray lines) {

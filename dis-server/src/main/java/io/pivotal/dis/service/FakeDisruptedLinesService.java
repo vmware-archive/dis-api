@@ -22,4 +22,8 @@ public class FakeDisruptedLinesService {
     public JSONArray getDisruptedLinesJson() {
         return disruptedLinesJson;
     }
+
+    public void setDisruptedLinesJson(JSONArray disruptedLines) {
+        this.disruptedLinesJson = disruptedLines;
+    }
 }
