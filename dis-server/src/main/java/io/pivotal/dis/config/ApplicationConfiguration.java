@@ -11,7 +11,6 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableAutoConfiguration
 @ComponentScan("io.pivotal.dis")
 @PropertySource("classpath:application.properties")
-@EnableWebMvc
 public class ApplicationConfiguration {
 
     @Bean
