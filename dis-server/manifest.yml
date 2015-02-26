@@ -1,4 +1,4 @@
 name: dis-server
 instances: 1
 memory: 512MB
-path: build/libs/dis-server-1.0.0.jar
+path: build/libs/dis-server-1.0.0.war
