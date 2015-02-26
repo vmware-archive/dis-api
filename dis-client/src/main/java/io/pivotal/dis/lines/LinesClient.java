@@ -21,8 +21,8 @@ public class LinesClient implements ILinesClient {
     this(serverUrl, DEFAULT_CONNECT_TIMEOUT_MS, DEFAULT_READ_TIMEOUT_MS);
   }
 
-  public LinesClient(URL serverUrl, int connectTimeout, int readTimeout) throws MalformedURLException {
-    this.disruptedLinesUrl = new URL(serverUrl, "/lines/disruptions");
+  LinesClient(URL serverUrl, int connectTimeout, int readTimeout) throws MalformedURLException {
+    this.disruptedLinesUrl = new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(), serverUrl.getPath() + "/lines/disruptions");
     this.connectTimeout = connectTimeout;
     this.readTimeout = readTimeout;
   }

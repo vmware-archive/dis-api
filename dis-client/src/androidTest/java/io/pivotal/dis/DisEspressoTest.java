@@ -1,6 +1,7 @@
 package io.pivotal.dis;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.CheckBox;
 
 import com.google.inject.AbstractModule;
 
@@ -16,10 +17,18 @@ import io.pivotal.dis.lines.ILinesClient;
 import io.pivotal.dis.lines.Line;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
+import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static io.pivotal.dis.Macchiato.assertDoesNotHaveText;
 import static io.pivotal.dis.Macchiato.assertHasText;
 import static io.pivotal.dis.Macchiato.clickOn;
@@ -32,8 +41,12 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     super(DisActivity.class);
   }
 
-  public void testShowsNoDisruptions_whenThereAreNoDisruptions() {
+  @Override
+  public void setUp() {
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Collections.<Line>emptyList())));
+  }
+
+  public void testShowsNoDisruptions_whenThereAreNoDisruptions() {
     getActivity();
     assertHasText("No disruptions");
   }
@@ -57,9 +70,39 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
   }
 
   public void testShowsRefreshButtonInActionBar() throws InterruptedException {
-    DisApplication.overrideInjectorModule(new DisEspressoTestModule(new FakeLinesClient(Collections.<Line>emptyList())));
     getActivity();
     onView(withId(R.id.refresh_disruptions)).check(matches(allOf(isDisplayed(), isClickable())));
+  }
+
+  public void testShowsTestModeButtonInActionBar() throws InterruptedException {
+    getActivity();
+    openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+    onView(withText("Test mode")).check(matches(allOf(isDisplayed())));
+  }
+
+  public void testClickingTestModeWhenUncheckedChecksTestModeCheckboxInMenu() throws InterruptedException {
+    getActivity();
+    openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+    clickOn("Test mode");
+    openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+    onView(allOf(isAssignableFrom(CheckBox.class), hasSibling(withChild(withText("Test mode"))))).check(matches(isChecked()));
+  }
+
+  public void testClickingTestModeWhenCheckedUnchecksTestModeCheckboxInMenu() throws InterruptedException {
+    getActivity();
+    openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+    clickOn("Test mode");
+    openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+    clickOn("Test mode");
+    openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+    onView(allOf(isAssignableFrom(CheckBox.class), hasSibling(withChild(withText("Test mode"))))).check(matches(isNotChecked()));
+  }
+
+  public void testSelectingTestModeAndRefreshingShowsTestLineData() throws InterruptedException {
+    getActivity();
+    openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+    clickOn("Test mode");
+    assertHasText("");
   }
 
   public void testProgressBarGoneAfterContentLoaded() throws InterruptedException {

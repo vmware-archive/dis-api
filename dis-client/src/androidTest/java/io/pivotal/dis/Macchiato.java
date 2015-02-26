@@ -32,4 +32,8 @@ public class Macchiato {
   public static ViewInteraction clickOn(int id) {
     return viewWithId(id).perform(click());
   }
+
+  public static ViewInteraction clickOn(String text) {
+    return viewWithText(text).perform(click());
+  }
 }

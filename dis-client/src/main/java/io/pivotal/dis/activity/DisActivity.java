@@ -6,7 +6,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import com.google.inject.Inject;
 
@@ -36,6 +35,12 @@ public class DisActivity extends GuiceActivity {
     switch (item.getItemId()) {
       case R.id.refresh_disruptions:
         new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView, progressBar).execute();
+        return true;
+      case R.id.test_mode:
+        if (item.isChecked())
+          item.setChecked(false);
+        else
+          item.setChecked(true);
         return true;
       default:
         return super.onOptionsItemSelected(item);
