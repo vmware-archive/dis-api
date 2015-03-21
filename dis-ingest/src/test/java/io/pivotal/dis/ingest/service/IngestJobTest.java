@@ -27,7 +27,7 @@ public class IngestJobTest {
 
         UrlProviderImpl urlProviderImpl = new UrlProviderImpl(tflMockWebServer.getUrl("/"));
         IngestJob job = new IngestJob(urlProviderImpl, mockFileStore);
-        job.execute();
+        job.run();
 
         assertThat(mockFileStore.getLastFile(), equalTo("{\"abc\": 1}"));
     }
