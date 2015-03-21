@@ -1,4 +1,4 @@
-name: dis-server
+name: dis-server-robbie
 instances: 1
 memory: 512MB
-path: build/libs/dis-server-1.0.0.war
+path: build/libs/dis-server-1.0.0.jar

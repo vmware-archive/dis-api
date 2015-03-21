@@ -9,7 +9,6 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'spring-boot'
-apply plugin: 'war'
 
 sourceCompatibility = 1.8
 version = '1.0.0'
@@ -23,8 +22,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.json:json:20141113")
     compile("org.apache.directory.studio:org.apache.commons.io:2.4")
-
-    providedCompile("org.apache.tomcat.embed:tomcat-embed-jasper")
+    compile("org.eclipse.jetty:jetty-server:9.2.10.v20150310")
 
     testCompile("junit:junit")
     testCompile("org.springframework:spring-test")
@@ -34,4 +32,8 @@ dependencies {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
+}
+
+bootRepackage {
+    mainClass = 'io.pivotal.dis.Application'
 }

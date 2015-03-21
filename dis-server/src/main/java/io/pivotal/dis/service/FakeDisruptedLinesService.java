@@ -12,7 +12,8 @@ public class FakeDisruptedLinesService {
     private JSONArray disruptedLinesJson;
 
     public FakeDisruptedLinesService() {
-        try (InputStream is = getClass().getResourceAsStream("/fake_response.json")) {
+        try {
+            InputStream is = getClass().getResourceAsStream("/fake_response.json");
             disruptedLinesJson = new JSONArray(IOUtils.toString(is));
         } catch (IOException e) {
             throw new RuntimeException(e);
