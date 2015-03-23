@@ -1,41 +1,36 @@
 package io.pivotal.dis.service;
 
-import io.pivotal.dis.provider.TflUrlProvider;
 import io.pivotal.dis.provider.TimeProvider;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.time.LocalDateTime;
 
-@Service
 public class DisruptedLinesService {
 
     private final TimeProvider timeProvider;
-
-    private final TflUrlProvider tflUrlProvider;
-
+    private final URL tflUrl;
     private JSONArray tflData;
-
     private LocalDateTime lastUpdateTime;
 
-    @Autowired
-    public DisruptedLinesService(TimeProvider timeProvider, TflUrlProvider tflUrlProvider) {
+    public DisruptedLinesService(TimeProvider timeProvider, URL tflUrl) {
         this.timeProvider = timeProvider;
-        this.tflUrlProvider = tflUrlProvider;
+        this.tflUrl = tflUrl;
     }
 
     public JSONArray getDisruptedLinesJson() throws IOException {
-        if (isCacheUpToDate())
+        if (isCacheUpToDate()) {
             return tflData;
-        InputStream inputStream = tflUrlProvider.get().openConnection().getInputStream();
-        String jsonString = IOUtils.toString(inputStream);
-        tflData = new JSONArray(jsonString);
-        lastUpdateTime = timeProvider.currentTime();
-        return tflData;
+        }
+        try (InputStream inputStream = tflUrl.openConnection().getInputStream()) {
+            String jsonString = IOUtils.toString(inputStream);
+            tflData = new JSONArray(jsonString);
+            lastUpdateTime = timeProvider.currentTime();
+            return tflData;
+        }
     }
 
     private boolean isCacheUpToDate() {
@@ -45,4 +40,5 @@ public class DisruptedLinesService {
     private boolean wasLastUpdateLessThanOneMinuteAgo() {
         return lastUpdateTime.isAfter(timeProvider.currentTime().minusMinutes(1));
     }
+
 }

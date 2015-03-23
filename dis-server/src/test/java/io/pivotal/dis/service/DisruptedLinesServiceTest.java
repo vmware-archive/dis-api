@@ -4,46 +4,41 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 import io.pivotal.dis.provider.MockTimeProvider;
-import io.pivotal.dis.provider.TflUrlProvider;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.http.MediaType;
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class DisruptedLinesServiceTest {
 
     private MockWebServer mockWebServer;
-    private TflUrlProvider tflUrlProvider;
     private MockTimeProvider timeProvider;
     private DisruptedLinesService service;
 
     @Before
     public void setUp() throws Exception {
         mockWebServer = new MockWebServer();
-        tflUrlProvider = new TflUrlProvider("appid", "appkey");
-        timeProvider = new MockTimeProvider();
-        service = new DisruptedLinesService(timeProvider, tflUrlProvider);
 
         mockWebServer.enqueue(new MockResponse()
-                .setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .setHeader("Content-Type", "application/json")
                 .setBody(IOUtils.toString(getClass().getClassLoader().getResourceAsStream("line_mode_tube_status.json"))));
         mockWebServer.enqueue(new MockResponse()
-                .setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .setHeader("Content-Type", "application/json")
                 .setBody(IOUtils.toString(getClass().getClassLoader().getResourceAsStream("another_line_mode_tube_status.json"))));
         mockWebServer.play();
-        URL serverUrl = mockWebServer.getUrl("");
-        tflUrlProvider.set(serverUrl);
+
+        timeProvider = new MockTimeProvider();
         timeProvider.setTime(LocalDateTime.now());
+
+        service = new DisruptedLinesService(timeProvider, mockWebServer.getUrl(""));
     }
 
     @After

@@ -1,12 +1,7 @@
 package io.pivotal.dis.provider;
 
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 
-@Service
-@Primary
 public class MockTimeProvider implements TimeProvider {
 
     private LocalDateTime time;
