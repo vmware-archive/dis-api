@@ -1,15 +1,5 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE")
-    }
-}
-
 apply plugin: 'java'
-apply plugin: 'spring-boot'
-apply plugin: 'war'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
 version = '1.0.0'
@@ -19,19 +9,18 @@ repositories {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot")
-    compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.json:json:20141113")
     compile("org.apache.directory.studio:org.apache.commons.io:2.4")
+    compile("org.eclipse.jetty:jetty-server:9.2.10.v20150310")
 
-    providedCompile("org.apache.tomcat.embed:tomcat-embed-jasper")
-
-    testCompile("junit:junit")
-    testCompile("org.springframework:spring-test")
+    testCompile("junit:junit:4.12")
     testCompile("com.jayway.jsonpath:json-path:1.2.0")
     testCompile("com.squareup.okhttp:mockwebserver:2.2.0")
+    testCompile("com.mockrunner:mockrunner-servlet:1.0.6")
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
 }
+
+mainClassName = "io.pivotal.dis.Application"
