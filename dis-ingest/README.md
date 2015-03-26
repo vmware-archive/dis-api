@@ -2,7 +2,7 @@
 
 ## Build
 
-The following command uses Spring Boot (although the application does not use Spring) to generate a combined JAR file with dependencies.
+The following command produces a zip file which Cloud Foundry can accept.
 
-    `gradle bootRepackage`
+    `gradle distZip`
 

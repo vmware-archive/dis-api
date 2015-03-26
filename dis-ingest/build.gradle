@@ -1,18 +1,11 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.0.RELEASE")
-    }
+repositories {
+    mavenCentral()
 }
 
 apply plugin: 'java'
-apply plugin: 'spring-boot'
-
+apply plugin: 'application'
 
 version =  '1.0.0'
-
 sourceCompatibility = 1.8
 
 repositories {
@@ -21,7 +14,8 @@ repositories {
 
 dependencies {
     compile("commons-io:commons-io:2.4")
-    compile "com.amazonaws:aws-java-sdk:1.9.22"
+    compile("com.amazonaws:aws-java-sdk:1.9.22")
+
     testCompile("junit:junit:4.12")
     testCompile("org.hamcrest:hamcrest-library:1.3")
     testCompile("com.squareup.okhttp:mockwebserver:2.2.0")
@@ -31,6 +25,4 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
 }
 
-bootRepackage {
-    mainClass = 'io.pivotal.dis.ingest.config.ApplicationConfig'
-}
+mainClassName = "io.pivotal.dis.ingest.config.ApplicationConfig"
