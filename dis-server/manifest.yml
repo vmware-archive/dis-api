@@ -1,4 +1,4 @@
-name: dis-server-robbie
+name: dis-server
 instances: 1
 memory: 512MB
 path: build/distributions/dis-server-1.0.0.zip
