@@ -4,10 +4,10 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import io.pivotal.dis.ingest.service.job.IngestJob;
 import io.pivotal.dis.ingest.service.store.FileStore;
-import io.pivotal.dis.ingest.service.tfl.UrlProviderImpl;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -28,9 +28,9 @@ public class IngestJobTest {
         tflMockWebServer.play();
 
         MockFileStore mockFileStore = new MockFileStore();
-        UrlProviderImpl urlProviderImpl = new UrlProviderImpl(tflMockWebServer.getUrl("/"));
+        URL url = tflMockWebServer.getUrl("/");
 
-        IngestJob job = new IngestJob(urlProviderImpl, mockFileStore);
+        IngestJob job = new IngestJob(url, mockFileStore);
 
         runInASingleSecond(
                 () -> job.run(),
