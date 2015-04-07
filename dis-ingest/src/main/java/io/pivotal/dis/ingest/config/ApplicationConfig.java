@@ -9,30 +9,32 @@ import io.pivotal.dis.ingest.service.store.FileStore;
 import io.pivotal.dis.ingest.service.store.FileStoreImpl;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
 public class ApplicationConfig {
 
-    private Properties properties = new Properties();
-    private String propertyFileName = "application.properties";
     private URL tflUrl;
     private String bucketName;
 
-    public ApplicationConfig() {
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propertyFileName);
-            if (inputStream != null) {
-                properties.load(inputStream);
-            } else {
-                throw new FileNotFoundException("property file '" + propertyFileName + "' not found in the classpath");
-            }
-            tflUrl = new URL(properties.getProperty("tfl.url"));
-            bucketName = properties.getProperty("s3.bucketName");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public ApplicationConfig() throws IOException {
+        Properties properties = new Properties();
+        try (InputStream inputStream = openResource("application.properties")) {
+            properties.load(inputStream);
         }
+
+        tflUrl = new URL(properties.getProperty("tfl.url"));
+        bucketName = properties.getProperty("s3.bucketName");
+    }
+
+    private InputStream openResource(String name) throws FileNotFoundException {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(name);
+        if (inputStream == null) {
+            throw new FileNotFoundException("file '" + name + "' not found in the classpath");
+        }
+        return inputStream;
     }
 
     public URL tflUrl() {
@@ -47,7 +49,7 @@ public class ApplicationConfig {
         return new AmazonS3Client(new ClasspathPropertiesFileCredentialsProvider());
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ApplicationConfig applicationConfig = new ApplicationConfig();
         URL url = applicationConfig.tflUrl();
         FileStore fileStore = new FileStoreImpl(applicationConfig.amazonS3(), applicationConfig.bucketName());
