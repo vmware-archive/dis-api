@@ -13,7 +13,6 @@ import io.pivotal.dis.ingest.service.tfl.UrlProviderImpl;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.Properties;
 
 public class ApplicationConfig {
@@ -33,16 +32,16 @@ public class ApplicationConfig {
             }
             tflUrl = new URL(properties.getProperty("tfl.url"));
             bucketName = properties.getProperty("s3.bucketName");
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    public URL tflUrl(){
+    public URL tflUrl() {
         return tflUrl;
     }
 
-    public String bucketName(){
+    public String bucketName() {
         return bucketName;
     }
 
@@ -53,11 +52,11 @@ public class ApplicationConfig {
     public static void main(String[] args) {
         ApplicationConfig applicationConfig = new ApplicationConfig();
         UrlProvider urlProvider = new UrlProviderImpl(applicationConfig.tflUrl());
-        FileStore fileStore = new FileStoreImpl(applicationConfig.amazonS3(), LocalDateTime::now, applicationConfig.bucketName);
+        FileStore fileStore = new FileStoreImpl(applicationConfig.amazonS3(), applicationConfig.bucketName(), IngestJob::nameRawFile);
 
         // Jobs
         EveryMinuteFixedRunner runner = new EveryMinuteFixedRunner();
         runner.addRunnable(new IngestJob(urlProvider, fileStore));
-
     }
+
 }

@@ -33,13 +33,13 @@ public class FileStoreImplTest {
     public void savesTimestampedFileToS3() {
         MockAmazonS3 mockAmazonS3 = new MockAmazonS3();
         LocalDateTime now = LocalDateTime.now();
-        FileStoreImpl fileStore = new FileStoreImpl(mockAmazonS3, () -> now, "bucketName");
+        FileStoreImpl fileStore = new FileStoreImpl(mockAmazonS3, "bucketName", () -> "supplied filename");
 
         fileStore.save("some stuff");
         assertThat(mockAmazonS3, allOf(
                 hasProperty("lastObject", equalTo("some stuff")),
                 hasProperty("lastBucketName", equalTo("bucketName")),
-                hasProperty("lastKey", equalTo("tfl_api_line_mode_status_tube_" + now.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"))
+                hasProperty("lastKey", equalTo("supplied filename"))
         ));
     }
 

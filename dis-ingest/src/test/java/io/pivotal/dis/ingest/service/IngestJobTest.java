@@ -8,6 +8,11 @@ import io.pivotal.dis.ingest.service.tfl.UrlProviderImpl;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -18,8 +23,8 @@ public class IngestJobTest {
     public void savesTflDataToFileStore() throws IOException {
         MockWebServer tflMockWebServer = new MockWebServer();
         tflMockWebServer.enqueue(new MockResponse()
-                .setHeader("Content-Type", "application/json")
-                .setBody("{\"abc\": 1}")
+                        .setHeader("Content-Type", "application/json")
+                        .setBody("{\"abc\": 1}")
         );
         tflMockWebServer.play();
 
@@ -30,6 +35,15 @@ public class IngestJobTest {
         job.run();
 
         assertThat(mockFileStore.getLastFile(), equalTo("{\"abc\": 1}"));
+    }
+
+    @Test
+    public void namesFilesWithTheTimestamp() throws Exception {
+        runInASingleSecond(
+                () -> IngestJob.nameRawFile(),
+                (timestamp, fileName) -> {
+                    assertThat(fileName, equalTo("tfl_api_line_mode_status_tube_" + timestamp.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
+                });
     }
 
     private class MockFileStore implements FileStore {
@@ -43,6 +57,23 @@ public class IngestJobTest {
 
         public String getLastFile() {
             return lastFile;
+        }
+
+    }
+
+    /**
+     * Interesting testing technique.
+     */
+    private <T> void runInASingleSecond(Supplier<T> block, BiConsumer<LocalDateTime, T> onSuccess) {
+        long deadline = System.currentTimeMillis() + 1000L;
+        while (System.currentTimeMillis() < deadline) {
+            LocalDateTime before = LocalDateTime.now().withNano(0);
+            T result = block.get();
+            LocalDateTime after = LocalDateTime.now().withNano(0);
+            if (after.equals(before)) {
+                onSuccess.accept(before, result);
+                return;
+            }
         }
     }
 
