@@ -9,7 +9,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.S3ClientOptions;
 import com.amazonaws.services.s3.S3ResponseMetadata;
 import com.amazonaws.services.s3.model.*;
-import io.pivotal.dis.ingest.service.time.TimeProvider;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -33,15 +32,14 @@ public class FileStoreImplTest {
     @Test
     public void savesTimestampedFileToS3() {
         MockAmazonS3 mockAmazonS3 = new MockAmazonS3();
-        MockTimeProvider mockTimeProvider = new MockTimeProvider();
-        mockTimeProvider.setTime(LocalDateTime.now());
-        FileStoreImpl fileStore = new FileStoreImpl(mockAmazonS3, mockTimeProvider, "bucketName");
+        LocalDateTime now = LocalDateTime.now();
+        FileStoreImpl fileStore = new FileStoreImpl(mockAmazonS3, () -> now, "bucketName");
 
         fileStore.save("some stuff");
         assertThat(mockAmazonS3, allOf(
                 hasProperty("lastObject", equalTo("some stuff")),
                 hasProperty("lastBucketName", equalTo("bucketName")),
-                hasProperty("lastKey", equalTo("tfl_api_line_mode_status_tube_" + mockTimeProvider.currentTime().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"))
+                hasProperty("lastKey", equalTo("tfl_api_line_mode_status_tube_" + now.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"))
         ));
     }
 
@@ -581,16 +579,4 @@ public class FileStoreImplTest {
         }
     }
 
-    private class MockTimeProvider implements TimeProvider {
-        private LocalDateTime time;
-
-        @Override
-        public LocalDateTime currentTime() {
-            return time;
-        }
-
-        public void setTime(LocalDateTime time) {
-            this.time = time;
-        }
-    }
 }

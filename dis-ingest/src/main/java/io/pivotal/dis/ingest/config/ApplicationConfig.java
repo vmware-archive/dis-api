@@ -9,12 +9,11 @@ import io.pivotal.dis.ingest.service.store.FileStore;
 import io.pivotal.dis.ingest.service.store.FileStoreImpl;
 import io.pivotal.dis.ingest.service.tfl.UrlProvider;
 import io.pivotal.dis.ingest.service.tfl.UrlProviderImpl;
-import io.pivotal.dis.ingest.service.time.TimeProvider;
-import io.pivotal.dis.ingest.service.time.TimeProviderImpl;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 public class ApplicationConfig {
@@ -54,8 +53,7 @@ public class ApplicationConfig {
     public static void main(String[] args) {
         ApplicationConfig applicationConfig = new ApplicationConfig();
         UrlProvider urlProvider = new UrlProviderImpl(applicationConfig.tflUrl());
-        TimeProvider timeProvider = new TimeProviderImpl();
-        FileStore fileStore = new FileStoreImpl(applicationConfig.amazonS3(), timeProvider, applicationConfig.bucketName);
+        FileStore fileStore = new FileStoreImpl(applicationConfig.amazonS3(), LocalDateTime::now, applicationConfig.bucketName);
 
         // Jobs
         EveryMinuteFixedRunner runner = new EveryMinuteFixedRunner();
