@@ -1,56 +1,54 @@
 package io.pivotal.dis.controller;
 
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import redis.clients.jedis.Jedis;
+import redis.embedded.RedisServer;
+
+import java.net.URI;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class TflProxyControllerTest {
 
-    private MockWebServer mockWebServer;
     private WebTester webTester;
+    private RedisServer redisServer;
 
     @Before
     public void setup() throws Exception {
-        mockWebServer = new MockWebServer();
-        mockWebServer.enqueue(new MockResponse()
-                .setHeader("Content-Type", "application/json")
-                .setBody(IOUtils.toString(getClass().getClassLoader().getResourceAsStream("line_mode_tube_status.json"))
-                ));
-        mockWebServer.play();
+        redisServer = new RedisServer();
+        redisServer.start();
 
-        webTester = WebTester.build(mockWebServer.getUrl(""));
+        String tflLineStatusJson = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("line_mode_tube_status.json"));
+
+        URI redisUri = new URI("redis://localhost:" + redisServer.getPort());
+        try (Jedis jedis = new Jedis(redisUri)) {
+            jedis.set("line_status", tflLineStatusJson);
+        }
+
+        webTester = WebTester.build(redisUri);
     }
 
     @After
     public void tearDown() throws Exception {
         try {
-            mockWebServer.shutdown();
+            redisServer.stop();
         } finally {
             webTester.close();
         }
     }
 
     @Test
-    public void getLineDisruptions_returnsDisruptedLines() throws Exception {
+    public void getLineDisruptions_returnsDisruptedLineWithStatus() throws Exception {
         String contentAsString = webTester.get("/lines/disruptions");
         JSONArray disruptions = new JSONObject(contentAsString).getJSONArray("disruptions");
         assertThat(disruptions.length(), equalTo(1));
         assertThat(disruptions.getJSONObject(0).getString("line"), equalTo("Bakerloo"));
-    }
-
-    @Test
-    public void getLineDisruptions_returnsDisruptedLinesWithStatus() throws Exception {
-        String contentAsString = webTester.get("/lines/disruptions");
-        JSONArray disruptions = new JSONObject(contentAsString).getJSONArray("disruptions");
-        assertThat(disruptions.length(), equalTo(1));
         assertThat(disruptions.getJSONObject(0).getString("status"), equalTo("Runaway Train"));
     }
 

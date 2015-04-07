@@ -1,44 +1,24 @@
 package io.pivotal.dis.service;
 
-import io.pivotal.dis.provider.TimeProvider;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
+import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.time.LocalDateTime;
+import java.net.URI;
 
 public class DisruptedLinesService {
 
-    private final TimeProvider timeProvider;
-    private final URL tflUrl;
-    private JSONArray tflData;
-    private LocalDateTime lastUpdateTime;
+    private final URI redisUri;
 
-    public DisruptedLinesService(TimeProvider timeProvider, URL tflUrl) {
-        this.timeProvider = timeProvider;
-        this.tflUrl = tflUrl;
+    public DisruptedLinesService(URI redisUri) {
+        this.redisUri = redisUri;
     }
 
     public JSONArray getDisruptedLinesJson() throws IOException {
-        if (isCacheUpToDate()) {
-            return tflData;
+        try (Jedis jedis = new Jedis(redisUri)) {
+            String lineStatus = jedis.get("line_status");
+            return new JSONArray(lineStatus);
         }
-        try (InputStream inputStream = tflUrl.openConnection().getInputStream()) {
-            String jsonString = IOUtils.toString(inputStream);
-            tflData = new JSONArray(jsonString);
-            lastUpdateTime = timeProvider.currentTime();
-            return tflData;
-        }
-    }
-
-    private boolean isCacheUpToDate() {
-        return tflData != null && wasLastUpdateLessThanOneMinuteAgo();
-    }
-
-    private boolean wasLastUpdateLessThanOneMinuteAgo() {
-        return lastUpdateTime.isAfter(timeProvider.currentTime().minusMinutes(1));
     }
 
 }

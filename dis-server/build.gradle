@@ -12,11 +12,13 @@ dependencies {
     compile("org.json:json:20141113")
     compile("org.apache.directory.studio:org.apache.commons.io:2.4")
     compile("org.eclipse.jetty:jetty-server:9.2.10.v20150310")
+    compile("redis.clients:jedis:2.6.2")
 
     testCompile("junit:junit:4.12")
     testCompile("com.jayway.jsonpath:json-path:1.2.0")
     testCompile("com.squareup.okhttp:mockwebserver:2.2.0")
     testCompile("com.mockrunner:mockrunner-servlet:1.0.6")
+    testCompile("com.orange.redis-embedded:embedded-redis:0.6")
 }
 
 task wrapper(type: Wrapper) {
@@ -24,3 +26,10 @@ task wrapper(type: Wrapper) {
 }
 
 mainClassName = "io.pivotal.dis.Application"
+
+run {
+    environment = [
+        PORT: 9191,
+        REDIS_PORT: 6379
+    ]
+}

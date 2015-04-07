@@ -8,12 +8,12 @@ import org.eclipse.jetty.server.Request;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 
 public class WebTester implements AutoCloseable {
 
-    public static WebTester build(URL serverUrl) throws Exception {
-        Application application = new Application(0, serverUrl);
+    public static WebTester build(URI redisUrl) throws Exception {
+        Application application = new Application(0, redisUrl);
         application.start();
         return new WebTester(application);
     }
