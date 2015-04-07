@@ -27,8 +27,8 @@ public class FileStoreImplTest {
             params.put("input", toString((InputStream) args[2]));
         });
 
-        FileStoreImpl fileStore = new FileStoreImpl(mockAmazonS3, "bucketName", () -> "supplied filename");
-        fileStore.save("some stuff");
+        FileStoreImpl fileStore = new FileStoreImpl(mockAmazonS3, "bucketName");
+        fileStore.save("supplied filename", "some stuff");
 
         assertThat(params, allOf(
                 hasEntry("input", "some stuff"),

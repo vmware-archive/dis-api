@@ -22,7 +22,7 @@ public class IngestJob implements Runnable {
         this.fileStore = fileStore;
     }
 
-    public static String nameRawFile() {
+    private String nameRawFile() {
         String timestamp = LocalDateTime.now()
                 .atOffset(ZoneOffset.UTC)
                 .format(FILE_NAME_DATE_TIME);
@@ -32,7 +32,7 @@ public class IngestJob implements Runnable {
     public void run() {
         try {
             InputStream is = urlProvider.getUrl().openConnection().getInputStream();
-            fileStore.save(IOUtils.toString(is));
+            fileStore.save(nameRawFile(), IOUtils.toString(is));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -52,7 +52,7 @@ public class ApplicationConfig {
     public static void main(String[] args) {
         ApplicationConfig applicationConfig = new ApplicationConfig();
         UrlProvider urlProvider = new UrlProviderImpl(applicationConfig.tflUrl());
-        FileStore fileStore = new FileStoreImpl(applicationConfig.amazonS3(), applicationConfig.bucketName(), IngestJob::nameRawFile);
+        FileStore fileStore = new FileStoreImpl(applicationConfig.amazonS3(), applicationConfig.bucketName());
 
         // Jobs
         EveryMinuteFixedRunner runner = new EveryMinuteFixedRunner();
