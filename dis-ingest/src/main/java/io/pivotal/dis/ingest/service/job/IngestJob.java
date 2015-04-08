@@ -1,7 +1,9 @@
 package io.pivotal.dis.ingest.service.job;
 
+import com.amazonaws.util.json.JSONObject;
 import io.pivotal.dis.ingest.service.store.FileStore;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +11,8 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 
 public class IngestJob implements Runnable {
 
@@ -16,10 +20,12 @@ public class IngestJob implements Runnable {
 
     private final URL url;
     private final FileStore fileStore;
+    private final FileStore digestedFileStore;
 
-    public IngestJob(URL url, FileStore fileStore) {
+    public IngestJob(URL url, FileStore rawFileStore, FileStore digestedFileStore) {
         this.url = url;
-        this.fileStore = fileStore;
+        this.fileStore = rawFileStore;
+        this.digestedFileStore = digestedFileStore;
     }
 
     private String nameRawFile() {
@@ -31,11 +37,18 @@ public class IngestJob implements Runnable {
 
     public void run() {
         try {
-            InputStream is = url.openConnection().getInputStream();
-            fileStore.save(nameRawFile(), IOUtils.toString(is));
+            String tflData = IOUtils.toString(url.openConnection().getInputStream());
+            fileStore.save(nameRawFile(), tflData);
+            digestedFileStore.save("disruptions.json", translate(tflData));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String translate(String tflData) {
+        JSONArray input = new JSONArray(tflData);
+        Map<String, List<Map<String, String>>> output = TflToDisTranslator.convertJsonArrayToList(input);
+        return new JSONObject(output).toString();
     }
 
 }

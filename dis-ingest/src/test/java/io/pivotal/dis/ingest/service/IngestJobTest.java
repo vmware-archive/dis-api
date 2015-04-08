@@ -4,10 +4,10 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import io.pivotal.dis.ingest.service.job.IngestJob;
 import io.pivotal.dis.ingest.service.store.FileStore;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -18,26 +18,39 @@ import static org.junit.Assert.assertThat;
 
 public class IngestJobTest {
 
-    @Test
-    public void savesTflDataToFileStore() throws IOException {
-        MockWebServer tflMockWebServer = new MockWebServer();
+    private final MockWebServer tflMockWebServer = new MockWebServer();
+    private final MockFileStore rawFileStore = new MockFileStore();
+    private final MockFileStore digestedFileStore = new MockFileStore();
+
+    @Before
+    public void prepareServer() throws Exception {
         tflMockWebServer.enqueue(new MockResponse()
                         .setHeader("Content-Type", "application/json")
-                        .setBody("{\"abc\": 1}")
+                        .setBody("[{\"name\": \"Bakerloo\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Runaway Train\"}]}]")
         );
         tflMockWebServer.play();
+    }
 
-        MockFileStore mockFileStore = new MockFileStore();
-        URL url = tflMockWebServer.getUrl("/");
-
-        IngestJob job = new IngestJob(url, mockFileStore);
+    @Test
+    public void savesTflDataToFileStore() throws IOException {
+        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore);
 
         runInASingleSecond(
                 () -> job.run(),
                 (timestamp) -> {
-                    assertThat(mockFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + timestamp.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
-                    assertThat(mockFileStore.getLastFile(), equalTo("{\"abc\": 1}"));
+                    assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + timestamp.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
+                    assertThat(rawFileStore.getLastFile(), equalTo("[{\"name\": \"Bakerloo\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Runaway Train\"}]}]"));
                 });
+    }
+
+    @Test
+    public void savesTranslatedDataToFileStore() throws Exception {
+        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore);
+
+        job.run();
+
+        assertThat(digestedFileStore.getLastName(), equalTo("disruptions.json"));
+        assertThat(digestedFileStore.getLastFile(), equalTo("{\"disruptions\":[{\"line\":\"Bakerloo\",\"status\":\"Runaway Train\"}]}"));
     }
 
     private class MockFileStore implements FileStore {

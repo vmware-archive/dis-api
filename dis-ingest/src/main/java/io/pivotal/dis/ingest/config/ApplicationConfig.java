@@ -16,8 +16,9 @@ import java.util.Properties;
 
 public class ApplicationConfig {
 
-    private URL tflUrl;
-    private String bucketName;
+    private final URL tflUrl;
+    private final String rawBucketName;
+    private final String digestedBucketName;
 
     public ApplicationConfig() throws IOException {
         Properties properties = new Properties();
@@ -26,7 +27,8 @@ public class ApplicationConfig {
         }
 
         tflUrl = new URL(properties.getProperty("tfl.url"));
-        bucketName = properties.getProperty("s3.bucketName");
+        rawBucketName = properties.getProperty("s3.bucketName.raw");
+        digestedBucketName = properties.getProperty("s3.bucketName.digested");
     }
 
     private InputStream openResource(String name) throws FileNotFoundException {
@@ -41,8 +43,12 @@ public class ApplicationConfig {
         return tflUrl;
     }
 
-    public String bucketName() {
-        return bucketName;
+    public String rawBucketName() {
+        return rawBucketName;
+    }
+
+    public String digestedBucketName() {
+        return digestedBucketName;
     }
 
     public AmazonS3 amazonS3() {
@@ -52,11 +58,13 @@ public class ApplicationConfig {
     public static void main(String[] args) throws IOException {
         ApplicationConfig applicationConfig = new ApplicationConfig();
         URL url = applicationConfig.tflUrl();
-        FileStore fileStore = new FileStoreImpl(applicationConfig.amazonS3(), applicationConfig.bucketName());
+        AmazonS3 amazonS3 = applicationConfig.amazonS3();
+        FileStore rawFileStore = new FileStoreImpl(amazonS3, applicationConfig.rawBucketName());
+        FileStore digestedFileStore = new FileStoreImpl(amazonS3, applicationConfig.digestedBucketName());
 
         // Jobs
         EveryMinuteFixedRunner runner = new EveryMinuteFixedRunner();
-        runner.addRunnable(new IngestJob(url, fileStore));
+        runner.addRunnable(new IngestJob(url, rawFileStore, digestedFileStore));
     }
 
 }

@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     compile("commons-io:commons-io:2.4")
+    compile("org.json:json:20141113")
     compile("com.amazonaws:aws-java-sdk:1.9.22")
 
     testCompile("junit:junit:4.12")
