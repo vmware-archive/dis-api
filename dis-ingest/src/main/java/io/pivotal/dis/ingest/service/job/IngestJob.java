@@ -5,6 +5,7 @@ import io.pivotal.dis.ingest.service.store.FileStore;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -32,8 +33,8 @@ public class IngestJob implements Runnable {
     }
 
     public void run() {
-        try {
-            String tflData = IOUtils.toString(url.openConnection().getInputStream());
+        try (InputStream inputStream = url.openConnection().getInputStream()) {
+            String tflData = IOUtils.toString(inputStream);
             fileStore.save(nameRawFile(), tflData);
             digestedFileStore.save("disruptions.json", TflToDisTranslator.convertJsonArrayToList(tflData));
         } catch (IOException | JSONException e) {
