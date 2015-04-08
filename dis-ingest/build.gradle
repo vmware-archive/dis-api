@@ -29,5 +29,7 @@ mainClassName = "io.pivotal.dis.ingest.config.ApplicationConfig"
 
 run.environment = [
         AWS_ACCESS_KEY_ID: awsAccessKeyId,
-        AWS_SECRET_KEY: awsSecretKey
+        AWS_SECRET_KEY: awsSecretKey,
+        S3_BUCKET_NAME_RAW: s3BucketNameRaw,
+        S3_BUCKET_NAME_DIGESTED: s3BucketNameDigested
 ]

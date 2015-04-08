@@ -29,8 +29,9 @@ public class ApplicationConfig {
         }
 
         tflUrl = new URL(properties.getProperty("tfl.url"));
-        rawBucketName = properties.getProperty("s3.bucketName.raw");
-        digestedBucketName = properties.getProperty("s3.bucketName.digested");
+
+        rawBucketName = System.getenv("S3_BUCKET_NAME_RAW");
+        digestedBucketName = System.getenv("S3_BUCKET_NAME_DIGESTED");
     }
 
     private InputStream openResource(String name) throws FileNotFoundException {
