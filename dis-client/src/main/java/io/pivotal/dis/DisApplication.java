@@ -47,8 +47,8 @@ public class DisApplication extends Application {
     protected void configure() {
       try {
         bind(Context.class).toInstance(context);
-        bind(URL.class).annotatedWith(Names.named("realUrl")).toInstance(new URL("http://dis-server.cfapps.io/lines/disruptions"));
-        bind(URL.class).annotatedWith(Names.named("testUrl")).toInstance(new URL("http://dis-server.cfapps.io/test/lines/disruptions"));
+        bind(URL.class).annotatedWith(Names.named("realUrl")).toInstance(new URL("http://pivotal-london-dis-digest.s3.amazonaws.com/disruptions.json"));
+        bind(URL.class).annotatedWith(Names.named("testUrl")).toInstance(new URL("http://pivotal-london-dis-digest.s3.amazonaws.com/disruptions-test.json"));
         bindLinesClient();
         bindDebugProperties();
 

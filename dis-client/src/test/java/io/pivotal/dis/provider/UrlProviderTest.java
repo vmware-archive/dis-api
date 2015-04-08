@@ -49,7 +49,7 @@ public class UrlProviderTest {
 
   @Test
   public void returnsRealUrlWhenTestModePreferenceIsNotSet() throws MalformedURLException {
-    assertThat(urlProvider.getUrl(), equalTo(new URL("http://dis-server.cfapps.io/lines/disruptions")));
+    assertThat(urlProvider.getUrl(), equalTo(new URL("http://pivotal-london-dis-digest.s3.amazonaws.com/disruptions.json")));
   }
 
   @Test
@@ -59,7 +59,7 @@ public class UrlProviderTest {
     edit.putBoolean("testMode", false);
     edit.apply();
 
-    assertThat(urlProvider.getUrl(), equalTo(new URL("http://dis-server.cfapps.io/lines/disruptions")));
+    assertThat(urlProvider.getUrl(), equalTo(new URL("http://pivotal-london-dis-digest.s3.amazonaws.com/disruptions.json")));
   }
 
   @Test
@@ -69,6 +69,6 @@ public class UrlProviderTest {
     edit.putBoolean("testMode", true);
     edit.apply();
 
-    assertThat(urlProvider.getUrl(), equalTo(new URL("http://dis-server.cfapps.io/test/lines/disruptions")));
+    assertThat(urlProvider.getUrl(), equalTo(new URL("http://pivotal-london-dis-digest.s3.amazonaws.com/disruptions-test.json")));
   }
 }
