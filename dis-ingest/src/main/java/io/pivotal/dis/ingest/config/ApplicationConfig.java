@@ -8,13 +8,15 @@ import io.pivotal.dis.ingest.service.job.EveryMinuteFixedRunner;
 import io.pivotal.dis.ingest.service.job.IngestJob;
 import io.pivotal.dis.ingest.service.store.FileStore;
 import io.pivotal.dis.ingest.service.store.FileStoreImpl;
+import io.pivotal.labs.cfenv.CloudFoundryEnvironment;
+import io.pivotal.labs.cfenv.CloudFoundryEnvironmentException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import java.util.Properties;
 
 public class ApplicationConfig {
 
@@ -22,14 +24,9 @@ public class ApplicationConfig {
     private final String rawBucketName;
     private final String digestedBucketName;
 
-    public ApplicationConfig() throws IOException {
-        Properties properties = new Properties();
-        try (InputStream inputStream = openResource("application.properties")) {
-            properties.load(inputStream);
-        }
-
-        tflUrl = new URL(properties.getProperty("tfl.url"));
-
+    public ApplicationConfig() throws IOException, CloudFoundryEnvironmentException, URISyntaxException {
+        CloudFoundryEnvironment cloudFoundryEnvironment = new CloudFoundryEnvironment(System::getenv);
+        tflUrl = cloudFoundryEnvironment.getService("tfl").getUri().toURL();
         rawBucketName = System.getenv("S3_BUCKET_NAME_RAW");
         digestedBucketName = System.getenv("S3_BUCKET_NAME_DIGESTED");
     }
@@ -58,7 +55,7 @@ public class ApplicationConfig {
         return new AmazonS3Client(new EnvironmentVariableCredentialsProvider());
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, CloudFoundryEnvironmentException, URISyntaxException {
         ApplicationConfig applicationConfig = new ApplicationConfig();
         URL url = applicationConfig.tflUrl();
 
