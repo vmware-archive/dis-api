@@ -1,11 +1,12 @@
 package io.pivotal.dis.ingest.service.job;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.amazonaws.util.json.JSONArray;
+import com.amazonaws.util.json.JSONException;
+import com.amazonaws.util.json.JSONObject;
 
 public class TflToDisTranslator {
 
-    public static String convertJsonArrayToList(String tflData) {
+    public static String convertJsonArrayToList(String tflData) throws JSONException {
         JSONArray lines = new JSONArray(tflData);
         JSONArray disruptedLines = new JSONArray();
 

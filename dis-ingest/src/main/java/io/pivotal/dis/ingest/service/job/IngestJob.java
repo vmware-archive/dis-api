@@ -1,5 +1,6 @@
 package io.pivotal.dis.ingest.service.job;
 
+import com.amazonaws.util.json.JSONException;
 import io.pivotal.dis.ingest.service.store.FileStore;
 import org.apache.commons.io.IOUtils;
 
@@ -35,7 +36,7 @@ public class IngestJob implements Runnable {
             String tflData = IOUtils.toString(url.openConnection().getInputStream());
             fileStore.save(nameRawFile(), tflData);
             digestedFileStore.save("disruptions.json", TflToDisTranslator.convertJsonArrayToList(tflData));
-        } catch (IOException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
     }
