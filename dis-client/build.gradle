@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
 
     dependencies {
@@ -9,43 +9,13 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        mavenCentral()
-    }
-}
-
 apply plugin: 'com.android.application'
 
-android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
-
-    defaultConfig {
-        minSdkVersion 18
-        targetSdkVersion 21
-        versionCode 9000
-        versionName "0.2.0"
-        applicationId "io.pivotal.dis"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-
-    packagingOptions {
-        exclude 'LICENSE.txt'
-    }
-
-   lintOptions {
-       warning 'InvalidPackage'
-   }
+repositories {
+    jcenter()
 }
 
-task("allTests", dependsOn: ["connectedAndroidTest", "test"])
-
 dependencies {
-    repositories {
-        mavenCentral()
-    }
-
     compile 'com.android.support:support-v4:21.0.3'
     compile 'org.roboguice:roboguice:3.+'
     provided 'org.roboguice:roboblender:3.+'
@@ -78,3 +48,27 @@ dependencies {
         exclude module: 'wagon-provider-api'
     }
 }
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 21
+        versionCode 9000
+        versionName "0.2.0"
+        applicationId "io.pivotal.dis"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+
+    lintOptions {
+        warning 'InvalidPackage'
+    }
+}
+
+task("allTests", dependsOn: ["connectedAndroidTest", "test"])

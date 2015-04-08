@@ -1,15 +1,15 @@
-repositories {
-    mavenCentral()
+plugins {
+    id 'java'
+    id 'application'
 }
 
-apply plugin: 'java'
-apply plugin: 'application'
+assert gradle.gradleVersion == '2.3'
 
 version =  '1.0.0'
 sourceCompatibility = 1.8
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -19,10 +19,6 @@ dependencies {
     testCompile("junit:junit:4.12")
     testCompile("org.hamcrest:hamcrest-library:1.3")
     testCompile("com.squareup.okhttp:mockwebserver:2.2.0")
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.2.1'
 }
 
 mainClassName = "io.pivotal.dis.ingest.config.ApplicationConfig"
