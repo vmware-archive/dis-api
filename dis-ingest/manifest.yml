@@ -2,4 +2,4 @@ name: dis-ingest
 no-route: true
 instances: 1
 memory: 512MB
-path: build/distributions/dis-server-1.0.0.zip
+path: build/distributions/dis-ingest-1.0.0.zip
