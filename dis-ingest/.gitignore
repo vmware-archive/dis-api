@@ -1,2 +1,2 @@
 src/main/resources/application.properties
-src/main/resources/AwsCredentials.properties
+gradle.properties

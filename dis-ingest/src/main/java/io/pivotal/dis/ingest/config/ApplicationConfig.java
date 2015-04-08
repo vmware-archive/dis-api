@@ -1,6 +1,6 @@
 package io.pivotal.dis.ingest.config;
 
-import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.Bucket;
@@ -54,7 +54,7 @@ public class ApplicationConfig {
     }
 
     public AmazonS3 amazonS3() {
-        return new AmazonS3Client(new ClasspathPropertiesFileCredentialsProvider());
+        return new AmazonS3Client(new EnvironmentVariableCredentialsProvider());
     }
 
     public static void main(String[] args) throws IOException {

@@ -26,3 +26,8 @@ task wrapper(type: Wrapper) {
 }
 
 mainClassName = "io.pivotal.dis.ingest.config.ApplicationConfig"
+
+run.environment = [
+        AWS_ACCESS_KEY_ID: awsAccessKeyId,
+        AWS_SECRET_KEY: awsSecretKey
+]
