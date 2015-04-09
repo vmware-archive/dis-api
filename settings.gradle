@@ -1,2 +1,2 @@
 rootProject.name = 'dis'
-include 'dis-ingest'
+include 'dis-ingest', 'dis-client'
