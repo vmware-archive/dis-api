@@ -15,5 +15,4 @@ before_script:
   - 'if [ "${COMPONENT}" = "dis-client" ]; then dis-client/ci/script/before.sh; fi'
 
 script:
-  - 'if [ "${COMPONENT}" = "dis-client" ]; then (cd dis-client && ./gradlew test connectedAndroidTest); fi'
-  - 'if [ "${COMPONENT}" = "dis-ingest" ]; then (cd dis-ingest && ./gradlew test); fi'
+  - 'gradle ${COMPONENT}:check'
