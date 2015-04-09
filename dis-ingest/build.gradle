@@ -25,9 +25,13 @@ dependencies {
 mainClassName = "io.pivotal.dis.ingest.config.ApplicationConfig"
 
 run.environment = [
-        AWS_ACCESS_KEY_ID: awsAccessKeyId,
-        AWS_SECRET_KEY: awsSecretKey,
-        S3_BUCKET_NAME_RAW: s3BucketNameRaw,
-        S3_BUCKET_NAME_DIGESTED: s3BucketNameDigested,
-        VCAP_SERVICES: "{\"\": [{\"name\": \"tfl\", \"credentials\": {\"uri\": \"${tflUrl}\"}, \"label\": \"\", \"tags\": []}]}"
+        AWS_ACCESS_KEY_ID: inessentialProperty('awsAccessKeyId'),
+        AWS_SECRET_KEY: inessentialProperty('awsSecretKey'),
+        S3_BUCKET_NAME_RAW: inessentialProperty('s3BucketNameRaw'),
+        S3_BUCKET_NAME_DIGESTED: inessentialProperty('s3BucketNameDigested'),
+        VCAP_SERVICES: "{\"\": [{\"name\": \"tfl\", \"credentials\": {\"uri\": \"${inessentialProperty('tflUrl')}\"}, \"label\": \"\", \"tags\": []}]}"
 ]
+
+private Object inessentialProperty(String name) {
+    hasProperty(name) ? property(name) : null
+}
