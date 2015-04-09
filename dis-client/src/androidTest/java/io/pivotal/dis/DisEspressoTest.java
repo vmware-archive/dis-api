@@ -151,7 +151,7 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     assertHasText("Couldn't retrieve data from server :(");
   }
 
-  public void testTestModeNotAvailableWhenDebugEnableTestModePropertyIsNotTrue() {
+  public void ignore_testTestModeNotAvailableWhenDebugEnableTestModePropertyIsNotTrue() {
     Injector injector = DisApplication.getInjector(getInstrumentation().getTargetContext());
     Provider<Properties> provider = injector.getBinding(Key.get(Properties.class, Names.named("debug"))).getProvider();
     Properties properties = provider.get();
