@@ -3,3 +3,5 @@ no-route: true
 instances: 1
 memory: 512MB
 path: build/distributions/dis-ingest-1.0.0.zip
+services:
+  - tfl
