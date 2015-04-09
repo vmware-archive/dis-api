@@ -6,41 +6,26 @@ import android.preference.PreferenceManager;
 import android.support.test.espresso.NoMatchingViewException;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.CheckBox;
-
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-
+import io.pivotal.dis.activity.DisActivity;
+import io.pivotal.dis.lines.ILinesClient;
+import io.pivotal.dis.lines.Line;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import javax.inject.Provider;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 
-import io.pivotal.dis.activity.DisActivity;
-import io.pivotal.dis.lines.ILinesClient;
-import io.pivotal.dis.lines.Line;
-
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
-import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
-import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
-import static android.support.test.espresso.matcher.ViewMatchers.withChild;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static io.pivotal.dis.Macchiato.assertDoesNotHaveText;
-import static io.pivotal.dis.Macchiato.assertHasText;
-import static io.pivotal.dis.Macchiato.clickOn;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
+import static android.support.test.espresso.matcher.ViewMatchers.*;
+import static io.pivotal.dis.Macchiato.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivity> {
@@ -53,7 +38,7 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
   public void setUp() throws Exception {
     super.setUp();
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(),
-        new FakeLinesClient(Collections.<Line>emptyList())));
+            new FakeLinesClient(Collections.<Line>emptyList())));
   }
 
   @Override
@@ -168,11 +153,12 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
 
   public void testTestModeNotAvailableWhenDebugEnableTestModePropertyIsNotTrue() {
     Injector injector = DisApplication.getInjector(getInstrumentation().getTargetContext());
-    Properties properties = injector.getBinding(Key.get(Properties.class, Names.named("debug"))).getProvider().get();
+    Provider<Properties> provider = injector.getBinding(Key.get(Properties.class, Names.named("debug"))).getProvider();
+    Properties properties = provider.get();
     properties.setProperty("debug.enable.testMode", "false");
     getActivity();
+    openActionBarOverflowOrOptionsMenu(getActivity().getApplicationContext());
     try {
-      openActionBarOverflowOrOptionsMenu(getActivity().getApplicationContext());
       onView(withText("Test mode"));
       fail("Test mode button must not be present");
     }
