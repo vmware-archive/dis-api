@@ -15,4 +15,4 @@ before_script:
   - 'if [ "${COMPONENT}" = "dis-client" ]; then dis-client/ci/script/before.sh; fi'
 
 script:
-  - './gradlew ${COMPONENT}:check'
+  - './gradlew ${COMPONENT}:check --debug'
