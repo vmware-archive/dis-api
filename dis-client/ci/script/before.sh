@@ -1,6 +1,6 @@
 #! /bin/sh -e
 
-ANDROID_VERSION=18
+ANDROID_VERSION=19
 ANDROID_ABI=armeabi-v7a
 EMULATOR_NAME=test
 EMULATOR_ARGS="-no-skin -no-window"
