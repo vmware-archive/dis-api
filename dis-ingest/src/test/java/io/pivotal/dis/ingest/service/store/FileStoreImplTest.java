@@ -1,6 +1,8 @@
 package io.pivotal.dis.ingest.service.store;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.Grant;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -20,11 +22,13 @@ public class FileStoreImplTest {
 
     @Test
     public void savesTimestampedFileToS3() {
-        Map<String, Object> params = new HashMap<>(); // blech
+        Map<String, Object> params = new HashMap<>();
         AmazonS3 mockAmazonS3 = proxy(AmazonS3.class, "putObject", args -> {
-            params.put("bucketName", args[0]);
-            params.put("key", args[1]);
-            params.put("input", toString((InputStream) args[2]));
+            PutObjectRequest putObjectRequest = (PutObjectRequest) args[0];
+            params.put("bucketName", putObjectRequest.getBucketName());
+            params.put("key", putObjectRequest.getKey());
+            params.put("input", toString((InputStream) putObjectRequest.getInputStream()));
+            params.put("aclGrant", putObjectRequest.getAccessControlList().getGrants().toArray());
         });
 
         FileStoreImpl fileStore = new FileStoreImpl(mockAmazonS3, "bucketName");
