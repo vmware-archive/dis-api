@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.ViewAssertion;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.CheckBox;
 import com.google.inject.Injector;
@@ -71,6 +72,20 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
 
     assertHasText("Severe Delays");
     assertHasText("Part Suspended");
+    assertDoesNotHaveText("No disruptions");
+  }
+
+  public void testShowsDisruptionStartTimes_whenThereAreDisruptions() {
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(),
+            new FakeLinesClient(Arrays.asList(new Line("Central", "Severe Delays"), new Line("District", "Part Suspended")))));
+    getActivity();
+
+    onView(allOf(
+            hasSibling(withText("Severe Delays")), withText(containsString("Started: "))
+    )).check(matches(isDisplayed()));
+    onView(allOf(
+            hasSibling(withText("Part Suspended")), withText(containsString("Started: "))
+    )).check(matches(isDisplayed()));
     assertDoesNotHaveText("No disruptions");
   }
 
