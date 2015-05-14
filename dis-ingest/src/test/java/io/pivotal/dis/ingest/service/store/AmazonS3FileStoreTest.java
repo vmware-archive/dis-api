@@ -1,7 +1,6 @@
 package io.pivotal.dis.ingest.service.store;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.Grant;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -19,7 +18,7 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertThat;
 
-public class FileStoreImplTest {
+public class AmazonS3FileStoreTest {
 
     @Test
     public void savesTimestampedFileToS3() {
@@ -32,7 +31,7 @@ public class FileStoreImplTest {
             params.put("aclGrant", putObjectRequest.getAccessControlList().getGrants());
         });
 
-        FileStoreImpl fileStore = new FileStoreImpl(mockAmazonS3, "bucketName");
+        AmazonS3FileStore fileStore = new AmazonS3FileStore(mockAmazonS3, "bucketName");
         fileStore.save("supplied filename", "some stuff");
 
         assertThat(params, allOf(

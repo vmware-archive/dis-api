@@ -7,7 +7,7 @@ import com.amazonaws.services.s3.model.Bucket;
 import io.pivotal.dis.ingest.service.job.EveryMinuteFixedRunner;
 import io.pivotal.dis.ingest.service.job.IngestJob;
 import io.pivotal.dis.ingest.service.store.FileStore;
-import io.pivotal.dis.ingest.service.store.FileStoreImpl;
+import io.pivotal.dis.ingest.service.store.AmazonS3FileStore;
 import io.pivotal.labs.cfenv.CloudFoundryEnvironment;
 import io.pivotal.labs.cfenv.CloudFoundryEnvironmentException;
 
@@ -64,8 +64,8 @@ public class ApplicationConfig {
         System.out.println("Raw bucket: " + findBucket(buckets, applicationConfig.rawBucketName()));
         System.out.println("Digested bucket: " + findBucket(buckets, applicationConfig.digestedBucketName()));
 
-        FileStore rawFileStore = new FileStoreImpl(amazonS3, applicationConfig.rawBucketName());
-        FileStore digestedFileStore = new FileStoreImpl(amazonS3, applicationConfig.digestedBucketName());
+        FileStore rawFileStore = new AmazonS3FileStore(amazonS3, applicationConfig.rawBucketName());
+        FileStore digestedFileStore = new AmazonS3FileStore(amazonS3, applicationConfig.digestedBucketName());
 
         // Jobs
         EveryMinuteFixedRunner runner = new EveryMinuteFixedRunner();
