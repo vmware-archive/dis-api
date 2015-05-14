@@ -4,9 +4,12 @@ import com.amazonaws.util.json.JSONArray;
 import com.amazonaws.util.json.JSONException;
 import com.amazonaws.util.json.JSONObject;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class TflToDisTranslator {
 
-    public static String convertJsonArrayToList(String tflData) throws JSONException {
+    public static String digestTflData(String tflData) throws JSONException {
         JSONArray lines = new JSONArray(tflData);
         JSONArray disruptedLines = new JSONArray();
 
@@ -19,6 +22,7 @@ public class TflToDisTranslator {
                 JSONObject disruptedLine = new JSONObject();
                 disruptedLine.put("line", line.getString("name"));
                 disruptedLine.put("status", statusSeverityDescription);
+                disruptedLine.put("startTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
                 disruptedLines.put(disruptedLine);
             }
         }

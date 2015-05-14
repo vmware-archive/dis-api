@@ -36,7 +36,7 @@ public class IngestJob implements Runnable {
         try (InputStream inputStream = url.openConnection().getInputStream()) {
             String tflData = IOUtils.toString(inputStream);
             fileStore.save(nameRawFile(), tflData);
-            digestedFileStore.save("disruptions.json", TflToDisTranslator.convertJsonArrayToList(tflData));
+            digestedFileStore.save("disruptions.json", TflToDisTranslator.digestTflData(tflData));
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }

@@ -34,6 +34,7 @@ public class IngestJobTest {
     @Test
     public void savesTflDataToFileStore() throws IOException {
         IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore);
+        LocalDateTime currentTime = LocalDateTime.now();
 
         runInASingleSecond(
                 () -> job.run(),
@@ -46,11 +47,16 @@ public class IngestJobTest {
     @Test
     public void savesTranslatedDataToFileStore() throws Exception {
         IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore);
-
         job.run();
 
+        LocalDateTime currentTime = LocalDateTime.now();
         assertThat(digestedFileStore.getLastName(), equalTo("disruptions.json"));
-        assertThat(digestedFileStore.getLastFile(), equalTo("{\"disruptions\":[{\"line\":\"Bakerloo\",\"status\":\"Runaway Train\"}]}"));
+        assertThat(digestedFileStore.getLastFile(), equalTo("{\"disruptions\":[{\"line\":\"Bakerloo\"," +
+                "\"startTime\":\"" +
+                currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) +
+                "\"," +
+                "\"status\":\"Runaway Train\"" +
+                "}]}"));
     }
 
     private class MockFileStore implements FileStore {
