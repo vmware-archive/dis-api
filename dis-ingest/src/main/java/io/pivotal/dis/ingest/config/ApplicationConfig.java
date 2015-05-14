@@ -3,7 +3,10 @@ package io.pivotal.dis.ingest.config;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AccessControlList;
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.GroupGrantee;
+import com.amazonaws.services.s3.model.Permission;
 import io.pivotal.dis.ingest.service.job.EveryMinuteFixedRunner;
 import io.pivotal.dis.ingest.service.job.IngestJob;
 import io.pivotal.dis.ingest.service.store.FileStore;
@@ -64,8 +67,10 @@ public class ApplicationConfig {
         System.out.println("Raw bucket: " + findBucket(buckets, applicationConfig.rawBucketName()));
         System.out.println("Digested bucket: " + findBucket(buckets, applicationConfig.digestedBucketName()));
 
-        FileStore rawFileStore = new AmazonS3FileStore(amazonS3, applicationConfig.rawBucketName());
-        FileStore digestedFileStore = new AmazonS3FileStore(amazonS3, applicationConfig.digestedBucketName());
+        FileStore rawFileStore = new AmazonS3FileStore(amazonS3, applicationConfig.rawBucketName(), new AccessControlList());
+        AccessControlList publicReadableAcl = new AccessControlList();
+        publicReadableAcl.grantPermission(GroupGrantee.AllUsers, Permission.Read);
+        FileStore digestedFileStore = new AmazonS3FileStore(amazonS3, applicationConfig.digestedBucketName(), publicReadableAcl);
 
         // Jobs
         EveryMinuteFixedRunner runner = new EveryMinuteFixedRunner();
