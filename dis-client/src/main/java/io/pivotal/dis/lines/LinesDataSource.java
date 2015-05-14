@@ -20,9 +20,13 @@ public class LinesDataSource {
     JSONArray disruptions = response.getJSONArray("disruptions");
     List<Line> lines = new ArrayList<>();
     for (int i = 0; i < disruptions.length(); i++) {
-      lines.add(new Line(disruptions.getJSONObject(i).getString("line"), disruptions.getJSONObject(i).getString("status")));
+      JSONObject line = disruptions.getJSONObject(i);
+      if (line.has("startTime")) {
+        lines.add(new Line(line.getString("line"), line.getString("status"), line.getString("startTime")));
+      } else {
+        lines.add(new Line(line.getString("line"), line.getString("status")));
+      }
     }
-
     return lines;
   }
 

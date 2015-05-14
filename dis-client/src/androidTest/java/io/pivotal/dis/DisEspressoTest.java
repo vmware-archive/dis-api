@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.ViewAssertion;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.CheckBox;
 import com.google.inject.Injector;
@@ -71,6 +72,35 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
 
     assertHasText("Severe Delays");
     assertHasText("Part Suspended");
+    assertDoesNotHaveText("No disruptions");
+  }
+
+  public void testShowsDisruptionStartTimes_whenThereAreDisruptions() {
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(),
+            new FakeLinesClient(Arrays.asList(new Line("Central", "Severe Delays", "12:30"), new Line("District", "Part Suspended", "14:30")))));
+    getActivity();
+
+    onView(allOf(hasSibling(withText("Severe Delays")), withId(R.id.line_disruption_started_time)))
+            .check(matches(allOf(isDisplayed(), withText("Started: 12:30"))));
+
+    onView(allOf(hasSibling(withText("Part Suspended")), withId(R.id.line_disruption_started_time)))
+            .check(matches(allOf(isDisplayed(), withText("Started: 14:30"))));
+
+    assertDoesNotHaveText("No disruptions");
+  }
+
+
+  public void testDoesNotShowDisruptionStartTimes_forDisruptionsWithNoStartTime() {
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(),
+            new FakeLinesClient(Arrays.asList(new Line("Central", "Severe Delays"), new Line("District", "Part Suspended")))));
+    getActivity();
+
+    onView(allOf(hasSibling(withText("Severe Delays")), withId(R.id.line_disruption_started_time)))
+            .check(matches(allOf(not(isDisplayed()))));
+
+    onView(allOf(hasSibling(withText("Part Suspended")), withId(R.id.line_disruption_started_time)))
+            .check(matches(allOf(not(isDisplayed()))));
+
     assertDoesNotHaveText("No disruptions");
   }
 

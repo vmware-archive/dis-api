@@ -12,11 +12,22 @@
         android:textStyle="bold"
         android:text="Northern" />
 
-    <TextView
-        android:id="@+id/line_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="Minor Delays" />
-
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/line_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Minor Delays" />
+        <TextView
+            android:id="@+id/line_disruption_started_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textSize="16sp"
+            android:text="Started: 12:30" />
+    </RelativeLayout>
 </LinearLayout>

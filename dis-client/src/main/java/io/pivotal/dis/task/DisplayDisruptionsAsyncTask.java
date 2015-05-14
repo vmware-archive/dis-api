@@ -46,6 +46,7 @@ public class DisplayDisruptionsAsyncTask extends AsyncTask<Void, Void, List<Map<
         Map<String, String> map = new HashMap<>();
         map.put("name", line.getName());
         map.put("status", line.getStatus());
+        if(line.getStartTime() != null) map.put("startTime", "Started: " + line.getStartTime());
         disruptedLinesForDisplay.add(map);
       }
       return disruptedLinesForDisplay;
@@ -67,8 +68,8 @@ public class DisplayDisruptionsAsyncTask extends AsyncTask<Void, Void, List<Map<
       final SimpleAdapter linesAdapter = new SimpleAdapter(viewToUpdate.getContext(),
           disruptedLines,
           R.layout.line_view,
-          new String[]{"name", "status"},
-          new int[]{R.id.line_name, R.id.line_status});
+          new String[]{"name", "status", "startTime"},
+          new int[]{R.id.line_name, R.id.line_status, R.id.line_disruption_started_time});
       if (requestSuccessful) {
         viewToUpdate.setAdapter(linesAdapter);
         Activity activity = (Activity) viewToUpdate.getContext();

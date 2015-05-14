@@ -22,7 +22,14 @@ public class FakeLinesClient implements ILinesClient {
     JSONArray disruptions = new JSONArray();
     
     for (Line line : lines) {
-      disruptions.put(new JSONObject("{ \"line\": \"" + line.getName() + "\", \"status\": \"" + line.getStatus() + "\" }"));
+      if (line.getStartTime() != null) {
+        disruptions.put(new JSONObject("{ \"line\": \"" + line.getName() + "\", " +
+                "\"status\": \"" + line.getStatus() + "\", " +
+                "\"startTime\": \"" + line.getStartTime() + "\" " +
+                "}"));
+      } else {
+        disruptions.put(new JSONObject("{ \"line\": \"" + line.getName() + "\", \"status\": \"" + line.getStatus() + "\" }"));
+      }
     }
 
     root.put("disruptions", disruptions);
