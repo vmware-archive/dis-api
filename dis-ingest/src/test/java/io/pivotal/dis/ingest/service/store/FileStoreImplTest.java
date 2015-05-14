@@ -16,6 +16,7 @@ import java.util.function.Consumer;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertThat;
 
 public class FileStoreImplTest {
@@ -28,7 +29,7 @@ public class FileStoreImplTest {
             params.put("bucketName", putObjectRequest.getBucketName());
             params.put("key", putObjectRequest.getKey());
             params.put("input", toString((InputStream) putObjectRequest.getInputStream()));
-            params.put("aclGrant", putObjectRequest.getAccessControlList().getGrants().toArray());
+            params.put("aclGrant", putObjectRequest.getAccessControlList().getGrants());
         });
 
         FileStoreImpl fileStore = new FileStoreImpl(mockAmazonS3, "bucketName");
@@ -37,7 +38,8 @@ public class FileStoreImplTest {
         assertThat(params, allOf(
                 hasEntry("input", "some stuff"),
                 hasEntry("bucketName", "bucketName"),
-                hasEntry("key", "supplied filename")
+                hasEntry("key", "supplied filename"),
+                hasKey("aclGrant")
         ));
     }
 
