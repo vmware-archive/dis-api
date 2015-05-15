@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ApplicationConfig {
@@ -74,7 +75,7 @@ public class ApplicationConfig {
 
         // Jobs
         EveryMinuteFixedRunner runner = new EveryMinuteFixedRunner();
-        runner.addRunnable(new IngestJob(url, rawFileStore, digestedFileStore));
+        runner.addRunnable(new IngestJob(url, rawFileStore, digestedFileStore, LocalDateTime.now()));
     }
 
     private static Bucket findBucket(List<Bucket> buckets, String name) {
