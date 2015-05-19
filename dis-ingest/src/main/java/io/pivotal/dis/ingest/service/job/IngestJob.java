@@ -1,6 +1,8 @@
 package io.pivotal.dis.ingest.service.job;
 
 import com.amazonaws.util.json.JSONException;
+
+import io.pivotal.dis.ingest.config.OngoingDisruptionsStore;
 import io.pivotal.dis.ingest.service.store.FileStore;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
@@ -20,12 +22,14 @@ public class IngestJob implements Runnable {
     private final FileStore fileStore;
     private final FileStore digestedFileStore;
     private final LocalDateTime currentTime;
+    private final OngoingDisruptionsStore ongoingDisruptionsStore;
 
-    public IngestJob(URL url, FileStore rawFileStore, FileStore digestedFileStore, LocalDateTime currentTime) {
+    public IngestJob(URL url, FileStore rawFileStore, FileStore digestedFileStore, LocalDateTime currentTime, OngoingDisruptionsStore ongoingDisruptionsStore) {
         this.url = url;
         this.fileStore = rawFileStore;
         this.digestedFileStore = digestedFileStore;
         this.currentTime = currentTime;
+        this.ongoingDisruptionsStore = ongoingDisruptionsStore;
     }
 
     private String nameRawFile() {
@@ -39,7 +43,9 @@ public class IngestJob implements Runnable {
         try (InputStream inputStream = url.openConnection().getInputStream()) {
             String tflData = IOUtils.toString(inputStream);
             fileStore.save(nameRawFile(), tflData);
-            digestedFileStore.save("disruptions.json", TflToDisTranslator.digestTflData(tflData, null, currentTime));
+            String digestedTflData = TflToDisTranslator.digestTflData(tflData, ongoingDisruptionsStore.getPreviousDisruptionDigest(), currentTime);
+            digestedFileStore.save("disruptions.json", digestedTflData);
+            ongoingDisruptionsStore.setPreviousDisruptionDigest(digestedTflData);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }

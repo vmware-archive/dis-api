@@ -2,6 +2,8 @@ package io.pivotal.dis.ingest.service;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+
+import io.pivotal.dis.ingest.config.OngoingDisruptionsStore;
 import io.pivotal.dis.ingest.service.job.IngestJob;
 import io.pivotal.dis.ingest.service.store.FileStore;
 import org.junit.Before;
@@ -21,6 +23,7 @@ public class IngestJobTest {
     private final MockWebServer tflMockWebServer = new MockWebServer();
     private final MockFileStore rawFileStore = new MockFileStore();
     private final MockFileStore digestedFileStore = new MockFileStore();
+    private OngoingDisruptionsStore ongoingDisruptionsStore;
 
     @Before
     public void prepareServer() throws Exception {
@@ -36,11 +39,12 @@ public class IngestJobTest {
                                 "]")
         );
         tflMockWebServer.play();
+        ongoingDisruptionsStore = new OngoingDisruptionsStore();
     }
 
     @Test
     public void savesTflDataToFileStore() throws IOException {
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now());
+        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now(), ongoingDisruptionsStore);
 
         runInASingleSecond(
                 () -> job.run(),
@@ -52,7 +56,7 @@ public class IngestJobTest {
 
     @Test
     public void savesTflDataToFileStoreForTwoSuccessiveIngestJobs() throws IOException {
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now());
+        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now(), ongoingDisruptionsStore);
 
         runInASingleSecond(
                 () -> job.run(),
@@ -61,7 +65,7 @@ public class IngestJobTest {
                     assertThat(rawFileStore.getLastFile(), equalTo("[{\"name\": \"Bakerloo\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Runaway Train\"}]}]"));
                 });
 
-        IngestJob secondJob = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now().plusMinutes(10));
+        IngestJob secondJob = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now().plusMinutes(10), ongoingDisruptionsStore);
 
         runInASingleSecond(
                 () -> secondJob.run(),
@@ -76,7 +80,7 @@ public class IngestJobTest {
 
     @Test
     public void savesTranslatedDataToFileStore() throws Exception {
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now());
+        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now(),ongoingDisruptionsStore);
         job.run();
 
         LocalDateTime currentTime = LocalDateTime.now();
@@ -92,10 +96,10 @@ public class IngestJobTest {
     @Test
     public void savesTranslatedDataToFileStoreForTwoSuccessiveIngestJobs() throws Exception {
         LocalDateTime currentTime = LocalDateTime.now();
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now());
+        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now(), ongoingDisruptionsStore);
         job.run();
 
-        IngestJob secondJob = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now().plusMinutes(10));
+        IngestJob secondJob = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now().plusMinutes(10), ongoingDisruptionsStore);
         secondJob.run();
 
         assertThat(digestedFileStore.getLastName(), equalTo("disruptions.json"));
