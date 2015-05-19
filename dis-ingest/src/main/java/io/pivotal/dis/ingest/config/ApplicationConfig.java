@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ApplicationConfig {
@@ -26,6 +27,7 @@ public class ApplicationConfig {
     private final URL tflUrl;
     private final String rawBucketName;
     private final String digestedBucketName;
+    private static OngoingDisruptionsStore ongoingDisruptionsStore;
 
     public ApplicationConfig() throws IOException, CloudFoundryEnvironmentException, URISyntaxException {
         CloudFoundryEnvironment cloudFoundryEnvironment = new CloudFoundryEnvironment(System::getenv);
@@ -74,7 +76,7 @@ public class ApplicationConfig {
 
         // Jobs
         EveryMinuteFixedRunner runner = new EveryMinuteFixedRunner();
-        runner.addRunnable(new IngestJob(url, rawFileStore, digestedFileStore));
+        runner.addRunnable(new IngestJob(url, rawFileStore, digestedFileStore, LocalDateTime.now(), ongoingDisruptionsStore));
     }
 
     private static Bucket findBucket(List<Bucket> buckets, String name) {
