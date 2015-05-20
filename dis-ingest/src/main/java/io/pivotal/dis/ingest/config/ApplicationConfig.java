@@ -7,6 +7,9 @@ import com.amazonaws.services.s3.model.AccessControlList;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.GroupGrantee;
 import com.amazonaws.services.s3.model.Permission;
+
+import io.pivotal.dis.ingest.service.job.Clock;
+import io.pivotal.dis.ingest.service.job.ClockImpl;
 import io.pivotal.dis.ingest.service.job.EveryMinuteFixedRunner;
 import io.pivotal.dis.ingest.service.job.IngestJob;
 import io.pivotal.dis.ingest.service.store.FileStore;
@@ -19,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class ApplicationConfig {
@@ -76,7 +78,9 @@ public class ApplicationConfig {
 
         // Jobs
         EveryMinuteFixedRunner runner = new EveryMinuteFixedRunner();
-        runner.addRunnable(new IngestJob(url, rawFileStore, digestedFileStore, LocalDateTime.now(), ongoingDisruptionsStore));
+        Clock clock = new ClockImpl();
+
+        runner.addRunnable(new IngestJob(url, rawFileStore, digestedFileStore, clock, ongoingDisruptionsStore));
     }
 
     private static Bucket findBucket(List<Bucket> buckets, String name) {

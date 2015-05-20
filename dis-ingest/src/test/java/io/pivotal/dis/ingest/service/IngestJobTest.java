@@ -4,6 +4,7 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import io.pivotal.dis.ingest.config.OngoingDisruptionsStore;
+import io.pivotal.dis.ingest.service.job.Clock;
 import io.pivotal.dis.ingest.service.job.IngestJob;
 import io.pivotal.dis.ingest.service.store.FileStore;
 import org.junit.Before;
@@ -11,9 +12,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.function.Consumer;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -44,43 +43,35 @@ public class IngestJobTest {
 
     @Test
     public void savesTflDataToFileStore() throws IOException {
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now(), ongoingDisruptionsStore);
-
-        runInASingleSecond(
-                () -> job.run(),
-                (timestamp) -> {
-                    assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + timestamp.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
-                    assertThat(rawFileStore.getLastFile(), equalTo("[{\"name\": \"Bakerloo\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Runaway Train\"}]}]"));
-                });
+        Clock clock = new FakeClock(LocalDateTime.now());
+        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, clock, ongoingDisruptionsStore);
+        job.run();
+        assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + clock.getCurrentTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
+        assertThat(rawFileStore.getLastFile(), equalTo("[{\"name\": \"Bakerloo\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Runaway Train\"}]}]"));
     }
 
     @Test
     public void savesTflDataToFileStoreForTwoSuccessiveIngestJobs() throws IOException {
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now(), ongoingDisruptionsStore);
+        FakeClock clockNow = new FakeClock(LocalDateTime.now());
+        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, clockNow, ongoingDisruptionsStore);
+        job.run();
+        assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + clockNow.getCurrentTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
+        assertThat(rawFileStore.getLastFile(), equalTo("[{\"name\": \"Bakerloo\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Runaway Train\"}]}]"));
 
-        runInASingleSecond(
-                () -> job.run(),
-                (timestamp) -> {
-                    assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + timestamp.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
-                    assertThat(rawFileStore.getLastFile(), equalTo("[{\"name\": \"Bakerloo\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Runaway Train\"}]}]"));
-                });
+        FakeClock clockInTenMinutesTime = new FakeClock(LocalDateTime.now().plusMinutes(10));
+        IngestJob secondJob = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, clockInTenMinutesTime, ongoingDisruptionsStore);
+        secondJob.run();
 
-        IngestJob secondJob = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now().plusMinutes(10), ongoingDisruptionsStore);
-
-        runInASingleSecond(
-                () -> secondJob.run(),
-                (timestamp) -> {
-                    assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + timestamp.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
-                    assertThat(rawFileStore.getLastFile(), equalTo("[" +
+        assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + clockInTenMinutesTime.getCurrentTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
+        assertThat(rawFileStore.getLastFile(), equalTo("[" +
                                 "{\"name\": \"Bakerloo\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Runaway Train\"}]}," +
                                 "{\"name\": \"Circle\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Leaves on the Line\"}]}" +
                                 "]"));
-                });
     }
 
     @Test
     public void savesTranslatedDataToFileStore() throws Exception {
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now(),ongoingDisruptionsStore);
+        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, new FakeClock(LocalDateTime.now()), ongoingDisruptionsStore);
         job.run();
 
         LocalDateTime currentTime = LocalDateTime.now();
@@ -96,10 +87,10 @@ public class IngestJobTest {
     @Test
     public void savesTranslatedDataToFileStoreForTwoSuccessiveIngestJobs() throws Exception {
         LocalDateTime currentTime = LocalDateTime.now();
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now(), ongoingDisruptionsStore);
+        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, new FakeClock(LocalDateTime.now()), ongoingDisruptionsStore);
         job.run();
 
-        IngestJob secondJob = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, LocalDateTime.now().plusMinutes(10), ongoingDisruptionsStore);
+        IngestJob secondJob = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, new FakeClock(LocalDateTime.now().plusMinutes(10)), ongoingDisruptionsStore);
         secondJob.run();
 
         assertThat(digestedFileStore.getLastName(), equalTo("disruptions.json"));
@@ -136,21 +127,16 @@ public class IngestJobTest {
 
     }
 
-    /**
-     * Interesting testing technique.
-     */
-    private <T> void runInASingleSecond(Runnable block, Consumer<LocalDateTime> onSuccess) {
-        long deadline = System.currentTimeMillis() + 1000L;
-        while (System.currentTimeMillis() < deadline) {
-            LocalDateTime before = LocalDateTime.now().withNano(0);
-            block.run();
-            LocalDateTime after = LocalDateTime.now().withNano(0);
-            if (after.equals(before)) {
-                onSuccess.accept(before);
-                return;
-            }
-        }
-        throw new AssertionError("was not able to run in a single second");
-    }
+    public static class FakeClock implements Clock {
+        private final LocalDateTime time;
 
+        FakeClock(LocalDateTime time) {
+            this.time = time;
+        }
+
+        @Override
+        public LocalDateTime getCurrentTime() {
+            return time;
+        }
+    }
 }
