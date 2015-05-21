@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-public class IngestJob implements Runnable {
+public class Ingester {
 
     private static final DateTimeFormatter FILE_NAME_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
 
@@ -23,7 +23,7 @@ public class IngestJob implements Runnable {
     private final Clock clock;
     private final OngoingDisruptionsStore ongoingDisruptionsStore;
 
-    public IngestJob(URL url, FileStore rawFileStore, FileStore digestedFileStore, Clock clock, OngoingDisruptionsStore ongoingDisruptionsStore) {
+    public Ingester(URL url, FileStore rawFileStore, FileStore digestedFileStore, Clock clock, OngoingDisruptionsStore ongoingDisruptionsStore) {
         this.url = url;
         this.fileStore = rawFileStore;
         this.digestedFileStore = digestedFileStore;
@@ -31,14 +31,7 @@ public class IngestJob implements Runnable {
         this.ongoingDisruptionsStore = ongoingDisruptionsStore;
     }
 
-    private String nameRawFile() {
-        String timestamp = clock.getCurrentTime()
-                .atOffset(ZoneOffset.UTC)
-                .format(FILE_NAME_DATE_TIME);
-        return String.format("tfl_api_line_mode_status_tube_%s.json", timestamp);
-    }
-
-    public void run() {
+    public void ingest() {
         try (InputStream inputStream = url.openConnection().getInputStream()) {
             String tflData = IOUtils.toString(inputStream);
             fileStore.save(nameRawFile(), tflData);
@@ -52,6 +45,13 @@ public class IngestJob implements Runnable {
         } catch (IOException | JSONException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String nameRawFile() {
+        String timestamp = clock.getCurrentTime()
+                .atOffset(ZoneOffset.UTC)
+                .format(FILE_NAME_DATE_TIME);
+        return String.format("tfl_api_line_mode_status_tube_%s.json", timestamp);
     }
 
 }

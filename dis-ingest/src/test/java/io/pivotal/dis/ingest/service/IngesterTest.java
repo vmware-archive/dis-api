@@ -8,7 +8,7 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 import io.pivotal.dis.ingest.config.OngoingDisruptionsStore;
 import io.pivotal.dis.ingest.service.job.Clock;
-import io.pivotal.dis.ingest.service.job.IngestJob;
+import io.pivotal.dis.ingest.service.job.Ingester;
 import io.pivotal.dis.ingest.service.store.FileStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class IngestJobTest {
+public class IngesterTest {
 
     private final MockWebServer tflMockWebServer = new MockWebServer();
     private final MockFileStore rawFileStore = new MockFileStore();
@@ -47,8 +47,8 @@ public class IngestJobTest {
     @Test
     public void savesTflDataToFileStore() throws IOException, JSONException {
         Clock clock = new FakeClock(LocalDateTime.now());
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, clock, ongoingDisruptionsStore);
-        job.run();
+        Ingester job = new Ingester(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, clock, ongoingDisruptionsStore);
+        job.ingest();
         assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + clock.getCurrentTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
         String lastFile = rawFileStore.getLastFile();
         JSONArray lastFileAsJson = new JSONArray(lastFile);
@@ -62,14 +62,14 @@ public class IngestJobTest {
     @Test
     public void savesTflDataToFileStoreForTwoSuccessiveIngestJobs() throws IOException {
         FakeClock clockNow = new FakeClock(LocalDateTime.now());
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, clockNow, ongoingDisruptionsStore);
-        job.run();
+        Ingester job = new Ingester(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, clockNow, ongoingDisruptionsStore);
+        job.ingest();
         assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + clockNow.getCurrentTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
         assertThat(rawFileStore.getLastFile(), equalTo("[{\"name\": \"Bakerloo\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Runaway Train\"}]}]"));
 
         FakeClock clockInTenMinutesTime = new FakeClock(LocalDateTime.now().plusMinutes(10));
-        IngestJob secondJob = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, clockInTenMinutesTime, ongoingDisruptionsStore);
-        secondJob.run();
+        Ingester secondJob = new Ingester(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, clockInTenMinutesTime, ongoingDisruptionsStore);
+        secondJob.ingest();
 
         assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + clockInTenMinutesTime.getCurrentTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
         assertThat(rawFileStore.getLastFile(), equalTo("[" +
@@ -80,8 +80,8 @@ public class IngestJobTest {
 
     @Test
     public void savesTranslatedDataToFileStore() throws Exception {
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, new FakeClock(LocalDateTime.now()), ongoingDisruptionsStore);
-        job.run();
+        Ingester job = new Ingester(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, new FakeClock(LocalDateTime.now()), ongoingDisruptionsStore);
+        job.ingest();
 
         LocalDateTime currentTime = LocalDateTime.now();
         assertThat(digestedFileStore.getLastName(), equalTo("disruptions.json"));
@@ -96,11 +96,11 @@ public class IngestJobTest {
     @Test
     public void savesTranslatedDataToFileStoreForTwoSuccessiveIngestJobs() throws Exception {
         LocalDateTime currentTime = LocalDateTime.now();
-        IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, new FakeClock(LocalDateTime.now()), ongoingDisruptionsStore);
-        job.run();
+        Ingester job = new Ingester(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, new FakeClock(LocalDateTime.now()), ongoingDisruptionsStore);
+        job.ingest();
 
-        IngestJob secondJob = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, new FakeClock(LocalDateTime.now().plusMinutes(10)), ongoingDisruptionsStore);
-        secondJob.run();
+        Ingester secondJob = new Ingester(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, new FakeClock(LocalDateTime.now().plusMinutes(10)), ongoingDisruptionsStore);
+        secondJob.ingest();
 
         assertThat(digestedFileStore.getLastName(), equalTo("disruptions.json"));
         assertThat(digestedFileStore.getLastFile(), equalTo("{\"disruptions\":[" +
