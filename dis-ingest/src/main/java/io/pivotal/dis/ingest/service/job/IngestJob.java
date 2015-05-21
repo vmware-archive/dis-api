@@ -9,6 +9,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
@@ -41,11 +42,15 @@ public class IngestJob implements Runnable {
         try (InputStream inputStream = url.openConnection().getInputStream()) {
             String tflData = IOUtils.toString(inputStream);
             fileStore.save(nameRawFile(), tflData);
-            String digestedTflData = TflToDisTranslator.digestTflData(tflData, ongoingDisruptionsStore.getPreviousDisruptionDigest(), clock.getCurrentTime());
+
+            String previousDisruptionDigest = ongoingDisruptionsStore.getPreviousDisruptionDigest();
+            LocalDateTime currentTime = clock.getCurrentTime();
+            String digestedTflData = TflToDisTranslator.digestTflData(tflData, previousDisruptionDigest, currentTime);
+
             digestedFileStore.save("disruptions.json", digestedTflData);
             ongoingDisruptionsStore.setPreviousDisruptionDigest(digestedTflData);
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
