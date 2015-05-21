@@ -1,5 +1,8 @@
 package io.pivotal.dis.ingest.service;
 
+import com.amazonaws.util.json.JSONArray;
+import com.amazonaws.util.json.JSONException;
+import com.amazonaws.util.json.JSONObject;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
@@ -42,12 +45,18 @@ public class IngestJobTest {
     }
 
     @Test
-    public void savesTflDataToFileStore() throws IOException {
+    public void savesTflDataToFileStore() throws IOException, JSONException {
         Clock clock = new FakeClock(LocalDateTime.now());
         IngestJob job = new IngestJob(tflMockWebServer.getUrl("/"), rawFileStore, digestedFileStore, clock, ongoingDisruptionsStore);
         job.run();
         assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + clock.getCurrentTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss")) + ".json"));
-        assertThat(rawFileStore.getLastFile(), equalTo("[{\"name\": \"Bakerloo\", \"lineStatuses\": [{\"statusSeverityDescription\": \"Runaway Train\"}]}]"));
+        String lastFile = rawFileStore.getLastFile();
+        JSONArray lastFileAsJson = new JSONArray(lastFile);
+        JSONObject line = lastFileAsJson.getJSONObject(0);
+        assertThat(line.get("name"), equalTo("Bakerloo"));
+        JSONArray lineStatuses = (JSONArray) line.get("lineStatuses");
+        JSONObject lineStatus = (JSONObject) lineStatuses.get(0);
+        assertThat(lineStatus.get("statusSeverityDescription"), equalTo("Runaway Train"));
     }
 
     @Test
