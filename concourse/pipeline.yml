@@ -1,0 +1,14 @@
+resources:
+  - name: dis-ingest
+    type: git
+    source:
+      uri: https://github.com/pivotal/dis.git
+      branch: master
+      paths: [dis-ingest/]
+
+jobs:
+  - name: test-ingest
+    plan:
+      - get: dis-ingest
+      - task: test
+        file: dis-ingest/dis-ingest/concourse/test.yml

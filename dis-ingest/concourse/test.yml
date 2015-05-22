@@ -1,0 +1,9 @@
+platform: linux
+
+image: docker:///java#8
+
+inputs:
+- name: dis-ingest
+
+run:
+  path: dis-ingest/dis-ingest/concourse/test.sh
