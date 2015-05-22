@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# export TERM=dumb
+export TERM=dumb
 
 cd dis-ingest/dis-ingest
 ./gradlew test
