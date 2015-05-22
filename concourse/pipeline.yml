@@ -9,12 +9,14 @@ jobs:
   - name: test-ingest
     plan:
       - get: dis-ingest
+        trigger: true
         resource: dis
       - task: test
         file: dis-ingest/dis-ingest/concourse/test.yml
   - name: test-client
     plan:
       - get: dis-client
+        trigger: true
         resource: dis
       - task: test
         file: dis-client/dis-client/concourse/test.yml
