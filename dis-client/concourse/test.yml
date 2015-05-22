@@ -1,6 +1,6 @@
 platform: linux
 
-image: docker:///seadowg/android#android-19
+image: docker:///seadowg/android#android-21
 
 inputs:
 - name: dis-client
