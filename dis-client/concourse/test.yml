@@ -1,0 +1,9 @@
+platform: linux
+
+image: docker:///seadowg/android#android-19
+
+inputs:
+- name: dis-client
+
+run:
+  path: dis-client/dis-client/concourse/test.sh

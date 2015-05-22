@@ -12,3 +12,9 @@ jobs:
         resource: dis
       - task: test
         file: dis-ingest/dis-ingest/concourse/test.yml
+  - name: test-client
+    plan:
+      - get: dis-client
+        resource: dis
+      - task: test
+        file: dis-client/dis-client/concourse/test.yml
