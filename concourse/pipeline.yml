@@ -13,10 +13,18 @@ jobs:
         resource: dis
       - task: test
         file: dis-ingest/dis-ingest/concourse/test.yml
-  - name: test-client
+  - name: robolectric-client
     plan:
       - get: dis-client
         trigger: true
         resource: dis
       - task: test
         file: dis-client/dis-client/concourse/test.yml
+
+  - name: espresso-client
+    plan:
+      - get: dis-client
+        trigger: true
+        resource: dis
+      - task: test
+        file: dis-client/dis-client/concourse/espresso-test.yml
