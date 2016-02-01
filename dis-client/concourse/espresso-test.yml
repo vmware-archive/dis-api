@@ -1,9 +1,0 @@
-platform: linux
-
-image: docker:///seadowg/android#android-21
-
-inputs:
-- name: dis-client
-
-run:
-  path: dis-client/dis-client/concourse/espresso-test.sh
