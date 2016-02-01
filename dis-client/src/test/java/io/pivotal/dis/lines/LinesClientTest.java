@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 18, manifest = "./src/main/AndroidManifest.xml") // Used to throw NoClassFound exception when sdk > 18
+@Config(sdk = 21, manifest = "./src/main/AndroidManifest.xml")
 public class LinesClientTest {
   @Test
   public void fetchDisruptedLines_passesThroughServerResponseAsJson() throws Exception {

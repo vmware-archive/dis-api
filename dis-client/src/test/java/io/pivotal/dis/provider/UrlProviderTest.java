@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 18, manifest = "./src/main/AndroidManifest.xml")
+@Config(sdk = 21, manifest = "./src/main/AndroidManifest.xml")
 public class UrlProviderTest {
 
   @Inject
