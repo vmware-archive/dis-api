@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.net.MalformedURLException;
@@ -24,7 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18, manifest = "./src/main/AndroidManifest.xml")
+@Config(sdk = 18, manifest = "./src/main/AndroidManifest.xml")
 public class UrlProviderTest {
 
   @Inject
@@ -35,7 +36,7 @@ public class UrlProviderTest {
 
   @Before
   public void setup() throws Exception {
-    Injector injector = DisApplication.getInjector(Robolectric.application);
+    Injector injector = DisApplication.getInjector(RuntimeEnvironment.application);
     injector.injectMembers(this);
   }
 
