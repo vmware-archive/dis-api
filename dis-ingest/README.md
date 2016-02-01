@@ -23,7 +23,7 @@ VCAP_SERVICES | [A Cloud Foundry services definition](http://docs.cloudfoundry.o
 A valid ``VCAP_SERVICES`` value would be:
 
 ```
-{"": [{"name": "tfl", "credentials": {"uri": "http://api.tfl.gov.uk/Line/Mode/%7Bmodes%7D/Status?modes=tube&detail=False&app_id=APP_ID&app_key=APP_KEY"}, "label": "", "tags": []}]}
+{"": [{"name": "tfl", "credentials": {"uri": "http://api.tfl.gov.uk/Line/Mode/tube/Status?detail=False&app_id=APP_ID&app_key=APP_KEY"}, "label": "", "tags": []}]}
 ```
 
 To run locally, create ``gradle.properties``, based on ``gradle.template.properties``, and then use:
