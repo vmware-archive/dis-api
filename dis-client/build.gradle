@@ -38,7 +38,7 @@ android {
 
     defaultConfig {
         minSdkVersion 18
-        targetSdkVersion 21
+        targetSdkVersion 23
         versionCode 9000
         versionName "0.2.0"
         applicationId "io.pivotal.dis"
