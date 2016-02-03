@@ -10,11 +10,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.name.Names;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Properties;
 
 import io.pivotal.dis.lines.LinesClient;
 import io.pivotal.dis.lines.LinesClientImpl;
@@ -53,25 +49,8 @@ public class DisApplication extends Application {
         bind(URL.class).annotatedWith(Names.named("testUrl")).toInstance(new URL("http://pivotal-london-dis-digest-test.s3.amazonaws.com/disruptions.json"));
         bind(SharedPreferences.class).toInstance(PreferenceManager.getDefaultSharedPreferences(context));
         bindLinesClient();
-        bindDebugProperties();
-
-
       } catch (java.io.IOException e) {
         e.printStackTrace();
-      }
-    }
-
-    private void bindDebugProperties() throws IOException {
-      // Controls what debug options are available - see src/debug/res/raw for the version used in debug builds,
-      // and src/main/res/raw for the one used in release builds.
-      InputStream inputStream = context.getResources().openRawResource(R.raw.debug);
-      try {
-        Properties properties = new Properties();
-        properties.load(new InputStreamReader(inputStream));
-        bind(Properties.class).annotatedWith(Names.named("debug")).toInstance(properties);
-      }
-      finally {
-        if (inputStream != null) inputStream.close();
       }
     }
 

@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+import io.pivotal.dis.activity.AbstractDisActivity;
 import io.pivotal.dis.activity.DisActivity;
 import io.pivotal.dis.lines.LinesClient;
 import io.pivotal.dis.lines.Line;
@@ -179,22 +180,6 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(), slowLinesClient));
     getActivity();
     assertHasText("Couldn't retrieve data from server :(");
-  }
-
-  public void ignore_testTestModeNotAvailableWhenDebugEnableTestModePropertyIsNotTrue() {
-    Injector injector = DisApplication.getInjector(getInstrumentation().getTargetContext());
-    Provider<Properties> provider = injector.getBinding(Key.get(Properties.class, Names.named("debug"))).getProvider();
-    Properties properties = provider.get();
-    properties.setProperty("debug.enable.testMode", "false");
-    getActivity();
-    openActionBarOverflowOrOptionsMenu(getActivity().getApplicationContext());
-    try {
-      onView(withText("Test mode"));
-      fail("Test mode button must not be present");
-    }
-    catch(NoMatchingViewException e) {
-      // Pass
-    }
   }
 
   private class DisEspressoTestModule extends DisApplication.DisModule {
