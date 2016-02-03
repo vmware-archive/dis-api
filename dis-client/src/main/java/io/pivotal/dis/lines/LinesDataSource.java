@@ -22,7 +22,7 @@ public class LinesDataSource {
     for (int i = 0; i < disruptions.length(); i++) {
       JSONObject line = disruptions.getJSONObject(i);
       if (line.has("startTime")) {
-        lines.add(new Line(line.getString("line"), line.getString("status"), line.getString("startTime")));
+        lines.add(new Line(line.getString("line"), line.getString("status"), line.getString("startTime"), line.getString("endTime")));
       } else {
         lines.add(new Line(line.getString("line"), line.getString("status")));
       }

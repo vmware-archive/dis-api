@@ -4,16 +4,18 @@ public class Line {
   private final String name;
   private final String status;
   private String startTime;
+  private String endTime;
 
   public Line(String name, String status) {
     this.name = name;
     this.status = status;
   }
 
-  public Line(String name, String status, String startTime) {
+  public Line(String name, String status, String startTime, String endTime) {
     this.name = name;
     this.status = status;
     this.startTime = startTime;
+    this.endTime = endTime;
   }
 
   public String getName() {
@@ -27,4 +29,6 @@ public class Line {
   public String getStartTime() {
     return startTime;
   }
+
+  public String getEndTime() { return endTime; }
 }

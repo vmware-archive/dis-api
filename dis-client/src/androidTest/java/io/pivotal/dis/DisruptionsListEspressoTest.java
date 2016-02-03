@@ -60,7 +60,7 @@ public class DisruptionsListEspressoTest extends DisEspressoTest<DisActivity> {
 
   public void testShowsDisruptionStartTimes_whenThereAreDisruptions() {
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(),
-            new FakeLinesClient(Arrays.asList(new Line("Central", "Severe Delays", "12:30"), new Line("District", "Part Suspended", "14:30")))));
+            new FakeLinesClient(Arrays.asList(new Line("Central", "Severe Delays", "12:30", ""), new Line("District", "Part Suspended", "14:30", "")))));
     getActivity();
 
     onView(allOf(hasSibling(withText("Severe Delays")), withId(R.id.line_disruption_started_time)))
@@ -68,6 +68,20 @@ public class DisruptionsListEspressoTest extends DisEspressoTest<DisActivity> {
 
     onView(allOf(hasSibling(withText("Part Suspended")), withId(R.id.line_disruption_started_time)))
             .check(matches(allOf(isDisplayed(), withText("Started: 14:30"))));
+
+    assertDoesNotHaveText("No disruptions");
+  }
+
+  public void testShowsDisruptionEndTimes_whenThereAreDisruptions() {
+    DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(),
+            new FakeLinesClient(Arrays.asList(new Line("Central", "Severe Delays", "12:30", "14:30"), new Line("District", "Part Suspended", "14:30", "16:30")))));
+    getActivity();
+
+    onView(allOf(hasSibling(withText("Severe Delays")), withId(R.id.line_disruption_end_time)))
+            .check(matches(allOf(isDisplayed(), withText("Ends: 14:30"))));
+
+    onView(allOf(hasSibling(withText("Part Suspended")), withId(R.id.line_disruption_end_time)))
+            .check(matches(allOf(isDisplayed(), withText("Ends: 16:30"))));
 
     assertDoesNotHaveText("No disruptions");
   }
