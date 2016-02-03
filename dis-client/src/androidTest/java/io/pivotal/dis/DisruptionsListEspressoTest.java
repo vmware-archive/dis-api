@@ -1,29 +1,31 @@
 package io.pivotal.dis;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.action.GeneralLocation;
 import android.support.test.espresso.action.GeneralSwipeAction;
 import android.support.test.espresso.action.Press;
 import android.support.test.espresso.action.Swipe;
-import android.test.ActivityInstrumentationTestCase2;
 
-import io.pivotal.dis.activity.DisActivity;
-import io.pivotal.dis.lines.LinesClient;
-import io.pivotal.dis.lines.Line;
 import org.json.JSONObject;
 
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.Collections;
 
+import io.pivotal.dis.activity.DisActivity;
+import io.pivotal.dis.lines.Line;
+import io.pivotal.dis.lines.LinesClient;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static io.pivotal.dis.Macchiato.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static io.pivotal.dis.Macchiato.assertDoesNotHaveText;
+import static io.pivotal.dis.Macchiato.assertHasText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 
 public class DisruptionsListEspressoTest extends DisEspressoTest<DisActivity> {
 

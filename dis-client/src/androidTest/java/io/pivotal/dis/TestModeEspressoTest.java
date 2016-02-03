@@ -2,13 +2,9 @@ package io.pivotal.dis;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.test.ActivityInstrumentationTestCase2;
 import android.widget.CheckBox;
 
-import java.util.Collections;
-
 import io.pivotal.dis.activity.DisActivity;
-import io.pivotal.dis.lines.Line;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;

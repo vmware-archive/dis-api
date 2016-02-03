@@ -2,7 +2,6 @@ package io.pivotal.dis.task;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
