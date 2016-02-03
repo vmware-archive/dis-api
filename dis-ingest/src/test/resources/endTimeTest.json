@@ -1,0 +1,134 @@
+[
+  {
+    "$type":"Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id":"bakerloo",
+    "name":"Bakerloo",
+    "modeName":"tube",
+    "created":"2015-02-12T16:52:48.39",
+    "modified":"2015-02-12T16:52:48.39",
+    "disruptedNaptanIds":[],
+    "lineStatuses":[
+      {
+        "$type":"Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id":0,
+        "statusSeverity":17,
+        "statusSeverityDescription":"Minor Delays",
+        "created":"0001-01-01T00:00:00",
+        "validityPeriods":[
+
+        ]
+      }
+    ],
+    "routeSections":[]
+  },
+  {
+    "$type":"Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id":"bakerloo",
+    "name":"Bakerloo",
+    "modeName":"tube",
+    "created":"2015-02-12T16:52:48.39",
+    "modified":"2015-02-12T16:52:48.39",
+    "disruptedNaptanIds":[],
+    "lineStatuses":[
+      {
+        "$type":"Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id":0,
+        "statusSeverity":17,
+        "statusSeverityDescription":"Severe Delays",
+        "created":"0001-01-01T00:00:00",
+        "validityPeriods":[
+
+        ]
+      }
+    ],
+    "routeSections":[]
+  },
+  {
+    "$type":"Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id":"bakerloo",
+    "name":"Bakerloo",
+    "modeName":"tube",
+    "created":"2015-02-12T16:52:48.39",
+    "modified":"2015-02-12T16:52:48.39",
+    "disruptedNaptanIds":[],
+    "lineStatuses":[
+      {
+        "$type":"Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id":0,
+        "statusSeverity":17,
+        "statusSeverityDescription":"Part Closure",
+        "created":"0001-01-01T00:00:00",
+        "validityPeriods":[
+
+        ]
+      }
+    ],
+    "routeSections":[]
+  },
+  {
+    "$type":"Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id":"bakerloo",
+    "name":"Bakerloo",
+    "modeName":"tube",
+    "created":"2015-02-12T16:52:48.39",
+    "modified":"2015-02-12T16:52:48.39",
+    "disruptedNaptanIds":[],
+    "lineStatuses":[
+      {
+        "$type":"Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id":0,
+        "statusSeverity":17,
+        "statusSeverityDescription":"No Service",
+        "created":"0001-01-01T00:00:00",
+        "validityPeriods":[
+
+        ]
+      }
+    ],
+    "routeSections":[]
+  },
+  {
+    "$type":"Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id":"bakerloo",
+    "name":"Bakerloo",
+    "modeName":"tube",
+    "created":"2015-02-12T16:52:48.39",
+    "modified":"2015-02-12T16:52:48.39",
+    "disruptedNaptanIds":[],
+    "lineStatuses":[
+      {
+        "$type":"Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id":0,
+        "statusSeverity":17,
+        "statusSeverityDescription":"Part Suspended",
+        "created":"0001-01-01T00:00:00",
+        "validityPeriods":[
+
+        ]
+      }
+    ],
+    "routeSections":[]
+  },
+  {
+    "$type":"Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
+    "id":"bakerloo",
+    "name":"Bakerloo",
+    "modeName":"tube",
+    "created":"2015-02-12T16:52:48.39",
+    "modified":"2015-02-12T16:52:48.39",
+    "disruptedNaptanIds":[],
+    "lineStatuses":[
+      {
+        "$type":"Tfl.Api.Presentation.Entities.LineStatus, Tfl.Api.Presentation.Entities",
+        "id":0,
+        "statusSeverity":17,
+        "statusSeverityDescription":"Runaway Train",
+        "created":"0001-01-01T00:00:00",
+        "validityPeriods":[
+
+        ]
+      }
+    ],
+    "routeSections":[]
+  }
+]

@@ -88,6 +88,7 @@ public class IngesterTest {
         assertThat(digestedFileStore.getLastFile(), equalTo("{\"disruptions\":" +
             "[{\"line\":\"Bakerloo\"," +
             "\"startTime\":\"" + currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
+            "\"endTime\":\"" + currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
             "\"status\":\"Runaway Train\"" +
             "}]}"
         ));
@@ -106,10 +107,12 @@ public class IngesterTest {
         assertThat(digestedFileStore.getLastFile(), equalTo("{\"disruptions\":[" +
                 "{\"line\":\"Bakerloo\"," +
                 "\"startTime\":\"" + currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
+                "\"endTime\":\"" + currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
                 "\"status\":\"Runaway Train\"" +
                 "}," +
                 "{\"line\":\"Circle\"," +
                 "\"startTime\":\"" + currentTime.plusMinutes(10).format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
+                "\"endTime\":\"" + currentTime.plusMinutes(10).format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
                 "\"status\":\"Leaves on the Line\"" +
                 "}" +
                 "]}"));
