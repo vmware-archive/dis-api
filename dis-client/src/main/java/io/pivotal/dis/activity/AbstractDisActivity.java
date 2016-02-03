@@ -2,7 +2,7 @@ package io.pivotal.dis.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,7 +16,7 @@ import io.pivotal.dis.lines.LinesClient;
 import io.pivotal.dis.lines.LinesDataSource;
 import io.pivotal.dis.task.DisplayDisruptionsAsyncTask;
 
-public abstract class AbstractDisActivity extends GuiceActivity {
+public abstract class AbstractDisActivity extends GuiceActivity implements SwipeRefreshLayout.OnRefreshListener {
 
   @Inject
   private LinesClient linesClient;
@@ -26,7 +26,7 @@ public abstract class AbstractDisActivity extends GuiceActivity {
 
   private ListView disruptedLinesView;
   private LinesDataSource linesDataSource;
-  private View progressBar;
+  private SwipeRefreshLayout swipeLayout;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +34,20 @@ public abstract class AbstractDisActivity extends GuiceActivity {
 
     setContentView(R.layout.dis);
 
-    progressBar = findViewById(R.id.progress_bar);
     disruptedLinesView = (ListView) findViewById(R.id.lines);
     disruptedLinesView.setEmptyView(findViewById(R.id.empty_view));
     linesDataSource = new LinesDataSource(linesClient);
 
-    new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView, progressBar).execute();
+    new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView).execute();
+
+    swipeLayout = ((SwipeRefreshLayout) findViewById(R.id.swipe_layout));
+    swipeLayout.setOnRefreshListener(this);
+  }
+
+  @Override
+  public void onRefresh() {
+    new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView).execute();
+    swipeLayout.setRefreshing(false);
   }
 
   @Override
@@ -57,10 +65,6 @@ public abstract class AbstractDisActivity extends GuiceActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-
-      case R.id.refresh_disruptions:
-        new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView, progressBar).execute();
-        return true;
 
       case R.id.test_mode:
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -80,5 +84,4 @@ public abstract class AbstractDisActivity extends GuiceActivity {
         return super.onOptionsItemSelected(item);
     }
   }
-
 }

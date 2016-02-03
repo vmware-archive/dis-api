@@ -22,19 +22,11 @@ import io.pivotal.dis.lines.LinesDataSource;
 public class DisplayDisruptionsAsyncTask extends AsyncTask<Void, Void, List<Map<String, String>>> {
   private final LinesDataSource linesDataSource;
   private final ListView viewToUpdate;
-  private View progressBar;
   private boolean requestSuccessful = true;
 
-  public DisplayDisruptionsAsyncTask(LinesDataSource linesDataSource, ListView viewToUpdate, View progressBar) {
+  public DisplayDisruptionsAsyncTask(LinesDataSource linesDataSource, ListView viewToUpdate) {
     this.linesDataSource = linesDataSource;
     this.viewToUpdate = viewToUpdate;
-    this.progressBar = progressBar;
-  }
-
-  @Override
-  protected void onPreExecute() {
-    super.onPreExecute();
-    progressBar.setVisibility(View.VISIBLE);
   }
 
   @Override
@@ -70,22 +62,20 @@ public class DisplayDisruptionsAsyncTask extends AsyncTask<Void, Void, List<Map<
           R.layout.line_view,
           new String[]{"name", "status", "startTime"},
           new int[]{R.id.line_name, R.id.line_status, R.id.line_disruption_started_time});
+
       if (requestSuccessful) {
         viewToUpdate.setAdapter(linesAdapter);
         Activity activity = (Activity) viewToUpdate.getContext();
-        TextView emptyListView = (TextView) activity.findViewById(R.id.empty_view);
+        TextView emptyListView = (TextView) activity.findViewById(R.id.message_view);
         emptyListView.setText(activity.getString(R.string.no_disruptions));
       } else {
         Activity activity = (Activity) viewToUpdate.getContext();
-        TextView emptyListView = (TextView) activity.findViewById(R.id.empty_view);
+        TextView emptyListView = (TextView) activity.findViewById(R.id.message_view);
         emptyListView.setText(activity.getString(R.string.refresh_failed));
       }
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
-    }
-    finally {
-      progressBar.setVisibility(View.GONE);
     }
   }
 }

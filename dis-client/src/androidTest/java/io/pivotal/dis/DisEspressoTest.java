@@ -4,7 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewAssertion;
+import android.support.test.espresso.action.GeneralLocation;
+import android.support.test.espresso.action.GeneralSwipeAction;
+import android.support.test.espresso.action.Press;
+import android.support.test.espresso.action.Swipe;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.CheckBox;
 import com.google.inject.Injector;
@@ -105,11 +110,6 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     assertDoesNotHaveText("No disruptions");
   }
 
-  public void testShowsRefreshButtonInActionBar() {
-    getActivity();
-    onView(withId(R.id.refresh_disruptions)).check(matches(allOf(isDisplayed(), isClickable())));
-  }
-
   public void testShowsTestModeButtonInActionBar() {
     getActivity();
     openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
@@ -150,22 +150,23 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     assertThat(PreferenceManager.getDefaultSharedPreferences(getInstrumentation().getTargetContext()).getBoolean("testMode", true), equalTo(false));
   }
 
-  public void testProgressBarGoneAfterContentLoaded() {
-    DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(), new FakeLinesClient(Arrays.asList(new Line("Central", "Severe Delays"), new Line("District", "Part Suspended")))));
-    getActivity();
-    onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())));
-  }
-
-  public void testClickingRefreshButtonFetchesUpdatedDisruptions() {
+  public void testSwipingToRefreshFetchesUpdatedDisruptions() {
     FakeLinesClient linesClient = new FakeLinesClient(Collections.<Line>emptyList());
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(), linesClient));
     getActivity();
     assertHasText("No disruptions");
     linesClient.setDisruptedLines(Arrays.asList(new Line("Central", "Severe Delays"), new Line("District", "Part Suspended")));
     assertHasText("No disruptions");
-    clickOn(R.id.refresh_disruptions);
+
+    onView(withId(R.id.swipe_layout)).perform(swipeDown());
+
     assertHasText("Central");
     assertHasText("District");
+  }
+
+  public static ViewAction swipeDown() {
+    return new GeneralSwipeAction(Swipe.FAST, GeneralLocation.TOP_CENTER,
+            GeneralLocation.BOTTOM_CENTER, Press.FINGER);
   }
 
   private class SlowLinesClient implements LinesClient {
