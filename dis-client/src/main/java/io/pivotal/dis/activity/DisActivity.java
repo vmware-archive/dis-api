@@ -15,14 +15,17 @@ import com.google.inject.name.Named;
 import java.util.Properties;
 
 import io.pivotal.dis.R;
-import io.pivotal.dis.lines.ILinesClient;
+import io.pivotal.dis.lines.LinesClient;
 import io.pivotal.dis.lines.LinesDataSource;
 import io.pivotal.dis.task.DisplayDisruptionsAsyncTask;
 
 public class DisActivity extends GuiceActivity {
 
   @Inject
-  private ILinesClient linesClient;
+  private LinesClient linesClient;
+
+  @Inject
+  private SharedPreferences sharedPreferences;
 
   @Inject
   @Named("debug")
@@ -33,16 +36,37 @@ public class DisActivity extends GuiceActivity {
   private View progressBar;
 
   @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    setContentView(R.layout.dis);
+
+    progressBar = findViewById(R.id.progress_bar);
+    disruptedLinesView = (ListView) findViewById(R.id.lines);
+    disruptedLinesView.setEmptyView(findViewById(R.id.empty_view));
+    linesDataSource = new LinesDataSource(linesClient);
+
+    new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView, progressBar).execute();
+  }
+
+  @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater menuInflater = getMenuInflater();
     menuInflater.inflate(R.menu.dis_activity_actions, menu);
+
+    showTestMode(menu);
+
+    return true;
+  }
+
+  private void showTestMode(Menu menu) {
     if ("true".equals(properties.getProperty("debug.enable.testMode"))) {
-      menu.findItem(R.id.test_mode).setChecked(PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getBoolean("testMode", false));
+      boolean testModeEnabled = sharedPreferences.getBoolean("testMode", false);
+      menu.findItem(R.id.test_mode).setChecked(testModeEnabled);
     }
     else {
       menu.findItem(R.id.test_mode).setVisible(false);
     }
-    return true;
   }
 
   @Override
@@ -68,17 +92,6 @@ public class DisActivity extends GuiceActivity {
       default:
         return super.onOptionsItemSelected(item);
     }
-  }
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.dis);
-    progressBar = findViewById(R.id.progress_bar);
-    disruptedLinesView = (ListView) findViewById(R.id.lines);
-    disruptedLinesView.setEmptyView(findViewById(R.id.empty_view));
-    linesDataSource = new LinesDataSource(linesClient);
-    new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView, progressBar).execute();
   }
 
 }

@@ -2,6 +2,8 @@ package io.pivotal.dis;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -14,8 +16,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Properties;
 
-import io.pivotal.dis.lines.ILinesClient;
 import io.pivotal.dis.lines.LinesClient;
+import io.pivotal.dis.lines.LinesClientImpl;
 
 public class DisApplication extends Application {
 
@@ -49,6 +51,7 @@ public class DisApplication extends Application {
         bind(Context.class).toInstance(context);
         bind(URL.class).annotatedWith(Names.named("realUrl")).toInstance(new URL("http://pivotal-london-dis-digest.s3.amazonaws.com/disruptions.json"));
         bind(URL.class).annotatedWith(Names.named("testUrl")).toInstance(new URL("http://pivotal-london-dis-digest-test.s3.amazonaws.com/disruptions.json"));
+        bind(SharedPreferences.class).toInstance(PreferenceManager.getDefaultSharedPreferences(context));
         bindLinesClient();
         bindDebugProperties();
 
@@ -74,7 +77,7 @@ public class DisApplication extends Application {
 
     // Necessary to have as a separate method, since test classes want to override this
     protected void bindLinesClient() {
-      bind(ILinesClient.class).to(LinesClient.class);
+      bind(LinesClient.class).to(LinesClientImpl.class);
     }
   }
 }

@@ -52,6 +52,21 @@ android {
     lintOptions {
         warning 'InvalidPackage'
     }
+
+    signingConfigs {
+        release {
+            storeFile file("bogus.jks")
+            storePassword "password"
+            keyAlias "releaseKey"
+            keyPassword "password"
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
 }
 
 check.dependsOn 'connectedAndroidTest'

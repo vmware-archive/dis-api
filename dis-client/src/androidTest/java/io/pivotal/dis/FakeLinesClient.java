@@ -6,10 +6,10 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import io.pivotal.dis.lines.ILinesClient;
+import io.pivotal.dis.lines.LinesClient;
 import io.pivotal.dis.lines.Line;
 
-public class FakeLinesClient implements ILinesClient {
+public class FakeLinesClient implements LinesClient {
   private List<Line> lines;
 
   FakeLinesClient(List<Line> lines) {

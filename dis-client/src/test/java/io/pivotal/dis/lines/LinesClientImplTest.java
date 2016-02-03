@@ -6,7 +6,6 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -21,7 +20,8 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 21, manifest = "./src/main/AndroidManifest.xml")
-public class LinesClientTest {
+public class LinesClientImplTest {
+
   @Test
   public void fetchDisruptedLines_passesThroughServerResponseAsJson() throws Exception {
     MockWebServer mockWebServer = new MockWebServer();
@@ -32,7 +32,7 @@ public class LinesClientTest {
 
     mockWebServer.play();
     URL serverUrl = mockWebServer.getUrl("");
-    LinesClient linesClient = new LinesClient(new UrlProvider(RuntimeEnvironment.application, serverUrl, serverUrl));
+    LinesClientImpl linesClient = new LinesClientImpl(new UrlProvider(RuntimeEnvironment.application, serverUrl, serverUrl));
     JSONObject lines = linesClient.fetchDisruptedLines();
     assertThat(lines.getJSONArray("disruptions").length(), equalTo(0));
   }
@@ -48,7 +48,7 @@ public class LinesClientTest {
 
     mockWebServer.play();
     URL serverUrl = mockWebServer.getUrl("");
-    LinesClient linesClient = new LinesClient(new UrlProvider(RuntimeEnvironment.application, serverUrl, serverUrl), 0, 100);
+    LinesClientImpl linesClient = new LinesClientImpl(new UrlProvider(RuntimeEnvironment.application, serverUrl, serverUrl), 0, 100);
     JSONObject lines = linesClient.fetchDisruptedLines();
     assertThat(lines.getJSONArray("disruptions").length(), equalTo(0));
   }

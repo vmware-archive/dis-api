@@ -8,9 +8,9 @@ import java.util.List;
 
 public class LinesDataSource {
 
-  private ILinesClient client;
+  private LinesClient client;
 
-  public LinesDataSource(ILinesClient client) {
+  public LinesDataSource(LinesClient client) {
     this.client = client;
   }
 

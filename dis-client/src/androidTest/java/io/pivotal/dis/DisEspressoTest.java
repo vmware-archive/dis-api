@@ -11,7 +11,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 import io.pivotal.dis.activity.DisActivity;
-import io.pivotal.dis.lines.ILinesClient;
+import io.pivotal.dis.lines.LinesClient;
 import io.pivotal.dis.lines.Line;
 import org.json.JSONObject;
 
@@ -167,7 +167,7 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
     assertHasText("District");
   }
 
-  private class SlowLinesClient implements ILinesClient {
+  private class SlowLinesClient implements LinesClient {
     @Override
     public JSONObject fetchDisruptedLines() throws Exception {
       throw new SocketTimeoutException("Fetching lines timed out");
@@ -175,7 +175,7 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
   }
 
   public void testShowsErrorMessageIfLoadingDisruptedLinesTimesOut() {
-    ILinesClient slowLinesClient = new SlowLinesClient();
+    LinesClient slowLinesClient = new SlowLinesClient();
     DisApplication.overrideInjectorModule(new DisEspressoTestModule(getInstrumentation().getTargetContext(), slowLinesClient));
     getActivity();
     assertHasText("Couldn't retrieve data from server :(");
@@ -199,16 +199,16 @@ public class DisEspressoTest extends ActivityInstrumentationTestCase2<DisActivit
 
   private class DisEspressoTestModule extends DisApplication.DisModule {
 
-    private ILinesClient fakeLinesClient;
+    private LinesClient fakeLinesClient;
 
-    private DisEspressoTestModule(Context context, ILinesClient fakeLinesClient) {
+    private DisEspressoTestModule(Context context, LinesClient fakeLinesClient) {
       super(context);
       this.fakeLinesClient = fakeLinesClient;
     }
 
     @Override
     protected void bindLinesClient() {
-      bind(ILinesClient.class).toInstance(fakeLinesClient);
+      bind(LinesClient.class).toInstance(fakeLinesClient);
     }
   }
 }
