@@ -12,10 +12,14 @@ import SwiftyJSON
 
 public class DisruptionsService {
     func getDisruptions(onSuccess: (data: Bool) -> Void){
-        var url = "https://pivotal-london-dis-digest.s3.amazonaws.com/disruptions.json"
+        var url = ""
+
         #if TEST
-            url = "localhost:8080/disruptions.json"
+            url = "http://localhost:8080/disruptions.json"
+        #else
+            url = "https://pivotal-london-dis-digest.s3.amazonaws.com/disruptions.json"
         #endif
+        
         Alamofire.request(.GET, url).validate().responseJSON { response in
             switch response.result {
             case .Success:

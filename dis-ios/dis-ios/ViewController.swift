@@ -24,7 +24,6 @@ public class ViewController: UIViewController {
                 self.noDisruptionsLabel.text = ""
             }
         }
-    
     }
 
     override public func didReceiveMemoryWarning() {

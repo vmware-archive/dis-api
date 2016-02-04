@@ -1,42 +1,56 @@
 import XCTest
 import Nimble
 import GCDWebServer
+import SwiftyJSON
 
 class ViewControllerUITests: XCTestCase {
     
     var webServer: GCDWebServer?
-
+    
     override func setUp() {
         super.setUp()
         
         continueAfterFailure = false
-        XCUIApplication().launch()
+
         self.webServer = GCDWebServer()
-        
     }
     
     override func tearDown() {
         super.tearDown()
-        webServer!.stop()
+        
+        self.webServer!.stop()
+    }
+    
+    private func startWebServerWithResponse(response: String) {
+        self.webServer!.addDefaultHandlerForMethod("GET", requestClass: GCDWebServerRequest.self){ (request) -> GCDWebServerResponse! in
+            return GCDWebServerDataResponse(
+                data: response.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!,
+                contentType: "application/json")
+        }
+        
+        do {
+            try self.webServer!.startWithOptions([
+                    GCDWebServerOption_BindToLocalhost: true,
+                    GCDWebServerOption_Port: 8080,
+                    GCDWebServerOption_AutomaticallySuspendInBackground: false
+                ])
+        } catch let error {
+            print("Server could not be started: \(error)")
+        }
     }
     
     func testWhenThereAreNoDisruptionsItSaysNoDisruptions() {
+        startWebServerWithResponse("{\"disruptions\":[]}")
         
-        self.webServer!.addHandlerForMethod("GET", path: "/disruptions.json", requestClass: GCDWebServerRequest.self){ (request) -> GCDWebServerResponse! in
-            return GCDWebServerDataResponse(JSONObject: "{\"disruptions\":[]}")
-        }
+        XCUIApplication().launch()
         
-        self.webServer!.startWithPort(8080, bonjourName: nil)
         expect(XCUIApplication().staticTexts["No Disruptions"].exists).to(beTrue())
     }
     
     func testWhenThereAreDisruptionsItDoesNotSayNoDisruptions() {
+        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\",\"startTime\":\"15:25\",\"status\":\"Part Suspended\"}]}")
         
-        self.webServer!.addHandlerForMethod("GET", path: "/disruptions.json", requestClass: GCDWebServerRequest.self){ (request) -> GCDWebServerResponse! in
-            return GCDWebServerDataResponse(JSONObject: "{\"disruptions\":[{\"line\":\"District\",\"startTime\":\"15:25\",\"status\":\"Part Suspended\"}]}")
-        }
-        
-        self.webServer!.startWithPort(8080, bonjourName: nil)
+        XCUIApplication().launch()
         
         expect(XCUIApplication().staticTexts["No Disruptions"].exists).to(beFalse())
     }
