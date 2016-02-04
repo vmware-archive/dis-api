@@ -12,10 +12,19 @@ public class ViewController: UIViewController {
 
     @IBOutlet public weak var noDisruptionsLabel: UILabel!
     
+    public func disruptionsService() -> DisruptionsService {
+        return DisruptionsService()
+    }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
-        // noDisruptionsLabel.text = "Hello world"
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        self.disruptionsService().getDisruptions(){ (data: Bool) in
+            if(data) {
+                self.noDisruptionsLabel.text = ""
+            }
+        }
+    
     }
 
     override public func didReceiveMemoryWarning() {

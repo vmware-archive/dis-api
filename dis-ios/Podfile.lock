@@ -1,13 +1,24 @@
 PODS:
+  - Alamofire (3.1.5)
+  - GCDWebServer (3.3.2):
+    - GCDWebServer/Core (= 3.3.2)
+  - GCDWebServer/Core (3.3.2)
   - Nimble (3.1.0)
   - Quick (0.9.0)
+  - SwiftyJSON (2.3.2)
 
 DEPENDENCIES:
+  - Alamofire
+  - GCDWebServer
   - Nimble
   - Quick
+  - SwiftyJSON
 
 SPEC CHECKSUMS:
+  Alamofire: 5f730ba29fd113b7ddd71c1e65d0c630acf5d7b0
+  GCDWebServer: 2a375ec42839a41d7187d04e5b688d32fa5c4cd5
   Nimble: 79d40f4d69d47314229bbabacaa02b8838c779b9
   Quick: 332eb1da73125a2106dd637424c803f2ae97e4a9
+  SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
 COCOAPODS: 0.39.0

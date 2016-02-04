@@ -6,7 +6,6 @@ class ViewControllerTests: QuickSpec {
 
     override func spec(){
         
-        
     }
 
 }
