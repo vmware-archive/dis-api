@@ -12,6 +12,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 public class Ingester {
 
@@ -36,9 +37,9 @@ public class Ingester {
             String tflData = IOUtils.toString(inputStream);
             fileStore.save(nameRawFile(), tflData);
 
-            String previousDisruptionDigest = ongoingDisruptionsStore.getPreviousDisruptionDigest();
+            Optional<String> previousDisruptionDigest = ongoingDisruptionsStore.getPreviousDisruptionDigest();
             LocalDateTime currentTime = clock.getCurrentTime();
-            String digestedTflData = TflToDisTranslator.digestTflData(tflData, previousDisruptionDigest, currentTime);
+            String digestedTflData = new TflDigestor(tflData, currentTime, previousDisruptionDigest).digest();
 
             digestedFileStore.save("disruptions.json", digestedTflData);
             ongoingDisruptionsStore.setPreviousDisruptionDigest(digestedTflData);

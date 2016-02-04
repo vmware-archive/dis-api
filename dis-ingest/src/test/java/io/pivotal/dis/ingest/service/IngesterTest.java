@@ -85,10 +85,10 @@ public class IngesterTest {
 
         LocalDateTime currentTime = LocalDateTime.now();
         assertThat(digestedFileStore.getLastName(), equalTo("disruptions.json"));
-        assertThat(digestedFileStore.getLastFile(), equalTo("{\"disruptions\":" +
-            "[{\"line\":\"Bakerloo\"," +
+            assertThat(digestedFileStore.getLastFile(), equalTo("{\"disruptions\":" +
+            "[{\"endTime\":\"" + currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
+            "\"line\":\"Bakerloo\"," +
             "\"startTime\":\"" + currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
-            "\"endTime\":\"" + currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
             "\"status\":\"Runaway Train\"" +
             "}]}"
         ));
@@ -104,15 +104,17 @@ public class IngesterTest {
         secondJob.ingest();
 
         assertThat(digestedFileStore.getLastName(), equalTo("disruptions.json"));
+
+
         assertThat(digestedFileStore.getLastFile(), equalTo("{\"disruptions\":[" +
-                "{\"line\":\"Bakerloo\"," +
+                "{\"endTime\":\"" + currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
+                "\"line\":\"Bakerloo\"," +
                 "\"startTime\":\"" + currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
-                "\"endTime\":\"" + currentTime.format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
                 "\"status\":\"Runaway Train\"" +
                 "}," +
-                "{\"line\":\"Circle\"," +
+                "{\"endTime\":\"" + currentTime.plusMinutes(10).format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
+                "\"line\":\"Circle\"," +
                 "\"startTime\":\"" + currentTime.plusMinutes(10).format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
-                "\"endTime\":\"" + currentTime.plusMinutes(10).format(DateTimeFormatter.ofPattern("HH:mm")) + "\"," +
                 "\"status\":\"Leaves on the Line\"" +
                 "}" +
                 "]}"));
