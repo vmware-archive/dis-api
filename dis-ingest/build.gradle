@@ -21,4 +21,4 @@ dependencies {
     testCompile("com.squareup.okhttp:mockwebserver:2.2.0")
 }
 
-mainClassName = "io.pivotal.dis.ingest.config.Application"
+mainClassName = "io.pivotal.dis.ingest.app.Application"

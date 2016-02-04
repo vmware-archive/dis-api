@@ -1,14 +1,11 @@
-package io.pivotal.dis.ingest.config;
+package io.pivotal.dis.ingest.app;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AccessControlList;
 import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.GroupGrantee;
-import com.amazonaws.services.s3.model.Permission;
+import io.pivotal.dis.ingest.config.ApplicationConfig;
 import io.pivotal.dis.ingest.service.job.Clock;
 import io.pivotal.dis.ingest.service.job.ClockImpl;
 import io.pivotal.dis.ingest.service.job.Ingester;
-import io.pivotal.dis.ingest.service.store.AmazonS3FileStore;
+import io.pivotal.dis.ingest.service.job.OngoingDisruptionsStore;
 import io.pivotal.dis.ingest.service.store.FileStore;
 import io.pivotal.labs.cfenv.CloudFoundryEnvironmentException;
 
@@ -28,16 +25,24 @@ public class Application {
                 applicationConfig.tflUrl(),
                 applicationConfig.rawFileStore(),
                 applicationConfig.digestedFileStore(),
-                new OngoingDisruptionsStore(),
-                new ClockImpl()
+                new ClockImpl(),
+                new OngoingDisruptionsStore()
         );
     }
 
-    private static void startIngesting(URL url, FileStore rawFileStore, FileStore digestedFileStore, OngoingDisruptionsStore ongoingDisruptionsStore, Clock clock) {
-        Ingester ingester = new Ingester(url, rawFileStore, digestedFileStore, clock, ongoingDisruptionsStore);
+    private static void startIngesting(URL url,
+                                       FileStore rawFileStore,
+                                       FileStore digestedFileStore,
+                                       Clock clock, OngoingDisruptionsStore ongoingDisruptionsStore) {
+
+        Ingester ingester =
+                new Ingester(url,
+                            rawFileStore,
+                            digestedFileStore,
+                        ongoingDisruptionsStore);
 
         while (true) {
-            ingester.ingest();
+            ingester.ingest(clock);
 
             try {
                 Thread.sleep(60000);

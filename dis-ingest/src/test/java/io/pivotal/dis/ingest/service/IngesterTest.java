@@ -5,13 +5,13 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
-import io.pivotal.dis.ingest.config.OngoingDisruptionsStore;
 import io.pivotal.dis.ingest.domain.Digest;
 import io.pivotal.dis.ingest.domain.DisruptedLine;
 import io.pivotal.dis.ingest.domain.tfl.Line;
 import io.pivotal.dis.ingest.domain.tfl.LineStatus;
 import io.pivotal.dis.ingest.service.job.Clock;
 import io.pivotal.dis.ingest.service.job.Ingester;
+import io.pivotal.dis.ingest.service.job.OngoingDisruptionsStore;
 import io.pivotal.dis.ingest.service.store.FileStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,12 +65,12 @@ public class IngesterTest {
 
     @Test
     public void savesTflDataToFileStore() throws IOException, JSONException {
-        Clock clockNow = new FakeClock(LocalDateTime.now());
+        Clock clock = new FakeClock(LocalDateTime.now());
 
-        Ingester job = createIngester(clockNow);
-        job.ingest();
+        Ingester job = createIngester();
+        job.ingest(clock);
 
-        assertLastRawFileCreated(clockNow);
+        assertLastRawFileCreated(clock);
 
         List<Line> lines = getLastRawFileContent();
 
@@ -79,24 +79,22 @@ public class IngesterTest {
 
     @Test
     public void savesTflDataToFileStoreForTwoSuccessiveIngestJobs() throws IOException {
-        Clock clockNow = new FakeClock(LocalDateTime.now());
+        FakeClock clock = new FakeClock(LocalDateTime.now());
 
-        Ingester job = createIngester(clockNow);
-        job.ingest();
+        Ingester job = createIngester();
+        job.ingest(clock);
 
-        assertLastRawFileCreated(clockNow);
+        assertLastRawFileCreated(clock);
 
         List<Line> lines = getLastRawFileContent();
 
         assertThat(lines.get(0), equalTo(stubLine("Bakerloo", "Runaway Train")));
 
 
-        Clock clockInTenMinutesTime = new FakeClock(LocalDateTime.now().plusMinutes(10));
+        clock.setCurrentTime(LocalDateTime.now().plusMinutes(10));
+        job.ingest(clock);
 
-        Ingester secondJob = createIngester(clockInTenMinutesTime);
-        secondJob.ingest();
-
-        assertLastRawFileCreated(clockInTenMinutesTime);
+        assertLastRawFileCreated(clock);
 
         lines = getLastRawFileContent();
 
@@ -106,10 +104,10 @@ public class IngesterTest {
 
     @Test
     public void savesTranslatedDataToFileStore() throws Exception {
-        Clock clockNow = new FakeClock(LocalDateTime.now());
+        Clock clock = new FakeClock(LocalDateTime.now());
 
-        Ingester job = createIngester(clockNow);
-        job.ingest();
+        Ingester job = createIngester();
+        job.ingest(clock);
 
         assertDigestedFileCreated();
 
@@ -125,20 +123,17 @@ public class IngesterTest {
 
     @Test
     public void savesTranslatedDataToFileStoreForTwoSuccessiveIngestJobs() throws Exception {
-        Clock clockNow = new FakeClock(LocalDateTime.now());
+        FakeClock clock = new FakeClock(LocalDateTime.now());
 
-        Ingester job = createIngester(clockNow);
-        job.ingest();
+        Ingester job = createIngester();
+        job.ingest(clock);
 
-        Clock clockInTenMinutesTime = new FakeClock(LocalDateTime.now().plusMinutes(10));
-
-        Ingester secondJob = createIngester(clockInTenMinutesTime);
-        secondJob.ingest();
+        clock.setCurrentTime(LocalDateTime.now().plusMinutes(10));
+        job.ingest(clock);
 
         assertDigestedFileCreated();
 
         Digest digest = getLastDigest();
-
         List<DisruptedLine> disruptions = digest.getDisruptions();
 
         assertThat(disruptions, hasSize(2));
@@ -171,12 +166,11 @@ public class IngesterTest {
         assertThat(disruptedLine.getStatus(), equalTo(expectedStatus));
     }
 
-    private Ingester createIngester(Clock clock) {
+    private Ingester createIngester() {
         return new Ingester(
                 tflMockWebServer.getUrl("/"),
                 rawFileStore,
                 digestedFileStore,
-                clock,
                 ongoingDisruptionsStore);
     }
 
@@ -231,8 +225,7 @@ public class IngesterTest {
     }
 
     private static class FakeClock implements Clock {
-        private final LocalDateTime time;
-
+        private LocalDateTime time;
         FakeClock(LocalDateTime time) {
             this.time = time;
         }
@@ -240,6 +233,10 @@ public class IngesterTest {
         @Override
         public LocalDateTime getCurrentTime() {
             return time;
+        }
+
+        public void setCurrentTime(LocalDateTime currentTime) {
+            this.time = currentTime;
         }
     }
 }

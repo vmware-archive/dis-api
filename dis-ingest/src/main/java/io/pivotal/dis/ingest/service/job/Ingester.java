@@ -1,15 +1,12 @@
 package io.pivotal.dis.ingest.service.job;
 
 import com.amazonaws.util.json.JSONException;
-
-import io.pivotal.dis.ingest.config.OngoingDisruptionsStore;
 import io.pivotal.dis.ingest.service.store.FileStore;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -21,38 +18,41 @@ public class Ingester {
     private final URL url;
     private final FileStore fileStore;
     private final FileStore digestedFileStore;
-    private final Clock clock;
     private final OngoingDisruptionsStore ongoingDisruptionsStore;
 
     public Ingester(URL url,
                     FileStore rawFileStore,
                     FileStore digestedFileStore,
-                    Clock clock,
                     OngoingDisruptionsStore ongoingDisruptionsStore) {
         this.url = url;
         this.fileStore = rawFileStore;
         this.digestedFileStore = digestedFileStore;
-        this.clock = clock;
         this.ongoingDisruptionsStore = ongoingDisruptionsStore;
     }
 
-    public void ingest() {
+    public void ingest(Clock clock) {
         try (InputStream inputStream = url.openConnection().getInputStream()) {
             String tflData = IOUtils.toString(inputStream);
-            fileStore.save(nameRawFile(), tflData);
+            fileStore.save(nameRawFile(clock), tflData);
 
             Optional<String> previousDisruptionDigest = ongoingDisruptionsStore.getPreviousDisruptionDigest();
-            LocalDateTime currentTime = clock.getCurrentTime();
-            String digestedTflData = new TflDigestor(tflData, currentTime, previousDisruptionDigest).digest();
+
+            String digestedTflData =
+                    new TflDigestor(
+                            tflData,
+                            clock.getCurrentTime(),
+                            previousDisruptionDigest)
+                        .digest();
 
             digestedFileStore.save("disruptions.json", digestedTflData);
             ongoingDisruptionsStore.setPreviousDisruptionDigest(digestedTflData);
+
         } catch (IOException | JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String nameRawFile() {
+    private String nameRawFile(Clock clock) {
         String timestamp =
                 clock.getCurrentTime()
                         .atOffset(ZoneOffset.UTC)
