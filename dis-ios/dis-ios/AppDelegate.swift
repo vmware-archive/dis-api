@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  dis-ios
-//
-//  Created by Pivotal on 2/2/16.
-//  Copyright © 2016 Pivotal. All rights reserved.
-//
-
 import UIKit
 
 @UIApplicationMain
@@ -31,6 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("loadDisruptions", object: nil)
     }
 
     func applicationDidBecomeActive(application: UIApplication) {

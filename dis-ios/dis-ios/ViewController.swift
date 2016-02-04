@@ -1,16 +1,11 @@
-//
-//  ViewController.swift
-//  dis-ios
-//
-//  Created by Pivotal on 2/2/16.
-//  Copyright © 2016 Pivotal. All rights reserved.
-//
-
 import UIKit
 
-public class ViewController: UIViewController {
+public class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet public weak var noDisruptionsLabel: UILabel!
+    @IBOutlet public weak var tableView: UITableView!
+    
+    private var disruptions: [String]?
     
     public func disruptionsService() -> DisruptionsService {
         return DisruptionsService()
@@ -19,16 +14,48 @@ public class ViewController: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        self.disruptionsService().getDisruptions(){ (data: Bool) in
-            self.noDisruptionsLabel.text = data ? "" : "No Disruptions"
-        }
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadDisruptions", name: "loadDisruptions", object: nil)
+        
+        self.tableView.dataSource = self
+        self.tableView.delegate = self
+        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    }
+    
+    public override func viewWillAppear(animated: Bool) {
+        self.loadDisruptions()
     }
 
     override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    {
+        let cell = self.tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
+        cell.textLabel?.text = self.disruptions?[indexPath.row]
+        return cell
+    }
+    
+    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.disruptions?.count ?? 0
+    }
+    
+    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    public func loadDisruptions() {
+        self.disruptionsService().getDisruptions(){ (disruptions: [String]) in
+            if disruptions.count > 0 {
+                self.noDisruptionsLabel.text = ""
+                self.disruptions = disruptions
+                self.tableView.reloadData()
+            } else {
+                self.noDisruptionsLabel.text = "No Disruptions"
+                self.tableView.hidden = true
+            }
+        }
+    }
 
 }
 

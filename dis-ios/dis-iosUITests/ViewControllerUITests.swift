@@ -6,12 +6,14 @@ import SwiftyJSON
 class ViewControllerUITests: XCTestCase {
     
     var webServer: GCDWebServer?
+    var app: XCUIApplication?
     
     override func setUp() {
         super.setUp()
         
         continueAfterFailure = false
-
+        
+        self.app = XCUIApplication()
         self.webServer = GCDWebServer()
     }
     
@@ -19,6 +21,8 @@ class ViewControllerUITests: XCTestCase {
         super.tearDown()
         
         self.webServer!.stop()
+        
+        self.app!.terminate()
     }
     
     private func startWebServerWithResponse(response: String) {
@@ -30,9 +34,9 @@ class ViewControllerUITests: XCTestCase {
         
         do {
             try self.webServer!.startWithOptions([
-                    GCDWebServerOption_BindToLocalhost: true,
-                    GCDWebServerOption_Port: 8080,
-                    GCDWebServerOption_AutomaticallySuspendInBackground: false
+                GCDWebServerOption_BindToLocalhost: true,
+                GCDWebServerOption_Port: 8080,
+                GCDWebServerOption_AutomaticallySuspendInBackground: false
                 ])
         } catch let error {
             print("Server could not be started: \(error)")
@@ -42,16 +46,48 @@ class ViewControllerUITests: XCTestCase {
     func testWhenThereAreNoDisruptionsItSaysNoDisruptions() {
         startWebServerWithResponse("{\"disruptions\":[]}")
         
-        XCUIApplication().launch()
+        self.app!.launch()
         
-        expect(XCUIApplication().staticTexts["No Disruptions"].exists).to(beTrue())
+        expect(self.app!.staticTexts["No Disruptions"].exists).to(beTrue())
     }
     
     func testWhenThereAreDisruptionsItDoesNotSayNoDisruptions() {
         startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\",\"startTime\":\"15:25\",\"status\":\"Part Suspended\"}]}")
         
-        XCUIApplication().launch()
+        self.app!.launch()
         
-        expect(XCUIApplication().staticTexts["No Disruptions"].exists).to(beFalse())
+        expect(self.app!.staticTexts["No Disruptions"].exists).to(beFalse())
+    }
+    
+    func testWhenThereAreDisruptionsItShowsDisruptedLines() {
+        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\",\"startTime\":\"15:25\",\"status\":\"Part Suspended\"}]}")
+        
+        self.app!.launch()
+        
+        let disruptionsTable = self.app!.tables.elementBoundByIndex(0)
+        
+        expect(disruptionsTable).notTo(beNil())
+        expect(disruptionsTable.cells.count).to(equal(1))
+        expect(disruptionsTable.cells.staticTexts["District"].exists).to(beTrue())
+    }
+    
+    func testWhenAppEntersForegroundDisruptionsTableIsReloaded() {
+        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\",\"startTime\":\"15:25\",\"status\":\"Part Suspended\"}]}")
+        
+        self.app!.launch()
+        
+        XCUIDevice.sharedDevice().pressButton(XCUIDeviceButton.Home)
+        
+        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"Jubilee\",\"startTime\":\"15:25\",\"status\":\"Part Suspended\"}]}")
+        
+        // TODO: bring app to foreground instead of re-launching it
+        self.app!.launch()
+        
+        let disruptionsTable = self.app!.tables.elementBoundByIndex(0)
+        
+        expect(disruptionsTable).notTo(beNil())
+        expect(disruptionsTable.cells.count).to(equal(1))
+        expect(disruptionsTable.cells.staticTexts["District"].exists).to(beFalse())
+        expect(disruptionsTable.cells.staticTexts["Jubilee"].exists).to(beTrue())
     }
 }
