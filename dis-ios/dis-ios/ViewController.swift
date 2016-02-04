@@ -20,9 +20,7 @@ public class ViewController: UIViewController {
         super.viewDidLoad()
         
         self.disruptionsService().getDisruptions(){ (data: Bool) in
-            if(data) {
-                self.noDisruptionsLabel.text = ""
-            }
+            self.noDisruptionsLabel.text = data ? "" : "No Disruptions"
         }
     }
 
