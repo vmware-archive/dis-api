@@ -64,23 +64,27 @@ public abstract class AbstractDisActivity extends GuiceActivity implements Swipe
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-
       case R.id.test_mode:
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        if (item.isChecked()) {
-          editor.putBoolean("testMode", false);
-          editor.apply();
-          item.setChecked(false);
-        }
-        else {
-          editor.putBoolean("testMode", true);
-          editor.apply();
-          item.setChecked(true);
-        }
+        handleTestMode(item);
         return true;
       default:
         return super.onOptionsItemSelected(item);
     }
   }
+
+  private void handleTestMode(MenuItem item) {
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+
+    if (item.isChecked()) {
+      editor.putBoolean("testMode", false);
+      editor.apply();
+      item.setChecked(false);
+    }
+    else {
+      editor.putBoolean("testMode", true);
+      editor.apply();
+      item.setChecked(true);
+    }
+  }
+
 }

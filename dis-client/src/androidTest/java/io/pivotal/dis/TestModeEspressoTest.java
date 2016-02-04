@@ -1,7 +1,6 @@
 package io.pivotal.dis;
 
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.widget.CheckBox;
 
 import io.pivotal.dis.activity.DisActivity;
@@ -16,7 +15,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static io.pivotal.dis.Macchiato.clickOn;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -30,48 +28,58 @@ public class TestModeEspressoTest extends DisEspressoTest<DisActivity> {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getInstrumentation().getTargetContext()).edit();
+
+        SharedPreferences.Editor editor = getEditor();
         editor.remove("testMode");
         editor.apply();
     }
 
     public void testShowsTestModeButtonInActionBar() {
         getActivity();
+
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
         onView(withText("Test mode")).check(matches(allOf(isDisplayed())));
     }
 
     public void testClickingTestModeWhenUncheckedChecksTestModeCheckboxInMenu() {
         getActivity();
+
+        clickTestMode();
+
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        clickOn("Test mode");
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
         onView(allOf(isAssignableFrom(CheckBox.class), hasSibling(withChild(withText("Test mode"))))).check(matches(isChecked()));
     }
 
     public void testClickingTestModeWhenCheckedUnchecksTestModeCheckboxInMenu() {
         getActivity();
+
+        clickTestMode();
+        clickTestMode();
+
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        clickOn("Test mode");
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        clickOn("Test mode");
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        onView(allOf(isAssignableFrom(CheckBox.class), hasSibling(withChild(withText("Test mode"))))).check(matches(isNotChecked()));
+
+        onView(allOf(isAssignableFrom(CheckBox.class), hasSibling(withChild(withText("Test mode")))))
+                .check(matches(isNotChecked()));
     }
 
     public void testClickingTestModeWhenUncheckedSetsTestModePrefToTrue() {
         getActivity();
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        clickOn("Test mode");
-        assertThat(PreferenceManager.getDefaultSharedPreferences(getInstrumentation().getTargetContext()).getBoolean("testMode", false), equalTo(true));
+
+        clickTestMode();
+
+        assertThat(getSharedPreferences().getBoolean("testMode", false), equalTo(true));
     }
 
     public void testClickingTestModeWhenCheckedSetsTestModePrefToFalse() {
         getActivity();
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        clickOn("Test mode");
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        clickOn("Test mode");
-        assertThat(PreferenceManager.getDefaultSharedPreferences(getInstrumentation().getTargetContext()).getBoolean("testMode", true), equalTo(false));
+
+        clickTestMode();
+        clickTestMode();
+
+        assertThat(getSharedPreferences().getBoolean("testMode", true), equalTo(false));
     }
+
+
 }

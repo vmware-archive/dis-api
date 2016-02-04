@@ -11,7 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -34,18 +33,20 @@ public class UrlProviderTest {
   @Inject
   private Context context;
 
+  private SharedPreferences.Editor edit;
+
   @Before
   public void setup() throws Exception {
     Injector injector = DisApplication.getInjector(RuntimeEnvironment.application);
     injector.injectMembers(this);
+
+    edit = PreferenceManager.getDefaultSharedPreferences(context).edit();
   }
 
   @After
   public void tearDown() {
-    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-    SharedPreferences.Editor edit = preferences.edit();
-    edit.remove("testMode");
-    edit.apply();
+    edit.remove("testMode")
+        .apply();
   }
 
   @Test
@@ -55,21 +56,18 @@ public class UrlProviderTest {
 
   @Test
   public void returnsRealUrlWhenTestModePreferenceIsFalse() throws MalformedURLException {
-    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-    SharedPreferences.Editor edit = preferences.edit();
-    edit.putBoolean("testMode", false);
-    edit.apply();
+    edit.putBoolean("testMode", false)
+        .apply();
 
     assertThat(urlProvider.getUrl(), equalTo(new URL("http://pivotal-london-dis-digest.s3.amazonaws.com/disruptions.json")));
   }
 
   @Test
   public void returnsTestUrlWhenTestModePreferenceIsTrue() throws MalformedURLException {
-    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-    SharedPreferences.Editor edit = preferences.edit();
-    edit.putBoolean("testMode", true);
-    edit.apply();
+    edit.putBoolean("testMode", true)
+        .apply();
 
     assertThat(urlProvider.getUrl(), equalTo(new URL("http://pivotal-london-dis-digest-test.s3.amazonaws.com/disruptions.json")));
   }
+
 }
