@@ -24,7 +24,11 @@ public class Ingester {
     private final Clock clock;
     private final OngoingDisruptionsStore ongoingDisruptionsStore;
 
-    public Ingester(URL url, FileStore rawFileStore, FileStore digestedFileStore, Clock clock, OngoingDisruptionsStore ongoingDisruptionsStore) {
+    public Ingester(URL url,
+                    FileStore rawFileStore,
+                    FileStore digestedFileStore,
+                    Clock clock,
+                    OngoingDisruptionsStore ongoingDisruptionsStore) {
         this.url = url;
         this.fileStore = rawFileStore;
         this.digestedFileStore = digestedFileStore;
@@ -49,9 +53,11 @@ public class Ingester {
     }
 
     private String nameRawFile() {
-        String timestamp = clock.getCurrentTime()
-                .atOffset(ZoneOffset.UTC)
-                .format(FILE_NAME_DATE_TIME);
+        String timestamp =
+                clock.getCurrentTime()
+                        .atOffset(ZoneOffset.UTC)
+                        .format(FILE_NAME_DATE_TIME);
+
         return String.format("tfl_api_line_mode_status_tube_%s.json", timestamp);
     }
 
