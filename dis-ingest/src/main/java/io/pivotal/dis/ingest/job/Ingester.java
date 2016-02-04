@@ -1,7 +1,9 @@
-package io.pivotal.dis.ingest.service.job;
+package io.pivotal.dis.ingest.job;
 
 import com.amazonaws.util.json.JSONException;
-import io.pivotal.dis.ingest.service.store.FileStore;
+import io.pivotal.dis.ingest.store.FileStore;
+import io.pivotal.dis.ingest.store.OngoingDisruptionsStore;
+import io.pivotal.dis.ingest.system.Clock;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;

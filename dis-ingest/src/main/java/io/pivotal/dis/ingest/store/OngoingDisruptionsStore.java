@@ -1,4 +1,4 @@
-package io.pivotal.dis.ingest.service.job;
+package io.pivotal.dis.ingest.store;
 
 import java.util.Optional;
 

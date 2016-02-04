@@ -6,8 +6,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AccessControlList;
 import com.amazonaws.services.s3.model.GroupGrantee;
 import com.amazonaws.services.s3.model.Permission;
-import io.pivotal.dis.ingest.service.store.AmazonS3FileStore;
-import io.pivotal.dis.ingest.service.store.FileStore;
+import io.pivotal.dis.ingest.store.AmazonS3FileStore;
+import io.pivotal.dis.ingest.store.FileStore;
 import io.pivotal.labs.cfenv.CloudFoundryEnvironment;
 import io.pivotal.labs.cfenv.CloudFoundryEnvironmentException;
 

@@ -9,10 +9,10 @@ import io.pivotal.dis.ingest.domain.Digest;
 import io.pivotal.dis.ingest.domain.DisruptedLine;
 import io.pivotal.dis.ingest.domain.tfl.Line;
 import io.pivotal.dis.ingest.domain.tfl.LineStatus;
-import io.pivotal.dis.ingest.service.job.Clock;
-import io.pivotal.dis.ingest.service.job.Ingester;
-import io.pivotal.dis.ingest.service.job.OngoingDisruptionsStore;
-import io.pivotal.dis.ingest.service.store.FileStore;
+import io.pivotal.dis.ingest.job.Ingester;
+import io.pivotal.dis.ingest.store.FileStore;
+import io.pivotal.dis.ingest.store.OngoingDisruptionsStore;
+import io.pivotal.dis.ingest.system.Clock;
 import org.junit.Before;
 import org.junit.Test;
 

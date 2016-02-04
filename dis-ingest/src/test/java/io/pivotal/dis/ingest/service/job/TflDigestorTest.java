@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import io.pivotal.dis.ingest.domain.Digest;
 import io.pivotal.dis.ingest.domain.DisruptedLine;
+import io.pivotal.dis.ingest.job.TflDigestor;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 

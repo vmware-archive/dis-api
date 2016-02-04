@@ -1,8 +1,6 @@
-package io.pivotal.dis.ingest.service.job;
+package io.pivotal.dis.ingest.system;
 
 import java.time.LocalDateTime;
-
-import io.pivotal.dis.ingest.service.job.Clock;
 
 public class ClockImpl implements Clock {
     @Override

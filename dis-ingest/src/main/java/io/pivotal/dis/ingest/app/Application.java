@@ -2,11 +2,11 @@ package io.pivotal.dis.ingest.app;
 
 import com.amazonaws.services.s3.model.Bucket;
 import io.pivotal.dis.ingest.config.ApplicationConfig;
-import io.pivotal.dis.ingest.service.job.Clock;
-import io.pivotal.dis.ingest.service.job.ClockImpl;
-import io.pivotal.dis.ingest.service.job.Ingester;
-import io.pivotal.dis.ingest.service.job.OngoingDisruptionsStore;
-import io.pivotal.dis.ingest.service.store.FileStore;
+import io.pivotal.dis.ingest.job.Ingester;
+import io.pivotal.dis.ingest.store.FileStore;
+import io.pivotal.dis.ingest.store.OngoingDisruptionsStore;
+import io.pivotal.dis.ingest.system.Clock;
+import io.pivotal.dis.ingest.system.ClockImpl;
 import io.pivotal.labs.cfenv.CloudFoundryEnvironmentException;
 
 import java.io.IOException;
