@@ -6,13 +6,13 @@ import android.support.test.espresso.action.GeneralSwipeAction;
 import android.support.test.espresso.action.Press;
 import android.support.test.espresso.action.Swipe;
 
-import org.json.JSONObject;
 import org.junit.Assert;
 
 import java.io.FileNotFoundException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import io.pivotal.dis.activity.DisActivity;
 import io.pivotal.dis.lines.Line;
@@ -189,14 +189,14 @@ public class DisruptionsListEspressoTest extends DisEspressoTest<DisActivity> {
 
     private static class SlowLinesClient implements LinesClient {
         @Override
-        public JSONObject fetchDisruptedLines() throws Exception {
+        public List<Line> fetchDisruptedLines() throws Exception {
             throw new SocketTimeoutException("Fetching lines timed out");
         }
     }
 
     private class S3DownLinesClient implements LinesClient {
         @Override
-        public JSONObject fetchDisruptedLines() throws Exception {
+        public List<Line> fetchDisruptedLines() throws Exception {
             throw new FileNotFoundException("S3 is down");
         }
     }

@@ -18,15 +18,15 @@ import java.util.Map;
 
 import io.pivotal.dis.R;
 import io.pivotal.dis.lines.Line;
-import io.pivotal.dis.lines.LinesDataSource;
+import io.pivotal.dis.lines.LinesClient;
 
 public class DisplayDisruptionsAsyncTask extends AsyncTask<Void, Void, List<Map<String, String>>> {
-  private final LinesDataSource linesDataSource;
+  private final LinesClient linesClient;
   private final ListView viewToUpdate;
   private boolean requestSuccessful = true;
 
-  public DisplayDisruptionsAsyncTask(LinesDataSource linesDataSource, ListView viewToUpdate) {
-    this.linesDataSource = linesDataSource;
+  public DisplayDisruptionsAsyncTask(ListView viewToUpdate, LinesClient linesClient) {
+    this.linesClient = linesClient;
     this.viewToUpdate = viewToUpdate;
   }
 
@@ -34,7 +34,7 @@ public class DisplayDisruptionsAsyncTask extends AsyncTask<Void, Void, List<Map<
   protected List<Map<String, String>> doInBackground(Void... params) {
     try {
 
-      List<Line> disruptedLines = linesDataSource.getDisruptedLines();
+      List<Line> disruptedLines = linesClient.fetchDisruptedLines();
       return buildDisruptedLinesForDisplay(disruptedLines);
 
     } catch (SocketTimeoutException | UnknownHostException | FileNotFoundException e) {

@@ -1,13 +1,14 @@
 package io.pivotal.dis.lines;
 
 import com.google.inject.Inject;
-
-import org.json.JSONObject;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLConnection;
+import java.util.List;
 
 import io.pivotal.dis.provider.UrlProvider;
 
@@ -32,20 +33,34 @@ public class LinesClientImpl implements LinesClient {
   }
 
   @Override
-  public JSONObject fetchDisruptedLines() throws Exception {
+  public List<Line> fetchDisruptedLines() throws Exception{
+    String json = fetchDisruptedLinesAsJson();
+
+    Moshi moshiBuilder = new Moshi.Builder().build();
+    JsonAdapter<Digest> digestAdapter = moshiBuilder.adapter(Digest.class);
+
+    Digest digest = digestAdapter.fromJson(json);
+    return digest.getDisruptions();
+  }
+
+  private String fetchDisruptedLinesAsJson() throws Exception {
     URLConnection connection = urlProvider.getUrl().openConnection();
     connection.setConnectTimeout(connectTimeout);
     connection.setReadTimeout(readTimeout);
+
     InputStream inputStream = connection.getInputStream();
+
     InputStreamReader reader = new InputStreamReader(inputStream);
     StringBuilder stringBuilder = new StringBuilder();
     BufferedReader bufferedReader = new BufferedReader(reader);
+
     String read = bufferedReader.readLine();
+
     while (read != null) {
       stringBuilder.append(read);
       read = bufferedReader.readLine();
     }
-    String jsonString = stringBuilder.toString();
-    return new JSONObject(jsonString);
+
+    return stringBuilder.toString();
   }
 }

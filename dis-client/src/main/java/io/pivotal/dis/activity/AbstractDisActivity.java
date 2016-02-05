@@ -12,7 +12,6 @@ import com.google.inject.Inject;
 
 import io.pivotal.dis.R;
 import io.pivotal.dis.lines.LinesClient;
-import io.pivotal.dis.lines.LinesDataSource;
 import io.pivotal.dis.task.DisplayDisruptionsAsyncTask;
 
 public abstract class AbstractDisActivity extends GuiceActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -24,7 +23,6 @@ public abstract class AbstractDisActivity extends GuiceActivity implements Swipe
   protected SharedPreferences sharedPreferences;
 
   private ListView disruptedLinesView;
-  private LinesDataSource linesDataSource;
   private SwipeRefreshLayout swipeLayout;
 
   @Override
@@ -35,9 +33,8 @@ public abstract class AbstractDisActivity extends GuiceActivity implements Swipe
 
     disruptedLinesView = (ListView) findViewById(R.id.lines);
     disruptedLinesView.setEmptyView(findViewById(R.id.empty_view));
-    linesDataSource = new LinesDataSource(linesClient);
 
-    new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView).execute();
+    new DisplayDisruptionsAsyncTask(disruptedLinesView, linesClient).execute();
 
     swipeLayout = ((SwipeRefreshLayout) findViewById(R.id.swipe_layout));
     swipeLayout.setOnRefreshListener(this);
@@ -45,7 +42,7 @@ public abstract class AbstractDisActivity extends GuiceActivity implements Swipe
 
   @Override
   public void onRefresh() {
-    new DisplayDisruptionsAsyncTask(linesDataSource, disruptedLinesView).execute();
+    new DisplayDisruptionsAsyncTask(disruptedLinesView, linesClient).execute();
     swipeLayout.setRefreshing(false);
   }
 

@@ -1,45 +1,23 @@
 package io.pivotal.dis;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
-import io.pivotal.dis.lines.LinesClient;
 import io.pivotal.dis.lines.Line;
+import io.pivotal.dis.lines.LinesClient;
 
 public class FakeLinesClient implements LinesClient {
-  private List<Line> lines;
+    private List<Line> lines;
 
-  FakeLinesClient(List<Line> lines) {
-    this.lines = lines;
-  }
-
-  @Override
-  public JSONObject fetchDisruptedLines() throws JSONException {
-    JSONObject root = new JSONObject();
-    JSONArray disruptions = new JSONArray();
-    
-    for (Line line : lines) {
-      if (line.getStartTime() != null) {
-        disruptions.put(new JSONObject("{ \"line\": \"" + line.getName() + "\", " +
-                "\"status\": \"" + line.getStatus() + "\", " +
-                "\"startTime\": \"" + line.getStartTime() + "\"," +
-                "\"endTime\": \"" + line.getEndTime() + "\"," +
-                "\"earliestEndTime\": \"" + line.getEarliestEndTime() + "\"," +
-                "\"latestEndTime\": \"" + line.getLatestEndTime() + "\"" +
-                "}"));
-      } else {
-        disruptions.put(new JSONObject("{ \"line\": \"" + line.getName() + "\", \"status\": \"" + line.getStatus() + "\" }"));
-      }
+    FakeLinesClient(List<Line> lines) {
+        this.lines = lines;
     }
 
-    root.put("disruptions", disruptions);
-    return root;
-  }
+    @Override
+    public List<Line> fetchDisruptedLines() {
+        return lines;
+    }
 
-  public void setDisruptedLines(List<Line> lines) {
-    this.lines = lines;
-  }
+    public void setDisruptedLines(List<Line> lines) {
+        this.lines = lines;
+    }
 }

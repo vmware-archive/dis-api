@@ -1,7 +1,7 @@
 package io.pivotal.dis.lines;
 
-import org.json.JSONObject;
+import java.util.List;
 
 public interface LinesClient {
-  public JSONObject fetchDisruptedLines() throws Exception;
+  List<Line> fetchDisruptedLines() throws Exception;
 }
