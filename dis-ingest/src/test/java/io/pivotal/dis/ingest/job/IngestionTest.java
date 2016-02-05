@@ -9,7 +9,6 @@ import io.pivotal.dis.ingest.domain.Digest;
 import io.pivotal.dis.ingest.domain.DisruptedLine;
 import io.pivotal.dis.ingest.domain.tfl.Line;
 import io.pivotal.dis.ingest.domain.tfl.LineStatus;
-import io.pivotal.dis.ingest.job.Ingester;
 import io.pivotal.dis.ingest.store.FileStore;
 import io.pivotal.dis.ingest.store.OngoingDisruptionsStore;
 import io.pivotal.dis.ingest.system.Clock;
@@ -29,7 +28,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
 
-public class IngesterTest {
+public class IngestionTest {
 
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
@@ -118,17 +117,19 @@ public class IngesterTest {
         assertThat(disruptions, hasSize(1));
 
         LocalDateTime currentTime = LocalDateTime.now();
-        assertLineData(disruptions.get(0), currentTime, "Bakerloo", "Runaway Train");
+        assertLineData(disruptions.get(0), "Bakerloo", "Runaway Train", currentTime, currentTime, currentTime, currentTime);
     }
 
     @Test
     public void savesTranslatedDataToFileStoreForTwoSuccessiveIngestJobs() throws Exception {
-        FakeClock clock = new FakeClock(LocalDateTime.now());
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        FakeClock clock = new FakeClock(currentTime);
 
         Ingester job = createIngester();
         job.ingest(clock);
 
-        clock.setCurrentTime(LocalDateTime.now().plusMinutes(10));
+        clock.setCurrentTime(currentTime.plusMinutes(10));
         job.ingest(clock);
 
         assertDigestedFileCreated();
@@ -138,9 +139,8 @@ public class IngesterTest {
 
         assertThat(disruptions, hasSize(2));
 
-        LocalDateTime currentTime = LocalDateTime.now();
-        assertLineData(disruptions.get(0), currentTime, "Bakerloo", "Runaway Train");
-        assertLineData(disruptions.get(1), currentTime.plusMinutes(10), "Circle", "Leaves on the Line");
+        assertLineData(disruptions.get(0), "Bakerloo", "Runaway Train", currentTime, currentTime, currentTime, currentTime);
+        assertLineData(disruptions.get(1), "Circle", "Leaves on the Line", currentTime.plusMinutes(10), currentTime.plusMinutes(10), currentTime.plusMinutes(10), currentTime.plusMinutes(10));
     }
 
 
@@ -156,13 +156,19 @@ public class IngesterTest {
     }
 
     private void assertLineData(DisruptedLine disruptedLine,
-                                LocalDateTime currentTime,
                                 String expectedLine,
-                                String expectedStatus) {
+                                String expectedStatus,
+                                LocalDateTime expectedStartTime,
+                                LocalDateTime expectedEndTime,
+                                LocalDateTime expectedEarliestEndTime,
+                                LocalDateTime expectedLatestEndTime
+                                ) {
 
         assertThat(disruptedLine.getLine(), equalTo(expectedLine));
-        assertThat(disruptedLine.getStartTime(), equalTo(currentTime.format(TIME_FORMAT)));
-        assertThat(disruptedLine.getEndTime(), equalTo(currentTime.format(TIME_FORMAT)));
+        assertThat(disruptedLine.getStartTime(), equalTo(expectedStartTime.format(TIME_FORMAT)));
+        assertThat(disruptedLine.getEndTime(), equalTo(expectedEndTime.format(TIME_FORMAT)));
+        assertThat(disruptedLine.getEarliestEndTime(), equalTo(expectedEarliestEndTime.format(TIME_FORMAT)));
+        assertThat(disruptedLine.getLatestEndTime(), equalTo(expectedLatestEndTime.format(TIME_FORMAT)));
         assertThat(disruptedLine.getStatus(), equalTo(expectedStatus));
     }
 
