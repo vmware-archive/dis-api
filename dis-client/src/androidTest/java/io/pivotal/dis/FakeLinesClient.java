@@ -26,7 +26,9 @@ public class FakeLinesClient implements LinesClient {
         disruptions.put(new JSONObject("{ \"line\": \"" + line.getName() + "\", " +
                 "\"status\": \"" + line.getStatus() + "\", " +
                 "\"startTime\": \"" + line.getStartTime() + "\"," +
-                "\"endTime\": \"" + line.getEndTime() + "\"" +
+                "\"endTime\": \"" + line.getEndTime() + "\"," +
+                "\"earliestEndTime\": \"" + line.getEarliestEndTime() + "\"," +
+                "\"latestEndTime\": \"" + line.getLatestEndTime() + "\"" +
                 "}"));
       } else {
         disruptions.put(new JSONObject("{ \"line\": \"" + line.getName() + "\", \"status\": \"" + line.getStatus() + "\" }"));

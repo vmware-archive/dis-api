@@ -72,17 +72,16 @@ public class DisruptionsListEspressoTest extends DisEspressoTest<DisActivity> {
         assertDoesNotHaveText("No disruptions");
     }
 
-    public void testShowsDisruptionEndTimes_whenThereAreDisruptions() {
+    public void testShowsDisruptionEndTimesWithARange_whenThereAreDisruptions() {
         mockDisruptionsWithTimes();
 
         getActivity();
 
         onView(allOf(hasSibling(withText("Severe Delays")), withId(R.id.line_disruption_end_time)))
-                .check(matches(allOf(isDisplayed(), withText("Ends: 13:30"))));
+                .check(matches(allOf(isDisplayed(), withText("Ends: 13:10 - 13:50"))));
 
         onView(allOf(hasSibling(withText("Part Suspended")), withId(R.id.line_disruption_end_time)))
-                .check(matches(allOf(isDisplayed(), withText("Ends: 15:30"))));
-
+                .check(matches(allOf(isDisplayed(), withText("Ends: 15:25 - 15:35"))));
     }
 
     public void testDoesNotShowDisruptionStartTimes_forDisruptionsWithNoStartTime() {
@@ -164,8 +163,8 @@ public class DisruptionsListEspressoTest extends DisEspressoTest<DisActivity> {
                         getInstrumentation().getTargetContext(),
                         new FakeLinesClient(
                                 Arrays.asList(
-                                        new Line("Central", "Severe Delays", "12:30", "13:30"),
-                                        new Line("District", "Part Suspended", "14:30", "15:30")))));
+                                        new Line("Central", "Severe Delays", "12:30", "13:30", "13:10", "13:50"),
+                                        new Line("District", "Part Suspended", "14:30", "15:30", "15:25", "15:35")))));
     }
 
     private void mockDisruptionsWithoutTimes() {

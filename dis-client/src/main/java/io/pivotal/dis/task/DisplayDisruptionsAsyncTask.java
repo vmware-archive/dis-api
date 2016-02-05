@@ -59,7 +59,7 @@ public class DisplayDisruptionsAsyncTask extends AsyncTask<Void, Void, List<Map<
         map.put("startTime", "Started: " + line.getStartTime());
 
       if (line.getEndTime() != null)
-        map.put("endTime", "Ends: " + line.getEndTime());
+        map.put("endTime", "Ends: " + line.getEarliestEndTime() + " - " + line.getLatestEndTime());
 
       disruptedLinesForDisplay.add(map);
     }
