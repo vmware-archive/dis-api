@@ -2,16 +2,16 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
-public class DisruptionsService {
-    
-    enum DisruptionsDataKeys : String {
-        case Root = "disruptions"
-        case Line = "line"
-    }
-    
-    func getDisruptions(onSuccess: (disruptions: [String]) -> Void){
-        var url = ""
+public enum DisruptionsDataKeys : String {
+    case Root = "disruptions"
+    case Line = "line"
+}
 
+public class DisruptionsService: DisruptionsServiceProtocol {
+    
+    public func getDisruptions(onSuccess: (disruptions: [String]) -> Void){
+        var url = ""
+        
         #if TEST
             url = "http://localhost:8080/disruptions.json"
         #else

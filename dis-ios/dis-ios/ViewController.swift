@@ -1,20 +1,24 @@
 import UIKit
 
 public class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     @IBOutlet public weak var noDisruptionsLabel: UILabel!
     @IBOutlet public weak var tableView: UITableView!
     
-    private var disruptions: [String]?
+    public var disruptions: [String]?
     
-    public func disruptionsService() -> DisruptionsService {
+    public lazy var notificationCenter: NSNotificationCenter = {
+        return NSNotificationCenter.defaultCenter()
+    }()
+    
+    public lazy var disruptionsService: DisruptionsServiceProtocol = {
         return DisruptionsService()
-    }
+    }()
     
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadDisruptions", name: "loadDisruptions", object: nil)
+        self.notificationCenter.addObserver(self, selector: "loadDisruptions", name: UIApplicationWillEnterForegroundNotification, object: nil)
         
         self.tableView.dataSource = self
         self.tableView.delegate = self
@@ -24,11 +28,11 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     public override func viewWillAppear(animated: Bool) {
         self.loadDisruptions()
     }
-
+    
     override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-
+    
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
         let cell = self.tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
@@ -45,7 +49,7 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     public func loadDisruptions() {
-        self.disruptionsService().getDisruptions(){ (disruptions: [String]) in
+        self.disruptionsService.getDisruptions(){ (disruptions: [String]) in
             if disruptions.count > 0 {
                 self.noDisruptionsLabel.text = ""
                 self.disruptions = disruptions
@@ -56,6 +60,6 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         }
     }
-
+    
 }
 
