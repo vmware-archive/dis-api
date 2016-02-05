@@ -1,4 +1,4 @@
-package io.pivotal.dis.ingest.service.job;
+package io.pivotal.dis.ingest.job;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;

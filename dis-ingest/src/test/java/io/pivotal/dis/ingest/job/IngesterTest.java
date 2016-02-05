@@ -1,4 +1,4 @@
-package io.pivotal.dis.ingest.service;
+package io.pivotal.dis.ingest.job;
 
 import com.amazonaws.util.json.JSONException;
 import com.squareup.moshi.JsonAdapter;
