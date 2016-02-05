@@ -69,19 +69,22 @@ public class TflDigestorTest {
         assertThat(disruptedLine.getLine(), equalTo(expectedLine));
         assertThat(disruptedLine.getStartTime(), equalTo(currentTime.format(TIME_FORMAT)));
         assertThat(disruptedLine.getEndTime(), equalTo(currentTime.plusMinutes(30).format(TIME_FORMAT)));
+        assertThat(disruptedLine.getEarliestEndTime(), equalTo(currentTime.plusMinutes(30 - 10).format(TIME_FORMAT)));
+        assertThat(disruptedLine.getLatestEndTime(), equalTo(currentTime.plusMinutes(30 + 10).format(TIME_FORMAT)));
         assertThat(disruptedLine.getStatus(), equalTo(expectedStatus));
     }
 
     @Test
     public void digestTflData_predictsEndTimeForEachStatus() throws Exception {
+        LocalDateTime currentTime = LocalDateTime.now();
+
         String allStatusesJson = loadFixture("endTimeTest");
 
         String digestJson = new TflDigestor(allStatusesJson,
-                                                LocalDateTime.now(),
+                                                currentTime,
                                                 Optional.empty())
                                         .digest();
 
-        LocalDateTime currentTime = LocalDateTime.now();
 
         JsonAdapter<Digest> digestsAdapter = getDigestsAdapter();
 
@@ -96,6 +99,58 @@ public class TflDigestorTest {
         assertThat(disruptions.get(3).getEndTime(), equalTo(currentTime.plusDays(1).format(TIME_FORMAT)));
         assertThat(disruptions.get(4).getEndTime(), equalTo(currentTime.plusMinutes(120).format(TIME_FORMAT)));
         assertThat(disruptions.get(5).getEndTime(), equalTo(currentTime.format(TIME_FORMAT)));
+    }
+
+    @Test
+    public void digestTflData_predictsEarliestPossibleEndTimeForEachStatus() throws Exception {
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        String allStatusesJson = loadFixture("endTimeTest");
+
+        String digestJson = new TflDigestor(allStatusesJson,
+                                            currentTime,
+                                            Optional.empty())
+                                    .digest();
+
+        JsonAdapter<Digest> digestsAdapter = getDigestsAdapter();
+
+        Digest digest = digestsAdapter.fromJson(digestJson);
+        List<DisruptedLine> disruptions = digest.getDisruptions();
+
+        assertThat(disruptions.size(), equalTo(6));
+
+        assertThat(disruptions.get(0).getEarliestEndTime(), equalTo(currentTime.plusMinutes(30 - 10).format(TIME_FORMAT)));
+        assertThat(disruptions.get(1).getEarliestEndTime(), equalTo(currentTime.plusMinutes(60 - 20).format(TIME_FORMAT)));
+        assertThat(disruptions.get(2).getEarliestEndTime(), equalTo(currentTime.plusHours(24 - 8).format(TIME_FORMAT)));
+        assertThat(disruptions.get(3).getEarliestEndTime(), equalTo(currentTime.plusHours(24 - 8).format(TIME_FORMAT)));
+        assertThat(disruptions.get(4).getEarliestEndTime(), equalTo(currentTime.plusMinutes(120 - 40).format(TIME_FORMAT)));
+        assertThat(disruptions.get(5).getEarliestEndTime(), equalTo(currentTime.format(TIME_FORMAT)));
+    }
+
+    @Test
+    public void digestTflData_predictsLatestPossibleEndTimeForEachStatus() throws Exception {
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        String allStatusesJson = loadFixture("endTimeTest");
+
+        String digestJson = new TflDigestor(allStatusesJson,
+                currentTime,
+                Optional.empty())
+                .digest();
+
+        JsonAdapter<Digest> digestsAdapter = getDigestsAdapter();
+
+        Digest digest = digestsAdapter.fromJson(digestJson);
+        List<DisruptedLine> disruptions = digest.getDisruptions();
+
+        assertThat(disruptions.size(), equalTo(6));
+
+        assertThat(disruptions.get(0).getLatestEndTime(), equalTo(currentTime.plusMinutes(30 + 10).format(TIME_FORMAT)));
+        assertThat(disruptions.get(1).getLatestEndTime(), equalTo(currentTime.plusMinutes(60 + 20).format(TIME_FORMAT)));
+        assertThat(disruptions.get(2).getLatestEndTime(), equalTo(currentTime.plusHours(24 + 8).format(TIME_FORMAT)));
+        assertThat(disruptions.get(3).getLatestEndTime(), equalTo(currentTime.plusHours(24 + 8).format(TIME_FORMAT)));
+        assertThat(disruptions.get(4).getLatestEndTime(), equalTo(currentTime.plusMinutes(120 + 40).format(TIME_FORMAT)));
+        assertThat(disruptions.get(5).getLatestEndTime(), equalTo(currentTime.format(TIME_FORMAT)));
     }
 
     private String loadFixture(final String name) throws IOException {

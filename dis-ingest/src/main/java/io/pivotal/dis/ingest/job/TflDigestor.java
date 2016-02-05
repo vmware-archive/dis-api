@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.squareup.moshi.Types.newParameterizedType;
@@ -22,16 +21,23 @@ import static java.util.stream.Collectors.toList;
 public class TflDigestor {
 
     public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+    public static final double EARLIEST_END_TIME_MULTIPLIER = 2d / 3d;
+    public static final double LATEST_END_TIME_MULTIPLIER = 4d / 3d;
 
-    private final String tflData;
-    private final Optional<Digest> previousDigest;
+    private final List<Line> lines;
     private final LocalDateTime currentTime;
+    private final Optional<Digest> previousDigest;
 
     public TflDigestor(String tflData,
                        LocalDateTime currentTime,
                        Optional<String> previousDigest) {
 
-        this.tflData = tflData;
+        try {
+            this.lines = moshiTflLinesAdapter().fromJson(tflData);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         this.previousDigest = parseDigest(previousDigest);
         this.currentTime = currentTime;
     }
@@ -47,8 +53,6 @@ public class TflDigestor {
     }
 
     public String digest() throws JSONException, IOException {
-        List<Line> lines = moshiTflLinesAdapter().fromJson(tflData);
-
         Stream<Line> disruptedLines = lines.stream().filter(line -> {
             LineStatus lineStatus = line.getLineStatuses().get(0);
             return !lineStatus.getStatusSeverityDescription().equals("Good Service");
@@ -57,15 +61,60 @@ public class TflDigestor {
         Stream<DisruptedLine> digestedLines = disruptedLines.map(line -> {
             String status = line.getLineStatuses().get(0).getStatusSeverityDescription();
             String lineName = line.getName();
-            String startTime = getStartTime(lineName, currentTime, previousDigest);
-            String endTime = getEndTime(lineName, status, currentTime, previousDigest);
-            DisruptedLine disruptedLine = new DisruptedLine(status, lineName, startTime, endTime);
+            String startTime = getStartTime(lineName);
+            String endTime = getEndTime(status, lineName);
+            String earliestEndTime = getEarliestEndTime(status, lineName);
+            String latestEndTime = getLatestEndTime(status, lineName);
+
+            DisruptedLine disruptedLine =
+                    new DisruptedLine(
+                            status,
+                            lineName,
+                            startTime,
+                            endTime,
+                            earliestEndTime,
+                            latestEndTime);
+
             return disruptedLine;
+
         });
 
         Digest digest = new Digest(digestedLines.collect(toList()));
 
         return moshiDigestAdapter().toJson(digest);
+    }
+
+    private String getStartTime(String lineName) {
+        Optional<String> startTime =
+                previousDigest.flatMap(
+                        d -> d.getStartTimeFromDisruptedLine(lineName));
+
+        return startTime.orElse(
+                currentTime.format(TIME_FORMAT));
+    }
+
+    private String getEndTime(String status, String lineName) {
+        Optional<String> endTime =
+                previousDigest.flatMap(
+                        d -> d.getEndTimeFromDisruptedLine(lineName));
+
+        return endTime.orElse(getTimeWithMultiplier(status, 1));
+    }
+
+    private String getEarliestEndTime(String status, String lineName) {
+        Optional<String> earliestEndTime =
+                previousDigest.flatMap(
+                        d -> d.getEarliestEndTimeFromDisruptedLine(lineName));
+
+        return earliestEndTime.orElse(getTimeWithMultiplier(status, EARLIEST_END_TIME_MULTIPLIER));
+    }
+
+    private String getLatestEndTime(String status, String lineName) {
+        Optional<String> latestEndTime =
+                previousDigest.flatMap(
+                        d -> d.getLatestEndTimeFromDisruptedLine(lineName));
+
+        return latestEndTime.orElse(getTimeWithMultiplier(status, LATEST_END_TIME_MULTIPLIER));
     }
 
     private JsonAdapter<List<Line>> moshiTflLinesAdapter() {
@@ -80,46 +129,15 @@ public class TflDigestor {
         return new Moshi.Builder().build();
     }
 
-    private String getStartTime(String lineName,
-                                       LocalDateTime currentTime,
-                                       Optional<Digest> previousDigest) {
+    private String getTimeWithMultiplier(String status,
+                                         double multiplier) {
 
-        Optional<String> startTime =
-                getFieldFromDisruptedLine(
-                        previousDigest,
-                        lineName,
-                        DisruptedLine::getStartTime);
-
-        return startTime.orElse(
-                currentTime.format(TIME_FORMAT));
+        int minutes = statusToMinutes(status);
+        int estimatedDelayInMinutes = (int) (minutes * multiplier);
+        return currentTime.plusMinutes(estimatedDelayInMinutes).format(TIME_FORMAT);
     }
 
-    private String getEndTime(String lineName,
-                                     String status,
-                                     LocalDateTime currentTime,
-                                     Optional<Digest> previousDigest) {
-
-        Optional<String> endTime =
-                getFieldFromDisruptedLine(
-                        previousDigest,
-                        lineName,
-                        DisruptedLine::getEndTime);
-
-        return endTime.orElseGet(() -> {
-            int minutes = statusToMinutes(status);
-            return currentTime.plusMinutes(minutes).format(TIME_FORMAT);
-        });
-    }
-
-    private Optional<String> getFieldFromDisruptedLine(Optional<Digest> digest,
-                                              String lineName,
-                                              Function<DisruptedLine, String> fieldExtractor) {
-        return digest
-                .filter(d -> d.isLineDisrupted(lineName))
-                .map(d -> fieldExtractor.apply(d.getLine(lineName).get()));
-    }
-
-    private int statusToMinutes(String status) {
+    private static int statusToMinutes(String status) {
         int minutes = 0;
 
         switch (status) {
