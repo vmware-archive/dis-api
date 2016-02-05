@@ -15,18 +15,26 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
         return DisruptionsService()
     }()
     
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "handleRefresh:", forControlEvents: UIControlEvents.ValueChanged)
+        
+        return refreshControl
+    }()
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        self.notificationCenter.addObserver(self, selector: "loadDisruptions", name: UIApplicationWillEnterForegroundNotification, object: nil)
+        self.notificationCenter.addObserver(self, selector: "load", name: UIApplicationWillEnterForegroundNotification, object: nil)
         
         self.tableView.dataSource = self
         self.tableView.delegate = self
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.addSubview(self.refreshControl)
     }
     
     public override func viewWillAppear(animated: Bool) {
-        self.loadDisruptions()
+        self.load()
     }
     
     override public func didReceiveMemoryWarning() {
@@ -48,7 +56,13 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
         return 1
     }
     
-    public func loadDisruptions() {
+    func load() {
+        self.refreshControl.beginRefreshing()
+        self.tableView.setContentOffset(CGPoint(x: 0, y: self.tableView.contentOffset.y - self.refreshControl.frame.size.height), animated: true)
+        self.fetchDisruptions()
+    }
+    
+    func fetchDisruptions() {
         self.disruptionsService.getDisruptions(){ (disruptions: [String]) in
             if disruptions.count > 0 {
                 self.noDisruptionsLabel.text = ""
@@ -58,7 +72,13 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
                 self.noDisruptionsLabel.text = "No Disruptions"
                 self.tableView.hidden = true
             }
+            
+            self.refreshControl.endRefreshing()
         }
+    }
+    
+    func handleRefresh(refreshControl: UIRefreshControl) {
+        self.fetchDisruptions()
     }
     
 }
