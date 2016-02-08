@@ -19,6 +19,7 @@ public class ViewController: UITableViewController {
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: "handleRefresh:", forControlEvents: .ValueChanged)
         tableView.addSubview(refreshControl!)
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
     }
     
     public override func viewWillAppear(animated: Bool) {
@@ -38,16 +39,6 @@ public class ViewController: UITableViewController {
     
     public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return disruptions.count
-    }
-    
-    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if disruptions.count > 0 {
-            tableView.separatorStyle = .SingleLine
-            return 1
-        } else {
-            tableView.separatorStyle = .None;
-            return 0
-        }
     }
     
     func load() {
