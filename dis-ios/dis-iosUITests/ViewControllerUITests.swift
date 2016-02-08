@@ -20,17 +20,34 @@ class ViewControllerUITests: XCTestCase {
     override func tearDown() {
         super.tearDown()
 
-        self.webServer!.stop()
+        self.webServer.stop()
 
     }
 
     private func startWebServerWithResponse(response: String) {
         self.webServer.addDefaultHandlerForMethod("GET", requestClass: GCDWebServerRequest.self){ (request) -> GCDWebServerResponse! in
+
             return GCDWebServerDataResponse(
                 data: response.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!,
                 contentType: "application/json")
         }
 
+        do {
+            try self.webServer!.startWithOptions([
+                GCDWebServerOption_BindToLocalhost: true,
+                GCDWebServerOption_Port: 8080,
+                GCDWebServerOption_AutomaticallySuspendInBackground: false
+                ])
+        } catch let error {
+            print("Server could not be started: \(error)")
+        }
+    }
+    
+    private func startWebServerWithTimeOutResponse() {
+        self.webServer.addDefaultHandlerForMethod("GET", requestClass: GCDWebServerRequest.self){ (request) -> GCDWebServerResponse! in
+            return GCDWebServerDataResponse(statusCode: 408)
+        }
+        
         do {
             try self.webServer!.startWithOptions([
                 GCDWebServerOption_BindToLocalhost: true,
@@ -70,7 +87,7 @@ class ViewControllerUITests: XCTestCase {
         expect(disruptionsTable.cells.staticTexts["District"].exists).to(beTrue())
     }
     
-    func testWhenUserPullsDownisruptionsTableIsRefreshed() {
+    func testWhenUserPullsDownOldDataIsClearedAndTableShowsNewData() {
         startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\"}]}")
         
         self.app.launch()
@@ -83,13 +100,21 @@ class ViewControllerUITests: XCTestCase {
         expect(disruptionsTable).notTo(beNil())
         expect(disruptionsTable.cells.count).to(equal(1))
         expect(disruptionsTable.cells.staticTexts["Jubilee"].exists).to(beTrue())
-        
+        expect(disruptionsTable.cells.staticTexts["District"].exists).to(beFalse())
     }
     
+    func testWhenRequestTakesMoreThan10SecondsItShowsErrorMessage() {
+        startWebServerWithTimeOutResponse()
+        
+        self.app.launch()
+        
+        expect(self.app.staticTexts["Couldn't retrieve data from server :("].exists).to(beTrue())
+    }
+        
     func pullToRefresh(fromText fromText: String) {
         let firstCell = self.app.staticTexts[fromText]
         let start = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 0))
-        let finish = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 8))
+        let finish = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 7))
         start.pressForDuration(0, thenDragToCoordinate: finish)
     }
 }

@@ -2,7 +2,6 @@ import UIKit
 
 public class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    @IBOutlet public weak var noDisruptionsLabel: UILabel!
     @IBOutlet public weak var tableView: UITableView!
     
     public var disruptions: [String]?
@@ -53,7 +52,13 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        if self.disruptions?.count > 0 {
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+            return 1
+        } else {
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None;
+            return 0
+        }
     }
     
     func load() {
@@ -63,23 +68,40 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func fetchDisruptions() {
-        self.disruptionsService.getDisruptions(){ (disruptions: [String]) in
-            if disruptions.count > 0 {
-                self.noDisruptionsLabel.text = ""
-                self.disruptions = disruptions
-                self.tableView.reloadData()
-            } else {
-                self.noDisruptionsLabel.text = "No Disruptions"
-                self.tableView.hidden = true
-            }
-            
-            self.refreshControl.endRefreshing()
-        }
+        self.disruptionsService.getDisruptions(handleDisruptionsData, onError: handleFetchError)
     }
     
     func handleRefresh(refreshControl: UIRefreshControl) {
         self.fetchDisruptions()
     }
     
+    func handleFetchError(error: String) {
+        self.refreshControl.endRefreshing()
+        showStatusMessage("Couldn't retrieve data from server :(")
+    }
+    
+    func handleDisruptionsData(disruptions: [String]) {
+        self.tableView.backgroundView = nil
+        
+        if disruptions.count > 0 {
+            self.disruptions = disruptions
+            self.tableView.reloadData()
+        } else {
+            showStatusMessage("No Disruptions")
+        }
+        
+        self.refreshControl.endRefreshing()
+    }
+    
+    func showStatusMessage(message: String) {
+        let size = self.view.bounds.size
+        let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        
+        messageLabel.numberOfLines = 0;
+        messageLabel.textAlignment = NSTextAlignment.Center;
+        messageLabel.text = message
+        
+        self.tableView.backgroundView = messageLabel;
+    }
 }
 

@@ -8,17 +8,27 @@ public enum DisruptionsDataKeys : String {
 }
 
 public class DisruptionsService: DisruptionsServiceProtocol {
+
+    var alamofireManager: Manager
     
-    public func getDisruptions(onSuccess: (disruptions: [String]) -> Void){
+    init(){
+        let config = NSURLSessionConfiguration.defaultSessionConfiguration()
+        config.timeoutIntervalForRequest = 10
+        config.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
+        
+        self.alamofireManager = Alamofire.Manager(configuration: config)
+    }
+    
+    public func getDisruptions(onSuccess: (disruptions: [String]) -> Void, onError: (error: String) -> Void){
         var url = ""
         
         #if TEST
             url = "http://localhost:8080/disruptions.json"
         #else
-            url = "https://pivotal-london-dis-digest-test.s3.amazonaws.com/disruptions.json"
+            url = "https://pivotal-london-dis-digest.s3.amazonaws.com/disruptions.json"
         #endif
         
-        Alamofire.request(.GET, url).validate().responseJSON { response in
+        self.alamofireManager.request(.GET, url).validate().responseJSON { response in
             switch response.result {
             case .Success:
                 if let value = response.result.value {
@@ -31,11 +41,11 @@ public class DisruptionsService: DisruptionsServiceProtocol {
                     
                     onSuccess(disruptions: disruptions)
                 }
-            case .Failure(let error):
-                print(error)
-                
-                onSuccess(disruptions: [])
+            case .Failure(_):
+                onError(error: "Couldn't retrieve data from server :(")
             }
         }
+        
+        
     }
 }

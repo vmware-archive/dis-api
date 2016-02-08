@@ -11,7 +11,7 @@ class ViewControllerTests: XCTestCase {
             self.disruptions = disruptions
         }
         
-        func getDisruptions(onSuccess: (disruptions: [String]) -> Void) {
+        func getDisruptions(onSuccess: (disruptions: [String]) -> Void, onError: (error: String) -> Void) {
             onSuccess(disruptions: self.disruptions)
         }
     }
