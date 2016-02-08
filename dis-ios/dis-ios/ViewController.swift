@@ -16,7 +16,7 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "handleRefresh:", forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl.addTarget(self, action: "handleRefresh:", forControlEvents: .ValueChanged)
         
         return refreshControl
     }()
@@ -53,10 +53,10 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if disruptions?.count > 0 {
-            tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+            tableView.separatorStyle = .SingleLine
             return 1
         } else {
-            tableView.separatorStyle = UITableViewCellSeparatorStyle.None;
+            tableView.separatorStyle = .None;
             return 0
         }
     }
@@ -98,7 +98,7 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
         let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         
         messageLabel.numberOfLines = 0;
-        messageLabel.textAlignment = NSTextAlignment.Center;
+        messageLabel.textAlignment = .Center;
         messageLabel.text = message
         
         tableView.backgroundView = messageLabel;
