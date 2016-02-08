@@ -92,6 +92,8 @@ class ViewControllerUITests: XCTestCase {
         
         self.app.launch()
         
+        self.webServer.stop()
+        
         startWebServerWithResponse("{\"disruptions\":[{\"line\":\"Jubilee\"}]}")
         
         pullToRefresh(fromText: "District")
@@ -112,9 +114,10 @@ class ViewControllerUITests: XCTestCase {
     }
         
     func pullToRefresh(fromText fromText: String) {
+        // http://stackoverflow.com/questions/31301798/replicate-pull-to-refresh-in-xctest-ui-testing
         let firstCell = self.app.staticTexts[fromText]
-        let start = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 0))
-        let finish = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 7))
+        let start = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 1)) // make sure you don't go too high and get the notification center!
+        let finish = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 10)) // make sure this number is big enough!
         start.pressForDuration(0, thenDragToCoordinate: finish)
     }
 }
