@@ -110,6 +110,6 @@ class ViewControllerUITests: XCTestCase {
         
         app.launch()
         
-        expect(self.app.staticTexts["Couldn't retrieve data from server :("].exists).to(beTrue())
+        expect(self.app.staticTexts["Couldn't retrieve data from server 💩"].exists).to(beTrue())
     }
 }

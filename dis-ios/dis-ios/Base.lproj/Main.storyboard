@@ -28,8 +28,34 @@
                             <outlet property="delegate" destination="Oe2-Ou-fk3" id="MiS-DU-Rzg"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <outlet property="errorView" destination="xSK-ku-icv" id="ZyU-mh-2a5"/>
+                        <outlet property="errorViewLabel" destination="tzT-O8-nbv" id="nwR-eJ-4aP"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0ce-BS-n7M" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="xSK-ku-icv" userLabel="Error View">
+                    <rect key="frame" x="0.0" y="0.0" width="596" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Couldn't retrieve data from server 💩" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tzT-O8-nbv">
+                            <rect key="frame" x="156" y="54" width="284" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="tzT-O8-nbv" firstAttribute="centerY" secondItem="xSK-ku-icv" secondAttribute="centerY" id="4T4-bE-GAu"/>
+                        <constraint firstItem="tzT-O8-nbv" firstAttribute="centerX" secondItem="xSK-ku-icv" secondAttribute="centerX" id="cL3-xb-NAv"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" id="s1L-Xy-bxN">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
             </objects>
             <point key="canvasLocation" x="361" y="328"/>
         </scene>

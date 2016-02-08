@@ -2,6 +2,9 @@ import UIKit
 
 public class ViewController: UITableViewController {
     
+    @IBOutlet var errorView: UIView!
+    @IBOutlet weak var errorViewLabel: UILabel!
+    
     public var disruptions: [String] = []
     
     public lazy var notificationCenter: NSNotificationCenter = {
@@ -25,11 +28,14 @@ public class ViewController: UITableViewController {
     public override func viewWillAppear(animated: Bool) {
         load()
     }
-
     
-    override public func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        notificationCenter.removeObserver(self)
+        refreshControl?.endRefreshing()
     }
+    
+    // MARK: - Delegate/DataSource
     
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DisruptionCell")! as UITableViewCell
@@ -41,25 +47,27 @@ public class ViewController: UITableViewController {
         return disruptions.count
     }
     
-    func load() {
+    // MARK: - Private
+    
+    private func load() {
         refreshControl?.beginRefreshing()
         fetchDisruptions()
     }
     
-    func fetchDisruptions() {
+    private func fetchDisruptions() {
         disruptionsService.getDisruptions(handleDisruptionsData, onError: handleFetchError)
     }
     
-    func handleRefresh(refreshControl: UIRefreshControl) {
+    private func handleRefresh(refreshControl: UIRefreshControl) {
         fetchDisruptions()
     }
     
-    func handleFetchError(error: String) {
+    private func handleFetchError(error: String) {
         refreshControl?.endRefreshing()
-        showStatusMessage("Couldn't retrieve data from server :(")
+        showStatusMessage("Couldn't retrieve data from server 💩")
     }
     
-    func handleDisruptionsData(disruptionData: [String]) {
+    private func handleDisruptionsData(disruptionData: [String]) {
         tableView.backgroundView = nil
         
         if disruptionData.count > 0 {
@@ -72,15 +80,9 @@ public class ViewController: UITableViewController {
         refreshControl?.endRefreshing()
     }
     
-    func showStatusMessage(message: String) {
-        let size = view.bounds.size
-        let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        
-        messageLabel.numberOfLines = 0;
-        messageLabel.textAlignment = .Center;
-        messageLabel.text = message
-        
-        tableView.backgroundView = messageLabel;
+    private func showStatusMessage(message: String) {
+        errorViewLabel.text = message
+        tableView.backgroundView = errorView
     }
 }
 
