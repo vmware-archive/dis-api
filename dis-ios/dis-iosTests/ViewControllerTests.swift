@@ -49,7 +49,6 @@ class ViewControllerTests: XCTestCase {
         viewController.disruptionsService = MockDisruptionsService(disruptions: ["Jubilee"])
         viewController.notificationCenter.postNotificationName(UIApplicationWillEnterForegroundNotification, object: nil)
                 
-        expect(self.viewController.disruptions).notTo(beNil())
-        expect(self.viewController.disruptions?.count).to(equal(1))
+        expect(self.viewController.disruptions.count).to(equal(1))
     }    
 }

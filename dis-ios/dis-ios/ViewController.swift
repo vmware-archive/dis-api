@@ -4,7 +4,7 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     @IBOutlet public weak var tableView: UITableView!
     
-    public var disruptions: [String]?
+    public var disruptions: [String] = []
     
     public lazy var notificationCenter: NSNotificationCenter = {
         return NSNotificationCenter.defaultCenter()
@@ -40,19 +40,18 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.didReceiveMemoryWarning()
     }
     
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
-    {
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
-        cell.textLabel?.text = disruptions?[indexPath.row]
+        cell.textLabel?.text = disruptions[indexPath.row]
         return cell
     }
     
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return disruptions?.count ?? 0
+        return disruptions.count
     }
     
     public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if disruptions?.count > 0 {
+        if disruptions.count > 0 {
             tableView.separatorStyle = .SingleLine
             return 1
         } else {

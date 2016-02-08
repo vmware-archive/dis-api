@@ -36,7 +36,7 @@ public class DisruptionsService: DisruptionsServiceProtocol {
                     
                     var disruptions = [String]()
                     for(_, disruptionData):(String, JSON) in json {
-                        disruptions.append(disruptionData[DisruptionsDataKeys.Line.rawValue].string!)
+                        disruptions.append(disruptionData[DisruptionsDataKeys.Line.rawValue].string)
                     }
                     
                     onSuccess(disruptions: disruptions)
