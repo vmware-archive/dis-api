@@ -13,19 +13,19 @@ class ViewControllerUITests: XCTestCase {
 
         continueAfterFailure = false
 
-        self.app = XCUIApplication()
-        self.webServer = GCDWebServer()
+        app = XCUIApplication()
+        webServer = GCDWebServer()
     }
 
     override func tearDown() {
         super.tearDown()
 
-        self.webServer.stop()
+        webServer.stop()
 
     }
 
     private func startWebServerWithResponse(response: String) {
-        self.webServer.addDefaultHandlerForMethod("GET", requestClass: GCDWebServerRequest.self){ (request) -> GCDWebServerResponse! in
+        webServer.addDefaultHandlerForMethod("GET", requestClass: GCDWebServerRequest.self){ (request) -> GCDWebServerResponse! in
 
             return GCDWebServerDataResponse(
                 data: response.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!,
@@ -33,7 +33,7 @@ class ViewControllerUITests: XCTestCase {
         }
 
         do {
-            try self.webServer!.startWithOptions([
+            try webServer!.startWithOptions([
                 GCDWebServerOption_BindToLocalhost: true,
                 GCDWebServerOption_Port: 8080,
                 GCDWebServerOption_AutomaticallySuspendInBackground: false
@@ -44,12 +44,12 @@ class ViewControllerUITests: XCTestCase {
     }
     
     private func startWebServerWithTimeOutResponse() {
-        self.webServer.addDefaultHandlerForMethod("GET", requestClass: GCDWebServerRequest.self){ (request) -> GCDWebServerResponse! in
+        webServer.addDefaultHandlerForMethod("GET", requestClass: GCDWebServerRequest.self){ (request) -> GCDWebServerResponse! in
             return GCDWebServerDataResponse(statusCode: 408)
         }
         
         do {
-            try self.webServer!.startWithOptions([
+            try webServer!.startWithOptions([
                 GCDWebServerOption_BindToLocalhost: true,
                 GCDWebServerOption_Port: 8080,
                 GCDWebServerOption_AutomaticallySuspendInBackground: false
@@ -62,7 +62,7 @@ class ViewControllerUITests: XCTestCase {
     func testWhenThereAreNoDisruptionsItSaysNoDisruptions() {
         startWebServerWithResponse("{\"disruptions\":[]}")
 
-        self.app.launch()
+        app.launch()
 
         expect(self.app.staticTexts["No Disruptions"].exists).to(beTrue())
     }
@@ -70,7 +70,7 @@ class ViewControllerUITests: XCTestCase {
     func testWhenThereAreDisruptionsItDoesNotSayNoDisruptions() {
         startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\",\"startTime\":\"15:25\",\"status\":\"Part Suspended\"}]}")
 
-        self.app.launch()
+        app.launch()
 
         expect(self.app.staticTexts["No Disruptions"].exists).to(beFalse())
     }
@@ -78,9 +78,9 @@ class ViewControllerUITests: XCTestCase {
     func testWhenThereAreDisruptionsItShowsDisruptedLines() {
         startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\"}]}")
 
-        self.app.launch()
+        app.launch()
 
-        let disruptionsTable = self.app!.tables.elementBoundByIndex(0)
+        let disruptionsTable = app!.tables.elementBoundByIndex(0)
 
         expect(disruptionsTable).notTo(beNil())
         expect(disruptionsTable.cells.count).to(equal(1))
@@ -90,15 +90,15 @@ class ViewControllerUITests: XCTestCase {
     func testWhenUserPullsDownOldDataIsClearedAndTableShowsNewData() {
         startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\"}]}")
         
-        self.app.launch()
+        app.launch()
         
-        self.webServer.stop()
+        webServer.stop()
         
         startWebServerWithResponse("{\"disruptions\":[{\"line\":\"Jubilee\"}]}")
         
-        pullToRefresh(fromText: "District")
+        app.swipeDown()
         
-        let disruptionsTable = self.app!.tables.elementBoundByIndex(0)
+        let disruptionsTable = app!.tables.elementBoundByIndex(0)
         expect(disruptionsTable).notTo(beNil())
         expect(disruptionsTable.cells.count).to(equal(1))
         expect(disruptionsTable.cells.staticTexts["Jubilee"].exists).to(beTrue())
@@ -108,16 +108,8 @@ class ViewControllerUITests: XCTestCase {
     func testWhenRequestTakesMoreThan10SecondsItShowsErrorMessage() {
         startWebServerWithTimeOutResponse()
         
-        self.app.launch()
+        app.launch()
         
         expect(self.app.staticTexts["Couldn't retrieve data from server :("].exists).to(beTrue())
-    }
-        
-    func pullToRefresh(fromText fromText: String) {
-        // http://stackoverflow.com/questions/31301798/replicate-pull-to-refresh-in-xctest-ui-testing
-        let firstCell = self.app.staticTexts[fromText]
-        let start = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 1)) // make sure you don't go too high and get the notification center!
-        let finish = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 10)) // make sure this number is big enough!
-        start.pressForDuration(0, thenDragToCoordinate: finish)
     }
 }

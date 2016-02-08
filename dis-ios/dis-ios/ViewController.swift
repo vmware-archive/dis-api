@@ -1,8 +1,6 @@
 import UIKit
 
-public class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
-    @IBOutlet public weak var tableView: UITableView!
+public class ViewController: UITableViewController {
     
     public var disruptions: [String] = []
     
@@ -14,43 +12,35 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
         return DisruptionsService()
     }()
     
-    lazy var refreshControl: UIRefreshControl = {
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "handleRefresh:", forControlEvents: .ValueChanged)
-        
-        return refreshControl
-    }()
-    
     override public func viewDidLoad() {
         super.viewDidLoad()
         
         notificationCenter.addObserver(self, selector: "load", name: UIApplicationWillEnterForegroundNotification, object: nil)
-        
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        tableView.addSubview(refreshControl)
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: "handleRefresh:", forControlEvents: .ValueChanged)
+        tableView.addSubview(refreshControl!)
     }
     
     public override func viewWillAppear(animated: Bool) {
         load()
     }
+
     
     override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
+    public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("DisruptionCell")! as UITableViewCell
         cell.textLabel?.text = disruptions[indexPath.row]
         return cell
     }
     
-    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return disruptions.count
     }
     
-    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if disruptions.count > 0 {
             tableView.separatorStyle = .SingleLine
             return 1
@@ -61,8 +51,7 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func load() {
-        refreshControl.beginRefreshing()
-        tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentOffset.y - refreshControl.frame.size.height), animated: true)
+        refreshControl?.beginRefreshing()
         fetchDisruptions()
     }
     
@@ -75,7 +64,7 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func handleFetchError(error: String) {
-        refreshControl.endRefreshing()
+        refreshControl?.endRefreshing()
         showStatusMessage("Couldn't retrieve data from server :(")
     }
     
@@ -89,7 +78,7 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
             showStatusMessage("No Disruptions")
         }
         
-        refreshControl.endRefreshing()
+        refreshControl?.endRefreshing()
     }
     
     func showStatusMessage(message: String) {
