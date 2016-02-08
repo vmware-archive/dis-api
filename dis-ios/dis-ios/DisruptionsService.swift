@@ -32,11 +32,12 @@ public class DisruptionsService: DisruptionsServiceProtocol {
             switch response.result {
             case .Success:
                 if let value = response.result.value {
-                    let json = JSON(value)[DisruptionsDataKeys.Root.rawValue]
-                    
-                    var disruptions = [String]()
-                    for(_, disruptionData):(String, JSON) in json {
-                        disruptions.append(disruptionData[DisruptionsDataKeys.Line.rawValue].string)
+
+                    var disruptions: [String] = []
+                    for disruptionJSON in JSON(value)[DisruptionsDataKeys.Root.rawValue].arrayValue {
+                        if let lineName = disruptionJSON[DisruptionsDataKeys.Line.rawValue].string {
+                            disruptions.append(lineName)
+                        }
                     }
                     
                     onSuccess(disruptions: disruptions)
