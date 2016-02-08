@@ -24,16 +24,16 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        self.notificationCenter.addObserver(self, selector: "load", name: UIApplicationWillEnterForegroundNotification, object: nil)
+        notificationCenter.addObserver(self, selector: "load", name: UIApplicationWillEnterForegroundNotification, object: nil)
         
-        self.tableView.dataSource = self
-        self.tableView.delegate = self
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        self.tableView.addSubview(self.refreshControl)
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.addSubview(refreshControl)
     }
     
     public override func viewWillAppear(animated: Bool) {
-        self.load()
+        load()
     }
     
     override public func didReceiveMemoryWarning() {
@@ -42,66 +42,66 @@ public class ViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        let cell = self.tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
-        cell.textLabel?.text = self.disruptions?[indexPath.row]
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
+        cell.textLabel?.text = disruptions?[indexPath.row]
         return cell
     }
     
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.disruptions?.count ?? 0
+        return disruptions?.count ?? 0
     }
     
     public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if self.disruptions?.count > 0 {
-            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+        if disruptions?.count > 0 {
+            tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
             return 1
         } else {
-            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None;
+            tableView.separatorStyle = UITableViewCellSeparatorStyle.None;
             return 0
         }
     }
     
     func load() {
-        self.refreshControl.beginRefreshing()
-        self.tableView.setContentOffset(CGPoint(x: 0, y: self.tableView.contentOffset.y - self.refreshControl.frame.size.height), animated: true)
-        self.fetchDisruptions()
+        refreshControl.beginRefreshing()
+        tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentOffset.y - refreshControl.frame.size.height), animated: true)
+        fetchDisruptions()
     }
     
     func fetchDisruptions() {
-        self.disruptionsService.getDisruptions(handleDisruptionsData, onError: handleFetchError)
+        disruptionsService.getDisruptions(handleDisruptionsData, onError: handleFetchError)
     }
     
     func handleRefresh(refreshControl: UIRefreshControl) {
-        self.fetchDisruptions()
+        fetchDisruptions()
     }
     
     func handleFetchError(error: String) {
-        self.refreshControl.endRefreshing()
+        refreshControl.endRefreshing()
         showStatusMessage("Couldn't retrieve data from server :(")
     }
     
-    func handleDisruptionsData(disruptions: [String]) {
-        self.tableView.backgroundView = nil
+    func handleDisruptionsData(disruptionData: [String]) {
+        tableView.backgroundView = nil
         
-        if disruptions.count > 0 {
-            self.disruptions = disruptions
-            self.tableView.reloadData()
+        if disruptionData.count > 0 {
+            disruptions = disruptionData
+            tableView.reloadData()
         } else {
             showStatusMessage("No Disruptions")
         }
         
-        self.refreshControl.endRefreshing()
+        refreshControl.endRefreshing()
     }
     
     func showStatusMessage(message: String) {
-        let size = self.view.bounds.size
+        let size = view.bounds.size
         let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         
         messageLabel.numberOfLines = 0;
         messageLabel.textAlignment = NSTextAlignment.Center;
         messageLabel.text = message
         
-        self.tableView.backgroundView = messageLabel;
+        tableView.backgroundView = messageLabel;
     }
 }
 
