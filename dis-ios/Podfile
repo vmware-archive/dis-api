@@ -4,7 +4,6 @@
 use_frameworks!
 
 target 'dis-ios' do
-    pod 'Alamofire'
     pod 'SwiftyJSON'
 end
 
