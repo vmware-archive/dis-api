@@ -4,39 +4,27 @@ import Nimble
 
 class ViewControllerTests: XCTestCase {
     
-    class MockDisruptionsService: DisruptionsServiceProtocol {
-        private var disruptions: [String]!
+    class StubDisruptionsServiceSuccess: DisruptionsServiceProtocol {
+        private let _disruptions: [String]
         
         init(disruptions: [String]) {
-            self.disruptions = disruptions
+            _disruptions = disruptions
         }
         
         func getDisruptions(onSuccess: (disruptions: [String]) -> Void, onError: (error: String) -> Void) {
-            onSuccess(disruptions: self.disruptions)
+            onSuccess(disruptions: self._disruptions)
         }
     }
     
-    class MockNSNotificationCenter: NSNotificationCenter {
-        var observerCount = 0
-        var postCount = 0
-        var lastPostedNotificationName:String?
-        
-        override func addObserver(observer: AnyObject, selector aSelector: Selector, name aName: String?, object anObject: AnyObject?) {
-            observerCount++
-        }
-        
-        override func postNotificationName(aName: String?, object anObject: AnyObject?) {
-            lastPostedNotificationName = aName!
-            postCount++
+    class StubDisruptionServiceNetworkError: DisruptionsServiceProtocol {
+        func getDisruptions(onSuccess: (disruptions: [String]) -> Void, onError: (error: String) -> Void) {
+            return onError(error: "Couldn't retrieve data from server 💩")
         }
     }
     
     var viewController: ViewController!
-    var mockNotificationcenter: MockNSNotificationCenter!
     
     override func setUp() {
-        mockNotificationcenter = MockNSNotificationCenter()
-
         let storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
         viewController = storyboard.instantiateInitialViewController() as! ViewController
         
@@ -44,11 +32,30 @@ class ViewControllerTests: XCTestCase {
     }
     
     func testDisruptionsAreRefreshedWhenAppEntersForeground() {
-        viewController.viewDidLoad()
-        
-        viewController.disruptionsService = MockDisruptionsService(disruptions: ["Jubilee"])
+        viewController.disruptionsService = StubDisruptionsServiceSuccess(disruptions: ["Jubilee"])
         viewController.notificationCenter.postNotificationName(UIApplicationWillEnterForegroundNotification, object: nil)
                 
         expect(self.viewController.disruptions.count).to(equal(1))
-    }    
+    }
+    
+    func testTableBackgroundViewIsNilWhenDisruptionsAreReturned() {
+        viewController.disruptionsService = StubDisruptionsServiceSuccess(disruptions: ["Jubilee"])
+        viewController.viewWillAppear(false)
+        expect(self.viewController.tableView.backgroundView).to(beNil())
+    }
+    
+    func testTableBackgroundViewHasMessageWhenThereAreNoDisruptions() {
+        viewController.disruptionsService = StubDisruptionsServiceSuccess(disruptions: [])
+        viewController.viewWillAppear(false)
+        expect(self.viewController.tableView.backgroundView).to(beAKindOf(UIView.self))
+        expect(self.viewController.errorViewLabel.text).to(equal("No Disruptions"))
+    }
+    
+    func testTableBackgroundViewHasMessageWhenAnErrorIsReturned() {
+        viewController.disruptionsService = StubDisruptionServiceNetworkError()
+        viewController.viewWillAppear(false)
+        expect(self.viewController.tableView.backgroundView).to(beAKindOf(UIView.self))
+        expect(self.viewController.errorViewLabel.text).to(equal("Couldn't retrieve data from server 💩"))
+    }
+
 }

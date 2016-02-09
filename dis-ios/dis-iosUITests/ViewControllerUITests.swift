@@ -63,16 +63,8 @@ class ViewControllerUITests: XCTestCase {
         startWebServerWithResponse("{\"disruptions\":[]}")
 
         app.launch()
-
-        expect(self.app.staticTexts["No Disruptions"].exists).to(beTrue())
-    }
-
-    func testWhenThereAreDisruptionsItDoesNotSayNoDisruptions() {
-        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\",\"startTime\":\"15:25\",\"status\":\"Part Suspended\"}]}")
-
-        app.launch()
-
-        expect(self.app.staticTexts["No Disruptions"].exists).to(beFalse())
+        
+        expect(self.app.tables["No Disruptions"].exists).to(beTrue())
     }
 
     func testWhenThereAreDisruptionsItShowsDisruptedLines() {
@@ -80,7 +72,7 @@ class ViewControllerUITests: XCTestCase {
 
         app.launch()
 
-        let disruptionsTable = app!.tables.elementBoundByIndex(0)
+        let disruptionsTable = app.tables.elementBoundByIndex(0)
 
         expect(disruptionsTable).notTo(beNil())
         expect(disruptionsTable.cells.count).to(equal(1))
@@ -98,11 +90,11 @@ class ViewControllerUITests: XCTestCase {
         
         app.swipeDown()
         
-        let disruptionsTable = app!.tables.elementBoundByIndex(0)
+        let disruptionsTable = app.tables.elementBoundByIndex(0)
         expect(disruptionsTable).notTo(beNil())
         expect(disruptionsTable.cells.count).to(equal(1))
-        expect(disruptionsTable.cells.staticTexts["Jubilee"].exists).to(beTrue())
-        expect(disruptionsTable.cells.staticTexts["District"].exists).to(beFalse())
+        expect(disruptionsTable.staticTexts["Jubilee"].exists).to(beTrue())
+        expect(disruptionsTable.staticTexts["District"].exists).to(beFalse())
     }
     
     func testWhenRequestTakesMoreThan10SecondsItShowsErrorMessage() {
@@ -110,6 +102,6 @@ class ViewControllerUITests: XCTestCase {
         
         app.launch()
         
-        expect(self.app.staticTexts["Couldn't retrieve data from server :("].exists).to(beTrue())
+        expect(self.app.tables["Couldn't retrieve data from server 💩"].exists).to(beTrue())
     }
 }

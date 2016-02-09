@@ -25,7 +25,7 @@ public class DisruptionsService: DisruptionsServiceProtocol {
         #if TEST
             url = "http://localhost:8080/disruptions.json"
         #else
-            url = "https://pivotal-london-dis-digest.s3.amazonaws.com/disruptions.json"
+            url = "https://pivotal-london-dis-digest-test.s3.amazonaws.com/disruptions.json"
         #endif
         
         self.alamofireManager.request(.GET, url).validate().responseJSON { response in
