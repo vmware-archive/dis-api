@@ -20,7 +20,7 @@ public class ViewController: UITableViewController {
         
         notificationCenter.addObserver(self, selector: "load", name: UIApplicationWillEnterForegroundNotification, object: nil)
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: "handleRefresh:", forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: "fetchDisruptions", forControlEvents: .ValueChanged)
         tableView.addSubview(refreshControl!)
         tableView.tableFooterView = UIView(frame: CGRect.zero)
     }
@@ -40,9 +40,10 @@ public class ViewController: UITableViewController {
         fetchDisruptions()
     }
     
-    func handleRefresh(refreshControl: UIRefreshControl) {
-        fetchDisruptions()
+    func fetchDisruptions() {
+        disruptionsService.getDisruptions(handleDisruptionsData, onError: handleFetchError)
     }
+
     
     // MARK: - Delegate/DataSource
     
@@ -57,10 +58,6 @@ public class ViewController: UITableViewController {
     }
     
     // MARK: - Private
-    
-    private func fetchDisruptions() {
-        disruptionsService.getDisruptions(handleDisruptionsData, onError: handleFetchError)
-    }
     
     private func handleFetchError(error: String) {
         refreshControl?.endRefreshing()

@@ -57,5 +57,12 @@ class ViewControllerTests: XCTestCase {
         expect(self.viewController.tableView.backgroundView).to(beAKindOf(UIView.self))
         expect(self.viewController.errorViewLabel.text).to(equal("Couldn't retrieve data from server 💩"))
     }
+    
+    func testRefreshControllerEndsRefreshingWhenViewDisappears() {
+        self.viewController.refreshControl!.beginRefreshing()
+        
+        viewController.viewWillDisappear(false)
+        expect(self.viewController.refreshControl?.refreshing).to(beFalse())
+    }
 
 }
