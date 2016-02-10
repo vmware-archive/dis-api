@@ -3,7 +3,7 @@ import Nimble
 import GCDWebServer
 import SwiftyJSON
 
-class ViewControllerUITests: XCTestCase {
+class ViewControllerUITest: XCTestCase {
 
     var webServer: GCDWebServer!
     var app: XCUIApplication!

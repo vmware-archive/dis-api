@@ -4,7 +4,7 @@ import Nimble
 import Nocilla
 @testable import dis_ios
 
-class DisruptionsServiceTests: XCTestCase {
+class DisruptionsServiceTest: XCTestCase {
     
     let timeoutError = NSError(domain: NSURLErrorDomain, code: NSURLErrorTimedOut, userInfo: nil)
     

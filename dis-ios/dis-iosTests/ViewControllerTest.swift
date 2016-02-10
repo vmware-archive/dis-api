@@ -2,7 +2,7 @@ import XCTest
 import Nimble
 @testable import dis_ios
 
-class ViewControllerTests: XCTestCase {
+class ViewControllerTest: XCTestCase {
     
     class StubDisruptionsServiceSuccess: DisruptionsServiceProtocol {
         func getDisruptions(onSuccess: (disruptions: [Disruption]) -> Void, onError: (error: String) -> Void) {
