@@ -35,7 +35,10 @@ public class Ingester {
     public void ingest(Clock clock) {
         try (InputStream inputStream = url.openConnection().getInputStream()) {
             String tflData = IOUtils.toString(inputStream);
-            fileStore.save(nameRawFile(clock), tflData);
+            String rawFileName = nameRawFile(clock);
+            fileStore.save(rawFileName, tflData);
+
+            System.out.println("Saved raw file " + rawFileName);
 
             Optional<String> previousDisruptionDigest = ongoingDisruptionsStore.getPreviousDisruptionDigest();
 
