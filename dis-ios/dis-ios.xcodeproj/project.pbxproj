@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6BC7113539E34D1B6EB48676 /* Pods_dis_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D698A43481E3B5D5105B386 /* Pods_dis_ios.framework */; };
 		A04D58E2696B210B68E531AE /* Pods_dis_iosUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98BE4E8E7CA9ABFB80809435 /* Pods_dis_iosUITests.framework */; };
+		AE21D6B21C6A38E100E417E8 /* DisruptionsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE21D6B11C6A38E100E417E8 /* DisruptionsServiceTests.swift */; };
 		AE5F38D61C64E3A100056F77 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F38D51C64E3A100056F77 /* AppDelegate.swift */; };
 		AE5F38D81C64E3A100056F77 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F38D71C64E3A100056F77 /* ViewController.swift */; };
 		AE5F38DB1C64E3A100056F77 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE5F38D91C64E3A100056F77 /* Main.storyboard */; };
@@ -46,6 +47,7 @@
 		98BE4E8E7CA9ABFB80809435 /* Pods_dis_iosUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_dis_iosUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D698A43481E3B5D5105B386 /* Pods_dis_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_dis_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2C7619F43720627195A3914 /* Pods-dis-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dis-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-dis-ios/Pods-dis-ios.debug.xcconfig"; sourceTree = "<group>"; };
+		AE21D6B11C6A38E100E417E8 /* DisruptionsServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionsServiceTests.swift; sourceTree = "<group>"; };
 		AE5F38D21C64E3A100056F77 /* dis-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dis-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE5F38D51C64E3A100056F77 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE5F38D71C64E3A100056F77 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 		AE5F38F71C64E3A100056F77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE8AAE021C64E4A600F4AC95 /* DisruptionsServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionsServiceProtocol.swift; sourceTree = "<group>"; };
 		AE8AAE041C64E4BA00F4AC95 /* DisruptionsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionsService.swift; sourceTree = "<group>"; };
+		AEE645281C6B55C100C5B3E1 /* dis-iosTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "dis-iosTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		B9FCD82901FD95AA6A020DB3 /* Pods-dis-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dis-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-dis-ios/Pods-dis-ios.release.xcconfig"; sourceTree = "<group>"; };
 		BA5FBB0100F8CC7EBCB64537 /* Pods-dis-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dis-iosTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-dis-iosTests/Pods-dis-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D25DDCED0E1389293E9CBFFF /* Pods-dis-iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dis-iosTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-dis-iosTests/Pods-dis-iosTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -164,6 +167,8 @@
 			children = (
 				AE5F38EA1C64E3A100056F77 /* ViewControllerTests.swift */,
 				AE5F38EC1C64E3A100056F77 /* Info.plist */,
+				AE21D6B11C6A38E100E417E8 /* DisruptionsServiceTests.swift */,
+				AEE645281C6B55C100C5B3E1 /* dis-iosTests-Bridging-Header.h */,
 			);
 			path = "dis-iosTests";
 			sourceTree = "<group>";
@@ -450,6 +455,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE21D6B21C6A38E100E417E8 /* DisruptionsServiceTests.swift in Sources */,
 				AE5F38EB1C64E3A100056F77 /* ViewControllerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -609,10 +615,13 @@
 			baseConfigurationReference = BA5FBB0100F8CC7EBCB64537 /* Pods-dis-iosTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = "dis-iosTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.pivotal.dis-iosTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "dis-iosTests/dis-iosTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/dis-ios.app/dis-ios";
 			};
 			name = Debug;
@@ -622,10 +631,12 @@
 			baseConfigurationReference = D25DDCED0E1389293E9CBFFF /* Pods-dis-iosTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = "dis-iosTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.pivotal.dis-iosTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "dis-iosTests/dis-iosTests-Bridging-Header.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/dis-ios.app/dis-ios";
 			};
 			name = Release;
@@ -718,10 +729,13 @@
 			baseConfigurationReference = 2A04EF80F1C413B042EF44B9 /* Pods-dis-iosTests.test.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = "dis-iosTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.pivotal.dis-iosTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "dis-iosTests/dis-iosTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/dis-ios.app/dis-ios";
 			};
 			name = Test;

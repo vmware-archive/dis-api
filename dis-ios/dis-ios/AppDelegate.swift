@@ -17,8 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
-        NSURLProtocol.registerClass(MockHTTPProtocol)
-        
         return true
     }
 
@@ -46,27 +44,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-}
-
-class MockHTTPProtocol: NSURLProtocol {
-    
-    override class func canInitWithRequest(request: NSURLRequest) -> Bool {
-        print("My scheme is <\(request.URL?.scheme)>")
-        return request.URL?.scheme == "mock"
-    }
-    
-    
-    override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
-        return request
-    }
-    
-    override func startLoading() {
-        let data = "hello world".dataUsingEncoding(NSUTF8StringEncoding)!
-        client?.URLProtocol(self, didLoadData: data)
-        client?.URLProtocolDidFinishLoading(self)
-    }
-    
-    override func stopLoading() {
-    }
-    
 }

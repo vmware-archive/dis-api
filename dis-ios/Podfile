@@ -8,6 +8,7 @@ target 'dis-ios' do
 end
 
 target 'dis-iosTests' do
+    pod 'Nocilla'
     pod 'Quick'
     pod 'Nimble'
 end
