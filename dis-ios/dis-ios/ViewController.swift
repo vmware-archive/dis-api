@@ -41,7 +41,17 @@ public class ViewController: UITableViewController {
     }
     
     func fetchDisruptions() {
-        disruptionsService.getDisruptions(handleDisruptionsData, onError: handleFetchError)
+        disruptionsService.getDisruptions() { result in
+            switch result {
+                
+            case .Success(let d):
+                self.handleDisruptionsData(d)
+                
+            case .HTTPError(let e):
+                self.handleFetchError(e)
+                
+            }
+        }
     }
 
     

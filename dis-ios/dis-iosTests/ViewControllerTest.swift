@@ -4,7 +4,7 @@ import Nimble
 
 extension Disruption {
     
-    init(lineName: String, status: String) {
+    init(lineName: String = "District", status: String = "Minor delays") {
         self.lineName = lineName
         self.status = status
     }
@@ -14,24 +14,24 @@ extension Disruption {
 class ViewControllerTest: XCTestCase {
     
     class StubDisruptionsServiceSuccess: DisruptionsServiceProtocol {
-        func getDisruptions(onSuccess: (disruptions: [Disruption]) -> Void, onError: (error: String) -> Void) {
-            onSuccess(disruptions: [
+        func getDisruptions(completion: (result: Result<[Disruption]>) -> Void) {
+            completion(result: .Success([
                 Disruption(lineName: "Northern", status: "404 train not found"),
                 Disruption(lineName: "Jubilee", status: "Regicide imminent"),
                 Disruption(lineName: "Hammersmith & City", status: "Lost to the Gunners"),
-            ])
+            ]))
         }
     }
     
     class StubDisruptionsServiceSuccessNoDisruptions: DisruptionsServiceProtocol {
-        func getDisruptions(onSuccess: (disruptions: [Disruption]) -> Void, onError: (error: String) -> Void) {
-            onSuccess(disruptions: [])
+        func getDisruptions(completion: (result: Result<[Disruption]>) -> Void) {
+            completion(result: .Success([]))
         }
     }
     
     class StubDisruptionsServiceNetworkError: DisruptionsServiceProtocol {
-        func getDisruptions(onSuccess: (disruptions: [Disruption]) -> Void, onError: (error: String) -> Void) {
-            return onError(error: "Couldn't retrieve data from server 💩")
+        func getDisruptions(completion: (result: Result<[Disruption]>) -> Void) {
+            completion(result: .HTTPError(message: "Couldn't retrieve data from server 💩"))
         }
     }
     

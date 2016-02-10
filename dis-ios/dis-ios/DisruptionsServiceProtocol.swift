@@ -1,5 +1,15 @@
 import Foundation
 
+public enum Result<T> {
+    
+//    case NoConnection
+    case Success(T)
+    case HTTPError(message: String)
+    
+}
+
 public protocol DisruptionsServiceProtocol {
-    func getDisruptions(onSuccess: (disruptions: [Disruption]) -> Void, onError: (error: String) -> Void)
+
+    func getDisruptions(completion: (result: Result<[Disruption]>) -> Void)
+
 }

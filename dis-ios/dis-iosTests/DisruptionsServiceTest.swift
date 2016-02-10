@@ -31,13 +31,16 @@ class DisruptionsServiceTest: XCTestCase {
         
         let expectation = expectationWithDescription("")
         
-        service.getDisruptions({ d in
-            disruptions = d
+        service.getDisruptions() { result in
+            switch result {
+            case .Success(let d):
+                disruptions = d
+            case .HTTPError(let e):
+                error = e
+            }
+            
             expectation.fulfill()
-        }, onError: { e in
-            error = e
-            expectation.fulfill()
-        })
+        }
         
         self.waitForExpectationsWithTimeout(5.0) { _ in
             expect(disruptions).toNot(beNil())
@@ -57,13 +60,16 @@ class DisruptionsServiceTest: XCTestCase {
         
         let expectation = expectationWithDescription("")
         
-        service.getDisruptions({ d in
-            disruptions = d
+        service.getDisruptions() { result in
+            switch result {
+            case .Success(let d):
+                disruptions = d
+            case .HTTPError(let e):
+                error = e
+            }
+            
             expectation.fulfill()
-        }, onError: { e in
-            error = e
-            expectation.fulfill()
-        })
+        }
         
         self.waitForExpectationsWithTimeout(5.0) { _ in
             expect(disruptions).toNot(beNil())
@@ -79,13 +85,16 @@ class DisruptionsServiceTest: XCTestCase {
         var error: String? = nil
         let expectation = expectationWithDescription("wait for block")
         
-        service.getDisruptions({ d in
-            disruptions = d
+        service.getDisruptions() { result in
+            switch result {
+            case .Success(let d):
+                disruptions = d
+            case .HTTPError(let e):
+                error = e
+            }
+            
             expectation.fulfill()
-        }, onError: { e in
-            error = e
-            expectation.fulfill()
-        })
+        }
         
         self.waitForExpectationsWithTimeout(5.0) { _ in
             expect(disruptions).to(beNil())
