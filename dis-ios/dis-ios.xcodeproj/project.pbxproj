@@ -19,6 +19,8 @@
 		AE5F38F61C64E3A100056F77 /* ViewControllerUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F38F51C64E3A100056F77 /* ViewControllerUITest.swift */; };
 		AE8AAE031C64E4A600F4AC95 /* DisruptionsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8AAE021C64E4A600F4AC95 /* DisruptionsServiceProtocol.swift */; };
 		AE8AAE051C64E4BA00F4AC95 /* DisruptionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8AAE041C64E4BA00F4AC95 /* DisruptionsService.swift */; };
+		AEE6452C1C6B7B0900C5B3E1 /* DisruptionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE6452B1C6B7B0900C5B3E1 /* DisruptionTest.swift */; };
+		AEE6452E1C6B7DD900C5B3E1 /* Disruption.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE6452D1C6B7DD900C5B3E1 /* Disruption.swift */; };
 		B7DBDE89C310D4A5F9A2AC78 /* Pods_dis_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7995E244971F3BCDABC2A91 /* Pods_dis_iosTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +66,8 @@
 		AE8AAE021C64E4A600F4AC95 /* DisruptionsServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionsServiceProtocol.swift; sourceTree = "<group>"; };
 		AE8AAE041C64E4BA00F4AC95 /* DisruptionsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionsService.swift; sourceTree = "<group>"; };
 		AEE645281C6B55C100C5B3E1 /* dis-iosTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "dis-iosTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		AEE6452B1C6B7B0900C5B3E1 /* DisruptionTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionTest.swift; sourceTree = "<group>"; };
+		AEE6452D1C6B7DD900C5B3E1 /* Disruption.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Disruption.swift; sourceTree = "<group>"; };
 		B9FCD82901FD95AA6A020DB3 /* Pods-dis-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dis-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-dis-ios/Pods-dis-ios.release.xcconfig"; sourceTree = "<group>"; };
 		BA5FBB0100F8CC7EBCB64537 /* Pods-dis-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dis-iosTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-dis-iosTests/Pods-dis-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
 		D25DDCED0E1389293E9CBFFF /* Pods-dis-iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-dis-iosTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-dis-iosTests/Pods-dis-iosTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -158,6 +162,7 @@
 				AE5F38DC1C64E3A100056F77 /* Assets.xcassets */,
 				AE5F38DE1C64E3A100056F77 /* LaunchScreen.storyboard */,
 				AE5F38E11C64E3A100056F77 /* Info.plist */,
+				AEE6452D1C6B7DD900C5B3E1 /* Disruption.swift */,
 			);
 			path = "dis-ios";
 			sourceTree = "<group>";
@@ -169,6 +174,7 @@
 				AE5F38EC1C64E3A100056F77 /* Info.plist */,
 				AE21D6B11C6A38E100E417E8 /* DisruptionsServiceTest.swift */,
 				AEE645281C6B55C100C5B3E1 /* dis-iosTests-Bridging-Header.h */,
+				AEE6452B1C6B7B0900C5B3E1 /* DisruptionTest.swift */,
 			);
 			path = "dis-iosTests";
 			sourceTree = "<group>";
@@ -448,6 +454,7 @@
 				AE8AAE031C64E4A600F4AC95 /* DisruptionsServiceProtocol.swift in Sources */,
 				AE5F38D81C64E3A100056F77 /* ViewController.swift in Sources */,
 				AE5F38D61C64E3A100056F77 /* AppDelegate.swift in Sources */,
+				AEE6452E1C6B7DD900C5B3E1 /* Disruption.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +463,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE21D6B21C6A38E100E417E8 /* DisruptionsServiceTest.swift in Sources */,
+				AEE6452C1C6B7B0900C5B3E1 /* DisruptionTest.swift in Sources */,
 				AE5F38EB1C64E3A100056F77 /* ViewControllerTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

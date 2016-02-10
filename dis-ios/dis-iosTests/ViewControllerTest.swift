@@ -2,6 +2,15 @@ import XCTest
 import Nimble
 @testable import dis_ios
 
+extension Disruption {
+    
+    init(lineName: String, status: String) {
+        self.lineName = lineName
+        self.status = status
+    }
+    
+}
+
 class ViewControllerTest: XCTestCase {
     
     class StubDisruptionsServiceSuccess: DisruptionsServiceProtocol {
@@ -10,7 +19,7 @@ class ViewControllerTest: XCTestCase {
                 Disruption(lineName: "Northern", status: "404 train not found"),
                 Disruption(lineName: "Jubilee", status: "Regicide imminent"),
                 Disruption(lineName: "Hammersmith & City", status: "Lost to the Gunners"),
-                ])
+            ])
         }
     }
     

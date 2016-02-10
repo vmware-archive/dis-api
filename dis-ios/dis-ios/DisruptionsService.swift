@@ -1,12 +1,6 @@
 import Foundation
 import SwiftyJSON
 
-public enum DisruptionsDataKeys : String {
-    case Root = "disruptions"
-    case Line = "line"
-    case Status = "status"
-}
-
 public class DisruptionsService: DisruptionsServiceProtocol {
     
     public func getDisruptions(onSuccess: (disruptions: [Disruption]) -> Void, onError: (error: String) -> Void) {
@@ -23,12 +17,7 @@ public class DisruptionsService: DisruptionsServiceProtocol {
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
             if let data = data {
                 var json = JSON(data: data)
-                let disruptions = json[DisruptionsDataKeys.Root.rawValue].arrayValue.flatMap() { disruption in
-                    return Disruption(
-                        lineName: disruption[DisruptionsDataKeys.Line.rawValue].string!,
-                        status: disruption[DisruptionsDataKeys.Status.rawValue].string!
-                    )
-                }
+                let disruptions = json["disruptions"].arrayValue.flatMap { Disruption(json: $0) }
 
                 dispatch_async(dispatch_get_main_queue()) {
                     onSuccess(disruptions: disruptions)
@@ -44,7 +33,3 @@ public class DisruptionsService: DisruptionsServiceProtocol {
     
 }
 
-public struct Disruption {
-    let lineName: String
-    let status: String
-}
