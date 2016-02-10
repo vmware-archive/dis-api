@@ -50,6 +50,7 @@ public class ViewController: UITableViewController {
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DisruptionCell")! as UITableViewCell
         cell.textLabel?.text = disruptions[indexPath.row]
+        cell.detailTextLabel?.text = "Minor Delays"
         return cell
     }
     
@@ -61,7 +62,7 @@ public class ViewController: UITableViewController {
     
     private func handleFetchError(error: String) {
         refreshControl?.endRefreshing()
-        showStatusMessage("Couldn't retrieve data from server 💩")
+        showStatusMessage(error)
     }
     
     private func handleDisruptionsData(disruptionData: [String]) {

@@ -7,20 +7,18 @@ public enum DisruptionsDataKeys : String {
 }
 
 public class DisruptionsService: DisruptionsServiceProtocol {
-  
-    init() {
-        let config = NSURLSessionConfiguration.defaultSessionConfiguration()
-        config.timeoutIntervalForRequest = 10
-    }
     
     public func getDisruptions(onSuccess: (disruptions: [String]) -> Void, onError: (error: String) -> Void) {
+
         #if TEST
             let url = NSURL(string: "http://localhost:8080/disruptions.json")!
         #else
             let url = NSURL(string: "https://pivotal-london-dis-digest-test.s3.amazonaws.com/disruptions.json")!
         #endif
+
         
-        let request = NSURLRequest(URL: url)
+        let request = NSURLRequest(URL: url, cachePolicy: .ReloadIgnoringLocalCacheData, timeoutInterval: 10)
+        
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
             if let data = data {
                 var json = JSON(data: data)
@@ -28,9 +26,13 @@ public class DisruptionsService: DisruptionsServiceProtocol {
                     return line[DisruptionsDataKeys.Line.rawValue].string
                 }
 
-                onSuccess(disruptions: disruptions)
+                dispatch_async(dispatch_get_main_queue()) {
+                    onSuccess(disruptions: disruptions)
+                }
             } else {
-                onError(error: "Couldn't retrieve data from server :(")
+                dispatch_async(dispatch_get_main_queue()) {
+                    onError(error: "Couldn't retrieve data from server 💩")
+                }
             }
         }
         task.resume()
