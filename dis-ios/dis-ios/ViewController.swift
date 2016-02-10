@@ -5,7 +5,7 @@ public class ViewController: UITableViewController {
     @IBOutlet var errorView: UIView!
     @IBOutlet weak var errorViewLabel: UILabel!
     
-    public var disruptions: [String] = []
+    private var disruptions: [Disruption] = []
     
     public lazy var notificationCenter: NSNotificationCenter = {
         return NSNotificationCenter.defaultCenter()
@@ -49,8 +49,8 @@ public class ViewController: UITableViewController {
     
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DisruptionCell")! as UITableViewCell
-        cell.textLabel?.text = disruptions[indexPath.row]
-        cell.detailTextLabel?.text = "Minor Delays"
+        cell.textLabel?.text = disruptions[indexPath.row].lineName
+        cell.detailTextLabel?.text = disruptions[indexPath.row].status
         return cell
     }
     
@@ -65,7 +65,7 @@ public class ViewController: UITableViewController {
         showStatusMessage(error)
     }
     
-    private func handleDisruptionsData(disruptionData: [String]) {
+    private func handleDisruptionsData(disruptionData: [Disruption]) {
         tableView.backgroundView = nil
         
         if disruptionData.count > 0 {

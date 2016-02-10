@@ -46,13 +46,13 @@ class ViewControllerUITests: XCTestCase {
     }
     
     func testWhenUserPullsDownOldDataIsClearedAndTableShowsNewData() {
-        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\"}]}")
+        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\", \"status\":\"Minor Delays\"}]}")
         
         app.launch()
         
         webServer.stop()
         
-        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"Jubilee\"}]}")
+        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"Jubilee\", \"status\":\"Minor Delays\"}]}")
         
         pullToRefresh("District")
         

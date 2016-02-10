@@ -4,11 +4,12 @@ import SwiftyJSON
 public enum DisruptionsDataKeys : String {
     case Root = "disruptions"
     case Line = "line"
+    case Status = "status"
 }
 
 public class DisruptionsService: DisruptionsServiceProtocol {
     
-    public func getDisruptions(onSuccess: (disruptions: [String]) -> Void, onError: (error: String) -> Void) {
+    public func getDisruptions(onSuccess: (disruptions: [Disruption]) -> Void, onError: (error: String) -> Void) {
 
         #if TEST
             let url = NSURL(string: "http://localhost:8080/disruptions.json")!
@@ -22,8 +23,11 @@ public class DisruptionsService: DisruptionsServiceProtocol {
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
             if let data = data {
                 var json = JSON(data: data)
-                let disruptions = json[DisruptionsDataKeys.Root.rawValue].arrayValue.flatMap() { line in
-                    return line[DisruptionsDataKeys.Line.rawValue].string
+                let disruptions = json[DisruptionsDataKeys.Root.rawValue].arrayValue.flatMap() { disruption in
+                    return Disruption(
+                        lineName: disruption[DisruptionsDataKeys.Line.rawValue].string!,
+                        status: disruption[DisruptionsDataKeys.Status.rawValue].string!
+                    )
                 }
 
                 dispatch_async(dispatch_get_main_queue()) {
@@ -38,4 +42,9 @@ public class DisruptionsService: DisruptionsServiceProtocol {
         task.resume()
     }
     
+}
+
+public struct Disruption {
+    let lineName: String
+    let status: String
 }
