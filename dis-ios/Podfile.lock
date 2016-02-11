@@ -4,7 +4,7 @@ PODS:
   - GCDWebServer/Core (3.3.2)
   - Nimble (3.1.0)
   - Nocilla (0.10.0)
-  - Quick (0.9.0)
+  - Quick (0.9.1)
   - SwiftyJSON (2.3.2)
 
 DEPENDENCIES:
@@ -18,7 +18,7 @@ SPEC CHECKSUMS:
   GCDWebServer: 2a375ec42839a41d7187d04e5b688d32fa5c4cd5
   Nimble: 79d40f4d69d47314229bbabacaa02b8838c779b9
   Nocilla: ae0a2b05f3087b473624ac2b25903695df51246a
-  Quick: 332eb1da73125a2106dd637424c803f2ae97e4a9
+  Quick: a5221fc21788b6aeda934805e68b061839bc3165
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
 COCOAPODS: 0.39.0

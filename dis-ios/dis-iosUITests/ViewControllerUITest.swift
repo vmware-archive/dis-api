@@ -33,7 +33,7 @@ class ViewControllerUITest: XCTestCase {
     }
 
     func testWhenThereAreDisruptionsItShowsDisruptedLineInfo() {
-        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\", \"status\":\"Minor Delays\"}]}")
+        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\", \"status\":\"Minor Delays\", \"startTime\":\"12:25\", \"endTime\":\"12:55\"}]}")
 
         app.launch()
 
@@ -43,6 +43,8 @@ class ViewControllerUITest: XCTestCase {
         expect(disruptionsTable.cells.count).to(equal(1))
         expect(disruptionsTable.cells.staticTexts["District"].exists).to(beTrue())
         expect(disruptionsTable.cells.staticTexts["Minor Delays"].exists).to(beTrue())
+        expect(disruptionsTable.cells.staticTexts["12:25"].exists).to(beTrue())
+        expect(disruptionsTable.cells.staticTexts["12:55"].exists).to(beTrue())
     }
     
     func testWhenUserPullsDownOldDataIsClearedAndTableShowsNewData() {
@@ -69,7 +71,7 @@ class ViewControllerUITest: XCTestCase {
         // http://stackoverflow.com/questions/31301798/replicate-pull-to-refresh-in-xctest-ui-testing
         let firstCell = self.app.staticTexts[text]
         let start = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 2)) // make sure you don't go too high and get the notification center!
-        let finish = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 15)) // make sure this number is big enough!
+        let finish = firstCell.coordinateWithNormalizedOffset(CGVectorMake(0, 12)) // make sure this number is big enough!
         start.pressForDuration(0, thenDragToCoordinate: finish)
     }
     

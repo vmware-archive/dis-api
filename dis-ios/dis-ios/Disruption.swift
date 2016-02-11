@@ -1,17 +1,11 @@
-//
-//  Disruption.swift
-//  dis-ios
-//
-//  Created by Pivotal on 2/10/16.
-//  Copyright © 2016 Pivotal. All rights reserved.
-//
-
 import SwiftyJSON
 
 public struct Disruption {
     
     let lineName: String
     let status: String?
+    let startTime: String?
+    let endTime: String?
     
     init?(json: JSON) {
         guard let lineName = json["line"].string else {
@@ -20,6 +14,8 @@ public struct Disruption {
 
         self.lineName = lineName
         self.status = json["status"].string
+        self.startTime = json["startTime"].string
+        self.endTime = json["endTime"].string
     }
 
 }

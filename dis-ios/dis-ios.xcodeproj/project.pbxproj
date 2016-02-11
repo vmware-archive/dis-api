@@ -17,6 +17,7 @@
 		AE5F38E01C64E3A100056F77 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE5F38DE1C64E3A100056F77 /* LaunchScreen.storyboard */; };
 		AE5F38EB1C64E3A100056F77 /* ViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F38EA1C64E3A100056F77 /* ViewControllerTest.swift */; };
 		AE5F38F61C64E3A100056F77 /* ViewControllerUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F38F51C64E3A100056F77 /* ViewControllerUITest.swift */; };
+		AE6FCDF01C6CD84D00414949 /* DisruptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6FCDEF1C6CD84D00414949 /* DisruptionCell.swift */; };
 		AE8AAE031C64E4A600F4AC95 /* DisruptionsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8AAE021C64E4A600F4AC95 /* DisruptionsServiceProtocol.swift */; };
 		AE8AAE051C64E4BA00F4AC95 /* DisruptionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8AAE041C64E4BA00F4AC95 /* DisruptionsService.swift */; };
 		AEE6452C1C6B7B0900C5B3E1 /* DisruptionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE6452B1C6B7B0900C5B3E1 /* DisruptionTest.swift */; };
@@ -63,6 +64,7 @@
 		AE5F38F11C64E3A100056F77 /* dis-iosUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "dis-iosUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE5F38F51C64E3A100056F77 /* ViewControllerUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerUITest.swift; sourceTree = "<group>"; };
 		AE5F38F71C64E3A100056F77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE6FCDEF1C6CD84D00414949 /* DisruptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionCell.swift; sourceTree = "<group>"; };
 		AE8AAE021C64E4A600F4AC95 /* DisruptionsServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionsServiceProtocol.swift; sourceTree = "<group>"; };
 		AE8AAE041C64E4BA00F4AC95 /* DisruptionsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionsService.swift; sourceTree = "<group>"; };
 		AEE645281C6B55C100C5B3E1 /* dis-iosTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "dis-iosTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				AE5F38DE1C64E3A100056F77 /* LaunchScreen.storyboard */,
 				AE5F38E11C64E3A100056F77 /* Info.plist */,
 				AEE6452D1C6B7DD900C5B3E1 /* Disruption.swift */,
+				AE6FCDEF1C6CD84D00414949 /* DisruptionCell.swift */,
 			);
 			path = "dis-ios";
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 				TargetAttributes = {
 					AE5F38D11C64E3A100056F77 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = BVZYXK966R;
 					};
 					AE5F38E51C64E3A100056F77 = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -450,6 +454,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE6FCDF01C6CD84D00414949 /* DisruptionCell.swift in Sources */,
 				AE8AAE051C64E4BA00F4AC95 /* DisruptionsService.swift in Sources */,
 				AE8AAE031C64E4A600F4AC95 /* DisruptionsServiceProtocol.swift in Sources */,
 				AE5F38D81C64E3A100056F77 /* ViewController.swift in Sources */,
@@ -599,10 +604,13 @@
 			baseConfigurationReference = A2C7619F43720627195A3914 /* Pods-dis-ios.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "dis-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.pivotal.dis-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -611,10 +619,13 @@
 			baseConfigurationReference = B9FCD82901FD95AA6A020DB3 /* Pods-dis-ios.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "dis-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.pivotal.dis-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -725,10 +736,13 @@
 			baseConfigurationReference = 7E79EA2C9CC03D144A56D75D /* Pods-dis-ios.test.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "dis-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.pivotal.dis-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Test;
 		};

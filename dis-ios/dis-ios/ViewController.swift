@@ -53,14 +53,15 @@ public class ViewController: UITableViewController {
             }
         }
     }
-
     
     // MARK: - Delegate/DataSource
     
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("DisruptionCell")! as UITableViewCell
-        cell.textLabel?.text = disruptions[indexPath.row].lineName
-        cell.detailTextLabel?.text = disruptions[indexPath.row].status
+        let cell = tableView.dequeueReusableCellWithIdentifier("DisruptionCell")! as! DisruptionCell
+        cell.lineNameLabel?.text = disruptions[indexPath.row].lineName
+        cell.statusLabel?.text = disruptions[indexPath.row].status
+        cell.startTimeLabel?.text = disruptions[indexPath.row].startTime
+        cell.endTimeLabel?.text = disruptions[indexPath.row].endTime
         return cell
     }
     

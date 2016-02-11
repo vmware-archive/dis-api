@@ -23,7 +23,7 @@ class DisruptionsServiceTest: XCTestCase {
     }
     
     func testServiceSendsDataOnSuccess() {
-        let data = "{\"disruptions\":[{\"line\":\"District\", \"status\":\"Minor Delays\"}]}".dataUsingEncoding(NSUTF8StringEncoding)
+        let data = "{\"disruptions\":[{\"line\":\"District\", \"status\":\"Minor Delays\", \"startTime\":\"12:25\", \"endTime\":\"12:55\"}]}".dataUsingEncoding(NSUTF8StringEncoding)
         stubRequest("GET", "http://localhost:8080/disruptions.json").andReturnRawResponse(data)
         
         var disruptions: [Disruption]? = nil
@@ -47,6 +47,8 @@ class DisruptionsServiceTest: XCTestCase {
             expect(disruptions?.count).to(equal(1))
             expect(disruptions?.first?.lineName).to(equal("District"))
             expect(disruptions?.first?.status).to(equal("Minor Delays"))
+            expect(disruptions?.first?.startTime).to(equal("12:25"))
+            expect(disruptions?.first?.endTime).to(equal("12:55"))
             expect(error).to(beNil())
         }
     }
