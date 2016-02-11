@@ -31,7 +31,6 @@ dependencies {
 
     compile("commons-io:commons-io:2.4")
     compile("com.amazonaws:aws-java-sdk:1.10.50")
-    compile("io.pivotal.labs:cf-env:0.0.1")
     compile('com.squareup.moshi:moshi:1.1.0')
 
     testCompile("junit:junit:4.12")
