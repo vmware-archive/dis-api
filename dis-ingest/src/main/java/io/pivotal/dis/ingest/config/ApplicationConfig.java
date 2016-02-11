@@ -10,11 +10,13 @@ import io.pivotal.dis.ingest.store.AmazonS3FileStore;
 import io.pivotal.dis.ingest.store.FileStore;
 import io.pivotal.labs.cfenv.CloudFoundryEnvironment;
 import io.pivotal.labs.cfenv.CloudFoundryEnvironmentException;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+@Configuration
 public class ApplicationConfig {
 
     private final URL tflUrl;

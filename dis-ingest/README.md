@@ -2,10 +2,10 @@
 
 ## Build
 
-The following command produces a zip file which Cloud Foundry can accept.
+The following command produces a Spring Boot JAR file which Cloud Foundry can accept.
 
 ```
-gradle distZip
+./gradlew bootRepackage
 ```
 
 ## Deploy
@@ -29,7 +29,7 @@ A valid ``VCAP_SERVICES`` value would be:
 To run locally, create ``gradle.properties``, based on ``gradle.template.properties``, and then use:
 
 ```
-gradle run
+./gradlew bootRun
 ```
 
 This will set the necessary variables.

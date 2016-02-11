@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import io.pivotal.dis.ingest.config.ApplicationConfig;
 import io.pivotal.dis.ingest.domain.Digest;
 import io.pivotal.dis.ingest.domain.DisruptedLine;
 import io.pivotal.dis.ingest.domain.tfl.Line;
@@ -27,6 +28,8 @@ import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class IngestionTest {
 
@@ -151,7 +154,7 @@ public class IngestionTest {
 
     private List<LineStatus> stubLineStatuses(String... lineStatus) {
         return asList(lineStatus).stream()
-                .map(l -> new LineStatus(l))
+                .map(LineStatus::new)
                 .collect(toList());
     }
 
@@ -174,10 +177,18 @@ public class IngestionTest {
 
     private Ingester createIngester() {
         return new Ingester(
-                tflMockWebServer.getUrl("/"),
-                rawFileStore,
-                digestedFileStore,
+                mockApplicationConfig(),
                 ongoingDisruptionsStore);
+    }
+
+    private ApplicationConfig mockApplicationConfig() {
+        ApplicationConfig applicationConfig = mock(ApplicationConfig.class);
+
+        when(applicationConfig.tflUrl()).thenReturn(tflMockWebServer.getUrl("/"));
+        when(applicationConfig.rawFileStore()).thenReturn(rawFileStore);
+        when(applicationConfig.digestedFileStore()).thenReturn(digestedFileStore);
+
+        return applicationConfig;
     }
 
     private JsonAdapter<List<Line>> moshiTflLinesAdapter() {
