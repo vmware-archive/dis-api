@@ -2,6 +2,7 @@ import XCTest
 import UIKit
 import Nimble
 import Nocilla
+import SwiftyJSON
 @testable import dis_ios
 
 class DisruptionServiceTest: XCTestCase {
@@ -22,8 +23,17 @@ class DisruptionServiceTest: XCTestCase {
         LSNocilla.sharedInstance().stop()
     }
     
-    func testServiceSendsDataOnSuccess() {
-        let data = "{\"disruptions\":[{\"line\":\"District\", \"status\":\"Minor Delays\", \"startTime\":\"12:25\", \"endTime\":\"12:55\"}]}".dataUsingEncoding(NSUTF8StringEncoding)
+    func testServiceReturnsDataOnSuccess() {
+        let info = ["disruptions": [
+            [
+                "line": ["name": "District", "foregroundColor": "#000000", "backgroundColor": "#FFFFFF"],
+                "status": "Minor Delays",
+                "startTime": "12:25",
+                "endTime": "12:55"
+            ],
+        ]]
+        let data = try! JSON(info).rawData()
+    
         stubRequest("GET", "http://localhost:8080/disruptions.json").andReturnRawResponse(data)
         
         var disruptions: [Disruption]? = nil
@@ -45,7 +55,7 @@ class DisruptionServiceTest: XCTestCase {
         self.waitForExpectationsWithTimeout(5.0) { _ in
             expect(disruptions).toNot(beNil())
             expect(disruptions?.count).to(equal(1))
-            expect(disruptions?.first?.lineName).to(equal("District"))
+            expect(disruptions?.first?.line.name).to(equal("District"))
             expect(disruptions?.first?.status).to(equal("Minor Delays"))
             expect(disruptions?.first?.startTime).to(equal("12:25"))
             expect(disruptions?.first?.endTime).to(equal("12:55"))
@@ -54,7 +64,34 @@ class DisruptionServiceTest: XCTestCase {
     }
     
     func testBrokenDisruptionItemsFromServerAreIgnored() {
-        let data = "{\"disruptions\":[{\"line\":\"District\", \"status\":\"Minor Delays\"}, {\"line\":\"Northern\", \"status\":\"Minor Delays\"}, {\"goat\":\"Nowhere\", \"status\":\"Minor Delays\"}, {\"line\":\"Hammersmith & City\"}]}".dataUsingEncoding(NSUTF8StringEncoding)
+        let info = ["disruptions": [
+            [
+                "line": ["name": "District", "foregroundColor": "#000000", "backgroundColor": "#FFFFFF"],
+                "status": "Minor Delays",
+                "startTime": "12:25",
+                "endTime": "12:55"
+            ],
+            [
+                "line": ["name": "Bakerloo", "foregroundColor": "#EEEEEE", "backgroundColor": "#000000"],
+                "status": "Minor Delays",
+                "startTime": "12:25",
+                "endTime": "12:55"
+            ],
+            [
+                "line": ["bat": "Country", "foregroundColor": "#DDDDDD", "backgroundColor": "#EEEEEE"],
+                "status": "Minor Delays",
+                "startTime": "12:25",
+                "endTime": "12:55"
+            ],
+            [
+                "line": ["name": "Hammersmith & City", "foregroundColor": "#DDDDDD", "backgroundColor": "#EEEEEE"],
+                "status": "Minor Delays",
+                "startTime": "12:25",
+                "endTime": "12:55"
+            ]
+        ]]
+        let data = try! JSON(info).rawData()
+        
         stubRequest("GET", "http://localhost:8080/disruptions.json").andReturnRawResponse(data)
         
         var disruptions: [Disruption]? = nil

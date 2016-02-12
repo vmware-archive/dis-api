@@ -5,6 +5,7 @@ use_frameworks!
 
 target 'dis-ios' do
     pod 'SwiftyJSON'
+    pod 'UIColor_Hex_Swift'
 end
 
 target 'dis-iosTests' do

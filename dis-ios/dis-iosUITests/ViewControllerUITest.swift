@@ -25,7 +25,7 @@ class ViewControllerUITest: XCTestCase {
     }
 
     func testWhenThereAreNoDisruptionsItSaysNoDisruptions() {
-        startWebServerWithResponse("{\"disruptions\":[]}")
+        startWebServerWithResponse(try! JSON(["disruptions": []]).rawData())
 
         app.launch()
         
@@ -33,7 +33,15 @@ class ViewControllerUITest: XCTestCase {
     }
 
     func testWhenThereAreDisruptionsItShowsDisruptedLineInfo() {
-        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\", \"status\":\"Minor Delays\", \"startTime\":\"12:25\", \"endTime\":\"12:55\"}]}")
+        let info = ["disruptions": [
+            [
+                "line": ["name": "District", "foregroundColor": "#000000", "backgroundColor": "#FFFFFF"],
+                "status": "Minor Delays",
+                "startTime": "12:25",
+                "endTime": "12:55"
+            ],
+            ]]
+        startWebServerWithResponse(try! JSON(info).rawData())
 
         app.launch()
 
@@ -48,13 +56,31 @@ class ViewControllerUITest: XCTestCase {
     }
     
     func testWhenUserPullsDownOldDataIsClearedAndTableShowsNewData() {
-        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"District\", \"status\":\"Minor Delays\"}]}")
+        let beforeRefresh = ["disruptions": [
+            [
+                "line": ["name": "District", "foregroundColor": "#000000", "backgroundColor": "#FFFFFF"],
+                "status": "Minor Delays",
+                "startTime": "12:25",
+                "endTime": "12:55"
+            ],
+            ]]
         
+        startWebServerWithResponse(try! JSON(beforeRefresh).rawData())
+
         app.launch()
         
         webServer.stop()
-        
-        startWebServerWithResponse("{\"disruptions\":[{\"line\":\"Jubilee\", \"status\":\"Minor Delays\"}]}")
+
+        let afterRefresh = ["disruptions": [
+            [
+                "line": ["name": "Jubilee", "foregroundColor": "#000000", "backgroundColor": "#FFFFFF"],
+                "status": "Minor Delays",
+                "startTime": "12:25",
+                "endTime": "12:55"
+            ],
+            ]]
+        startWebServerWithResponse(try! JSON(afterRefresh).rawData())
+
         
         pullToRefresh("District")
         
@@ -75,11 +101,11 @@ class ViewControllerUITest: XCTestCase {
         start.pressForDuration(0, thenDragToCoordinate: finish)
     }
     
-    private func startWebServerWithResponse(response: String) {
+    private func startWebServerWithResponse(response: NSData) {
         webServer.addDefaultHandlerForMethod("GET", requestClass: GCDWebServerRequest.self){ (request) -> GCDWebServerResponse! in
             
             return GCDWebServerDataResponse(
-                data: response.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!,
+                data: response,
                 contentType: "application/json")
         }
         

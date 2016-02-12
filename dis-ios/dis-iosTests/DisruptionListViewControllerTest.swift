@@ -5,10 +5,20 @@ import Nimble
 extension Disruption {
     
     init(lineName: String, status: String, startTime: String, endTime: String) {
-        self.lineName = lineName
+        self.line = Line(name: lineName)
         self.status = status
         self.startTime = startTime
         self.endTime = endTime
+    }
+    
+}
+
+extension Line {
+    
+    init(name: String = "Bakerloo", backgroundColor: UIColor = UIColor.blackColor(), foregroundColor: UIColor = UIColor.whiteColor()) {
+        self.name = name
+        self.foregroundColor = foregroundColor
+        self.backgroundColor = backgroundColor
     }
     
 }

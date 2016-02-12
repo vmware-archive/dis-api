@@ -18,6 +18,8 @@
 		AE5F38EB1C64E3A100056F77 /* DisruptionListViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F38EA1C64E3A100056F77 /* DisruptionListViewControllerTest.swift */; };
 		AE5F38F61C64E3A100056F77 /* ViewControllerUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5F38F51C64E3A100056F77 /* ViewControllerUITest.swift */; };
 		AE6FCDF01C6CD84D00414949 /* DisruptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6FCDEF1C6CD84D00414949 /* DisruptionCell.swift */; };
+		AE7345131C6E031800067149 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7345121C6E031800067149 /* Line.swift */; };
+		AE7345151C6E035A00067149 /* LineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7345141C6E035A00067149 /* LineTest.swift */; };
 		AE8AAE031C64E4A600F4AC95 /* DisruptionServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8AAE021C64E4A600F4AC95 /* DisruptionServiceProtocol.swift */; };
 		AE8AAE051C64E4BA00F4AC95 /* DisruptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8AAE041C64E4BA00F4AC95 /* DisruptionService.swift */; };
 		AEE6452C1C6B7B0900C5B3E1 /* DisruptionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE6452B1C6B7B0900C5B3E1 /* DisruptionTest.swift */; };
@@ -65,6 +67,8 @@
 		AE5F38F51C64E3A100056F77 /* ViewControllerUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerUITest.swift; sourceTree = "<group>"; };
 		AE5F38F71C64E3A100056F77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE6FCDEF1C6CD84D00414949 /* DisruptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionCell.swift; sourceTree = "<group>"; };
+		AE7345121C6E031800067149 /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		AE7345141C6E035A00067149 /* LineTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineTest.swift; sourceTree = "<group>"; };
 		AE8AAE021C64E4A600F4AC95 /* DisruptionServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionServiceProtocol.swift; sourceTree = "<group>"; };
 		AE8AAE041C64E4BA00F4AC95 /* DisruptionService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisruptionService.swift; sourceTree = "<group>"; };
 		AEE645281C6B55C100C5B3E1 /* dis-iosTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "dis-iosTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -166,6 +170,7 @@
 				AE5F38E11C64E3A100056F77 /* Info.plist */,
 				AEE6452D1C6B7DD900C5B3E1 /* Disruption.swift */,
 				AE6FCDEF1C6CD84D00414949 /* DisruptionCell.swift */,
+				AE7345121C6E031800067149 /* Line.swift */,
 			);
 			path = "dis-ios";
 			sourceTree = "<group>";
@@ -178,6 +183,7 @@
 				AE21D6B11C6A38E100E417E8 /* DisruptionServiceTest.swift */,
 				AEE645281C6B55C100C5B3E1 /* dis-iosTests-Bridging-Header.h */,
 				AEE6452B1C6B7B0900C5B3E1 /* DisruptionTest.swift */,
+				AE7345141C6E035A00067149 /* LineTest.swift */,
 			);
 			path = "dis-iosTests";
 			sourceTree = "<group>";
@@ -459,6 +465,7 @@
 				AE8AAE031C64E4A600F4AC95 /* DisruptionServiceProtocol.swift in Sources */,
 				AE5F38D81C64E3A100056F77 /* DisruptionListViewController.swift in Sources */,
 				AE5F38D61C64E3A100056F77 /* AppDelegate.swift in Sources */,
+				AE7345131C6E031800067149 /* Line.swift in Sources */,
 				AEE6452E1C6B7DD900C5B3E1 /* Disruption.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -468,6 +475,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE21D6B21C6A38E100E417E8 /* DisruptionServiceTest.swift in Sources */,
+				AE7345151C6E035A00067149 /* LineTest.swift in Sources */,
 				AEE6452C1C6B7B0900C5B3E1 /* DisruptionTest.swift in Sources */,
 				AE5F38EB1C64E3A100056F77 /* DisruptionListViewControllerTest.swift in Sources */,
 			);

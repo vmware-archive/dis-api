@@ -58,7 +58,7 @@ public class DisruptionListViewController: UITableViewController {
     
     public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DisruptionCell")! as! DisruptionCell
-        cell.lineNameLabel?.text = disruptions[indexPath.row].lineName
+        cell.lineNameLabel?.text = disruptions[indexPath.row].line.name
         cell.statusLabel?.text = disruptions[indexPath.row].status
         cell.startTimeLabel?.text = disruptions[indexPath.row].startTime
         cell.endTimeLabel?.text = disruptions[indexPath.row].endTime
