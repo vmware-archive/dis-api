@@ -4,16 +4,16 @@ import Nimble
 import Nocilla
 @testable import dis_ios
 
-class DisruptionsServiceTest: XCTestCase {
+class DisruptionServiceTest: XCTestCase {
     
     let timeoutError = NSError(domain: NSURLErrorDomain, code: NSURLErrorTimedOut, userInfo: nil)
     
-    var service: DisruptionsService!
+    var service: DisruptionService!
     
     override func setUp() {
         super.setUp()
         LSNocilla.sharedInstance().start()
-        service = DisruptionsService()
+        service = DisruptionService()
     }
     
     override func tearDown() {

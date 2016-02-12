@@ -8,7 +8,7 @@ public enum Result<T> {
     
 }
 
-public protocol DisruptionsServiceProtocol {
+public protocol DisruptionServiceProtocol {
 
     func getDisruptions(completion: (result: Result<[Disruption]>) -> Void)
 

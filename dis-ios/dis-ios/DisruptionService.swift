@@ -2,7 +2,7 @@ import Foundation
 import SwiftyJSON
 import UIKit
 
-public class DisruptionsService: DisruptionsServiceProtocol {
+public class DisruptionService: DisruptionServiceProtocol {
     
     public func getDisruptions(completion: (result: Result<[Disruption]>) -> Void) {
         #if TEST

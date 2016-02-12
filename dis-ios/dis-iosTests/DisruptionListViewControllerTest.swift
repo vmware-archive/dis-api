@@ -13,9 +13,9 @@ extension Disruption {
     
 }
 
-class ViewControllerTest: XCTestCase {
+class DisruptionListViewControllerTest: XCTestCase {
     
-    class StubDisruptionsServiceSuccess: DisruptionsServiceProtocol {
+    class StubDisruptionServiceSuccess: DisruptionServiceProtocol {
         func getDisruptions(completion: (result: Result<[Disruption]>) -> Void) {
             completion(result: .Success([
                 Disruption(lineName: "Northern", status: "404 train not found", startTime: "12:25", endTime: "12:55"),
@@ -25,42 +25,42 @@ class ViewControllerTest: XCTestCase {
         }
     }
     
-    class StubDisruptionsServiceSuccessNoDisruptions: DisruptionsServiceProtocol {
+    class StubDisruptionServiceSuccessNoDisruptions: DisruptionServiceProtocol {
         func getDisruptions(completion: (result: Result<[Disruption]>) -> Void) {
             completion(result: .Success([]))
         }
     }
     
-    class StubDisruptionsServiceNetworkError: DisruptionsServiceProtocol {
+    class StubDisruptionServiceNetworkError: DisruptionServiceProtocol {
         func getDisruptions(completion: (result: Result<[Disruption]>) -> Void) {
             completion(result: .HTTPError(message: "Couldn't retrieve data from server 💩"))
         }
     }
     
-    var viewController: ViewController!
+    var viewController: DisruptionListViewController!
     
     override func setUp() {
         let storyboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
-        viewController = storyboard.instantiateInitialViewController() as! ViewController
+        viewController = storyboard.instantiateInitialViewController() as! DisruptionListViewController
         
         let _ = viewController.view
     }
     
     func testDisruptionsAreRefreshedWhenAppEntersForeground() {
-        viewController.disruptionsService = StubDisruptionsServiceSuccess()
+        viewController.disruptionsService = StubDisruptionServiceSuccess()
         viewController.notificationCenter.postNotificationName(UIApplicationWillEnterForegroundNotification, object: nil)
                 
         expect(self.viewController.tableView.numberOfRowsInSection(0)).to(equal(3))
     }
     
     func testTableBackgroundViewIsNilWhenDisruptionsAreReturned() {
-        viewController.disruptionsService = StubDisruptionsServiceSuccess()
+        viewController.disruptionsService = StubDisruptionServiceSuccess()
         viewController.viewWillAppear(false)
         expect(self.viewController.tableView.backgroundView).to(beNil())
     }
     
     func testTableViewDataSourceRespondsCorrectlyWhenDisruptionsAreReturned() {
-        viewController.disruptionsService = StubDisruptionsServiceSuccess()
+        viewController.disruptionsService = StubDisruptionServiceSuccess()
         viewController.viewWillAppear(false)
         
         expect(self.viewController.tableView.numberOfRowsInSection(0)).to(equal(3))
@@ -86,14 +86,14 @@ class ViewControllerTest: XCTestCase {
     }
     
     func testTableBackgroundViewHasMessageWhenThereAreNoDisruptions() {
-        viewController.disruptionsService = StubDisruptionsServiceSuccessNoDisruptions()
+        viewController.disruptionsService = StubDisruptionServiceSuccessNoDisruptions()
         viewController.viewWillAppear(false)
         expect(self.viewController.tableView.backgroundView).to(beAKindOf(UIView.self))
         expect(self.viewController.errorViewLabel.text).to(equal("No Disruptions"))
     }
     
     func testTableBackgroundViewHasMessageWhenAnErrorIsReturned() {
-        viewController.disruptionsService = StubDisruptionsServiceNetworkError()
+        viewController.disruptionsService = StubDisruptionServiceNetworkError()
         viewController.viewWillAppear(false)
         expect(self.viewController.tableView.backgroundView).to(beAKindOf(UIView.self))
         expect(self.viewController.errorViewLabel.text).to(equal("Couldn't retrieve data from server 💩"))

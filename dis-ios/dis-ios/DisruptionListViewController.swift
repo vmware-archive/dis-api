@@ -1,6 +1,6 @@
 import UIKit
 
-public class ViewController: UITableViewController {
+public class DisruptionListViewController: UITableViewController {
     
     @IBOutlet var errorView: UIView!
     @IBOutlet weak var errorViewLabel: UILabel!
@@ -11,8 +11,8 @@ public class ViewController: UITableViewController {
         return NSNotificationCenter.defaultCenter()
     }()
     
-    public lazy var disruptionsService: DisruptionsServiceProtocol = {
-        return DisruptionsService()
+    public lazy var disruptionsService: DisruptionServiceProtocol = {
+        return DisruptionService()
     }()
     
     override public func viewDidLoad() {
