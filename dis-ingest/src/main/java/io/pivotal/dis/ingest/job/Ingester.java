@@ -27,11 +27,13 @@ public class Ingester {
     private final OngoingDisruptionsStore ongoingDisruptionsStore;
 
     @Autowired
-    public Ingester(ApplicationConfig applicationConfig,
+    public Ingester(URL tflUrl,
+                    FileStore rawFileStore,
+                    FileStore digestedFileStore,
                     OngoingDisruptionsStore ongoingDisruptionsStore) {
-        this.url = applicationConfig.tflUrl();
-        this.rawFileStore = applicationConfig.rawFileStore();
-        this.digestedFileStore = applicationConfig.digestedFileStore();
+        this.url = tflUrl;
+        this.rawFileStore = rawFileStore;
+        this.digestedFileStore = digestedFileStore;
         this.ongoingDisruptionsStore = ongoingDisruptionsStore;
     }
 
