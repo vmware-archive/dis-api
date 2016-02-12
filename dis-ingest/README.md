@@ -4,6 +4,8 @@
 
 Set the following environment variables locally:
 
+Variable  | Value
+--------- | -----
 SPRING_PROFILES_ACTIVE=local | Use the local profile
 AWS_ACCESS_KEY_ID | Your AWS access key
 AWS_SECRET_KEY | Your AWS secret key
