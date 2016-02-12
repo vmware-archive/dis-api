@@ -9,11 +9,10 @@ end
 
 target 'dis-iosTests' do
     pod 'Nocilla'
-    pod 'Quick'
     pod 'Nimble'
 end
 
 target 'dis-iosUITests' do
-    pod ‘GCDWebServer’
+    pod 'GCDWebServer'
 end
 
