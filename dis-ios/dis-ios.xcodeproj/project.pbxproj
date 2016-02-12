@@ -178,10 +178,10 @@
 		AE5F38E91C64E3A100056F77 /* dis-iosTests */ = {
 			isa = PBXGroup;
 			children = (
-				AE5F38EA1C64E3A100056F77 /* DisruptionListViewControllerTest.swift */,
 				AE5F38EC1C64E3A100056F77 /* Info.plist */,
-				AE21D6B11C6A38E100E417E8 /* DisruptionServiceTest.swift */,
 				AEE645281C6B55C100C5B3E1 /* dis-iosTests-Bridging-Header.h */,
+				AE5F38EA1C64E3A100056F77 /* DisruptionListViewControllerTest.swift */,
+				AE21D6B11C6A38E100E417E8 /* DisruptionServiceTest.swift */,
 				AEE6452B1C6B7B0900C5B3E1 /* DisruptionTest.swift */,
 				AE7345141C6E035A00067149 /* LineTest.swift */,
 			);
