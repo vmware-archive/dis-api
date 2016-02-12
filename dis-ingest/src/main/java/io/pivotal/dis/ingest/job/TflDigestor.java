@@ -35,6 +35,7 @@ public class TflDigestor {
         try {
             this.lines = moshiTflLinesAdapter().fromJson(tflData);
         } catch (IOException e) {
+            System.out.printf("Error unmarshalling TfL raw data");
             throw new RuntimeException(e);
         }
 
@@ -43,9 +44,9 @@ public class TflDigestor {
     }
 
     private Optional<Digest> parseDigest(Optional<String> digest) {
-        return digest.map(string -> {
+        return digest.map(jsonString -> {
             try {
-                return moshiDigestAdapter().fromJson(string);
+                return moshiDigestAdapter().fromJson(jsonString);
             } catch (IOException e) {
                 return null;
             }

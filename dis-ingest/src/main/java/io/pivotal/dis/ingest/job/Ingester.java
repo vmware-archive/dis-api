@@ -1,10 +1,13 @@
 package io.pivotal.dis.ingest.job;
 
 import com.amazonaws.util.json.JSONException;
+import io.pivotal.dis.ingest.config.ApplicationConfig;
 import io.pivotal.dis.ingest.store.FileStore;
 import io.pivotal.dis.ingest.store.OngoingDisruptionsStore;
 import io.pivotal.dis.ingest.system.Clock;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,21 +16,23 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+@Component
 public class Ingester {
 
     private static final DateTimeFormatter FILE_NAME_DATE_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
 
     private final URL url;
-    private final FileStore fileStore;
+    private final FileStore rawFileStore;
     private final FileStore digestedFileStore;
     private final OngoingDisruptionsStore ongoingDisruptionsStore;
 
-    public Ingester(URL url,
+    @Autowired
+    public Ingester(URL tflUrl,
                     FileStore rawFileStore,
                     FileStore digestedFileStore,
                     OngoingDisruptionsStore ongoingDisruptionsStore) {
-        this.url = url;
-        this.fileStore = rawFileStore;
+        this.url = tflUrl;
+        this.rawFileStore = rawFileStore;
         this.digestedFileStore = digestedFileStore;
         this.ongoingDisruptionsStore = ongoingDisruptionsStore;
     }
@@ -35,7 +40,10 @@ public class Ingester {
     public void ingest(Clock clock) {
         try (InputStream inputStream = url.openConnection().getInputStream()) {
             String tflData = IOUtils.toString(inputStream);
-            fileStore.save(nameRawFile(clock), tflData);
+            String rawFileName = nameRawFile(clock);
+            rawFileStore.save(rawFileName, tflData);
+
+            System.out.println("Saved raw file " + rawFileName);
 
             Optional<String> previousDisruptionDigest = ongoingDisruptionsStore.getPreviousDisruptionDigest();
 
@@ -47,6 +55,9 @@ public class Ingester {
                         .digest();
 
             digestedFileStore.save("disruptions.json", digestedTflData);
+
+            System.out.println("Saved digested file");
+
             ongoingDisruptionsStore.setPreviousDisruptionDigest(digestedTflData);
 
         } catch (IOException | JSONException e) {

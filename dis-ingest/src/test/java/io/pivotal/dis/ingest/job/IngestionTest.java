@@ -151,7 +151,7 @@ public class IngestionTest {
 
     private List<LineStatus> stubLineStatuses(String... lineStatus) {
         return asList(lineStatus).stream()
-                .map(l -> new LineStatus(l))
+                .map(LineStatus::new)
                 .collect(toList());
     }
 
