@@ -8,7 +8,7 @@ public class DisruptionService: DisruptionServiceProtocol {
         #if TEST
             let url = NSURL(string: "http://localhost:8080/disruptions.json")!
         #else
-            let url = NSURL(string: "https://pivotal-london-dis-digest-test.s3.amazonaws.com/disruptions.json")!
+            let url = NSURL(string: "https://pivotal-london-dis-digest-test.s3.amazonaws.com/v2/disruptions.json")!
         #endif
         
         
