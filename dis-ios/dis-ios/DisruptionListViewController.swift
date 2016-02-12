@@ -17,12 +17,13 @@ public class DisruptionListViewController: UITableViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
+
         notificationCenter.addObserver(self, selector: "load", name: UIApplicationWillEnterForegroundNotification, object: nil)
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: "fetchDisruptions", forControlEvents: .ValueChanged)
         tableView.addSubview(refreshControl!)
         tableView.tableFooterView = UIView(frame: CGRect.zero)
+        edgesForExtendedLayout = UIRectEdge.None
     }
     
     public override func viewWillAppear(animated: Bool) {

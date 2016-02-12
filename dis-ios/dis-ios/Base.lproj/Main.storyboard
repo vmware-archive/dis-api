@@ -25,16 +25,16 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="uY7-Zm-3JX">
                                             <rect key="frame" x="20" y="20" width="560" height="59"/>
                                             <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="RjF-Uh-t5c" userLabel="Name and Status">
+                                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="RjF-Uh-t5c" userLabel="Name and Status">
                                                     <rect key="frame" x="0.0" y="0.0" width="435" height="59"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" text="Line Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" translatesAutoresizingMaskIntoConstraints="NO" id="oP1-uO-1Na">
-                                                            <rect key="frame" x="0.0" y="0.0" width="126" height="33"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Line Name Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xZq-js-ggj">
+                                                            <rect key="frame" x="0.0" y="0.0" width="196" height="33"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" text="Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" translatesAutoresizingMaskIntoConstraints="NO" id="MFq-Zo-h3G">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" text="Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" translatesAutoresizingMaskIntoConstraints="NO" id="MFq-Zo-h3G">
                                                             <rect key="frame" x="0.0" y="33" width="60" height="26"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -105,7 +105,7 @@
                                 <connections>
                                     <outlet property="endTimeLabel" destination="UiM-0i-6Ug" id="1hw-sR-IjD"/>
                                     <outlet property="leftBorder" destination="OlO-n4-7tH" id="lay-ME-qxU"/>
-                                    <outlet property="lineNameLabel" destination="oP1-uO-1Na" id="Ojo-og-UkI"/>
+                                    <outlet property="lineNameLabel" destination="xZq-js-ggj" id="RWo-BD-Ybt"/>
                                     <outlet property="startTimeLabel" destination="Ssb-lm-cAc" id="VwA-h2-yb4"/>
                                     <outlet property="statusLabel" destination="MFq-Zo-h3G" id="Iou-I6-5sV"/>
                                 </connections>
