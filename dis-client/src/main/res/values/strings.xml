@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="splash_screen_text">Welcome to Dis!</string>
-    <string name="app_name">Disruptions</string>
-    <string name="no_disruptions">No disruptions</string>
-    <string name="refresh_disruptions">Refresh disruptions</string>
-    <string name="refresh_failed">Couldn\'t retrieve data from server :(</string>
-    <string name="test_mode">Test mode</string>
-</resources>
