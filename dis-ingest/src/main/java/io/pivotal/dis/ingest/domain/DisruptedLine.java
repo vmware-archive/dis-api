@@ -1,5 +1,7 @@
 package io.pivotal.dis.ingest.domain;
 
+import io.pivotal.dis.ingest.domain.tfl.LineColor;
+
 public class DisruptedLine {
 
     private final String status;
@@ -8,6 +10,8 @@ public class DisruptedLine {
     private final String endTime;
     private final String earliestEndTime;
     private final String latestEndTime;
+    private final String backgroundColor;
+    private final String foregroundColor;
 
     public DisruptedLine(String status,
                          String line,
@@ -22,6 +26,8 @@ public class DisruptedLine {
         this.endTime = endTime;
         this.earliestEndTime = earliestEndTime;
         this.latestEndTime = latestEndTime;
+        this.backgroundColor = LineColor.getBackgroundColorForLine(line);
+        this.foregroundColor = LineColor.getForegroundColorForLine(line);
     }
 
     public String getStatus() {
@@ -46,5 +52,13 @@ public class DisruptedLine {
 
     public String getLatestEndTime() {
         return latestEndTime;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public String getForegroundColor() {
+        return foregroundColor;
     }
 }

@@ -787,8 +787,8 @@
   },
   {
     "$type":"Tfl.Api.Presentation.Entities.Line, Tfl.Api.Presentation.Entities",
-    "id":"piccadilly",
-    "name":"Piccadilly",
+    "id":"circle",
+    "name":"Circle",
     "modeName":"tube",
     "created":"2015-02-12T16:52:48.39",
     "modified":"2015-02-12T16:52:48.39",

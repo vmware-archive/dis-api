@@ -39,7 +39,7 @@ public class TflDigestorTest {
         assertThat(disruptions.size(), equalTo(1));
 
         DisruptedLine disruptedLine = disruptions.get(0);
-        assertLineData(disruptedLine, currentTime, "Bakerloo", "Minor Delays");
+        assertLineData(disruptedLine, currentTime,  "Bakerloo", "Minor Delays", "#FFFFFF", "#AE6118");
 
         LocalDateTime tenMinutesLater = currentTime.plusMinutes(10);
         String laterTflLineStatus = loadFixture("line_mode_tube_status_2");
@@ -55,18 +55,22 @@ public class TflDigestorTest {
         assertThat(disruptions.size(), equalTo(2));
 
         disruptedLine = disruptions.get(0);
-        assertLineData(disruptedLine, currentTime, "Bakerloo", "Minor Delays");
+        assertLineData(disruptedLine, currentTime, "Bakerloo", "Minor Delays", "#FFFFFF", "#AE6118");
 
         disruptedLine = disruptions.get(1);
-        assertLineData(disruptedLine, tenMinutesLater, "Piccadilly", "Minor Delays");
+        assertLineData(disruptedLine, tenMinutesLater, "Circle", "Minor Delays", "#113892", "#F8D42D");
     }
 
     private void assertLineData(DisruptedLine disruptedLine,
                                 LocalDateTime currentTime,
                                 String expectedLine,
-                                String expectedStatus) {
+                                String expectedStatus,
+                                String expectedForegroundColor,
+                                String expectedBackgroundColor) {
 
         assertThat(disruptedLine.getLine(), equalTo(expectedLine));
+        assertThat(disruptedLine.getForegroundColor(), equalTo(expectedForegroundColor));
+        assertThat(disruptedLine.getBackgroundColor(), equalTo(expectedBackgroundColor));
         assertThat(disruptedLine.getStartTime(), equalTo(currentTime.format(TIME_FORMAT)));
         assertThat(disruptedLine.getEndTime(), equalTo(currentTime.plusMinutes(30).format(TIME_FORMAT)));
         assertThat(disruptedLine.getEarliestEndTime(), equalTo(currentTime.plusMinutes(30 - 10).format(TIME_FORMAT)));
