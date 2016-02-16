@@ -7,7 +7,7 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import io.pivotal.dis.ingest.domain.Digest;
 import io.pivotal.dis.ingest.domain.DisruptedLine;
-import io.pivotal.dis.ingest.domain.tfl.Line;
+import io.pivotal.dis.ingest.domain.tfl.TflLine;
 import io.pivotal.dis.ingest.domain.tfl.LineStatus;
 import io.pivotal.dis.ingest.store.FileStore;
 import io.pivotal.dis.ingest.store.OngoingDisruptionsStore;
@@ -40,24 +40,24 @@ public class IngestionTest {
 
     @Before
     public void prepareServer() throws Exception {
-        JsonAdapter<List<Line>> moshiTflLinesAdapter = moshiTflLinesAdapter();
+        JsonAdapter<List<TflLine>> moshiTflLinesAdapter = moshiTflLinesAdapter();
 
-        List<Line> tflLines = new ArrayList<>();
-        tflLines.add(stubLine("Bakerloo", "Runaway Train"));
-
-        tflMockWebServer.enqueue(
-                new MockResponse()
-                        .setHeader("Content-Type", "application/json")
-                        .setBody(moshiTflLinesAdapter.toJson(tflLines)));
-
-        tflLines = new ArrayList<>();
-        tflLines.add(stubLine("Bakerloo", "Runaway Train"));
-        tflLines.add(stubLine("Circle", "Leaves on the Line"));
+        List<TflLine> tflTflLines = new ArrayList<>();
+        tflTflLines.add(stubLine("Bakerloo", "Runaway Train"));
 
         tflMockWebServer.enqueue(
                 new MockResponse()
                         .setHeader("Content-Type", "application/json")
-                        .setBody(moshiTflLinesAdapter.toJson(tflLines)));
+                        .setBody(moshiTflLinesAdapter.toJson(tflTflLines)));
+
+        tflTflLines = new ArrayList<>();
+        tflTflLines.add(stubLine("Bakerloo", "Runaway Train"));
+        tflTflLines.add(stubLine("Circle", "Leaves on the TflLine"));
+
+        tflMockWebServer.enqueue(
+                new MockResponse()
+                        .setHeader("Content-Type", "application/json")
+                        .setBody(moshiTflLinesAdapter.toJson(tflTflLines)));
 
         tflMockWebServer.play();
     }
@@ -71,9 +71,9 @@ public class IngestionTest {
 
         assertLastRawFileCreated(clock);
 
-        List<Line> lines = getLastRawFileContent();
+        List<TflLine> tflLines = getLastRawFileContent();
 
-        assertThat(lines.get(0), equalTo(stubLine("Bakerloo", "Runaway Train")));
+        assertThat(tflLines.get(0), equalTo(stubLine("Bakerloo", "Runaway Train")));
     }
 
     @Test
@@ -85,9 +85,9 @@ public class IngestionTest {
 
         assertLastRawFileCreated(clock);
 
-        List<Line> lines = getLastRawFileContent();
+        List<TflLine> tflLines = getLastRawFileContent();
 
-        assertThat(lines.get(0), equalTo(stubLine("Bakerloo", "Runaway Train")));
+        assertThat(tflLines.get(0), equalTo(stubLine("Bakerloo", "Runaway Train")));
 
 
         clock.setCurrentTime(LocalDateTime.now().plusMinutes(10));
@@ -95,10 +95,10 @@ public class IngestionTest {
 
         assertLastRawFileCreated(clock);
 
-        lines = getLastRawFileContent();
+        tflLines = getLastRawFileContent();
 
-        assertThat(lines.get(0), equalTo(stubLine("Bakerloo", "Runaway Train")));
-        assertThat(lines.get(1), equalTo(stubLine("Circle", "Leaves on the Line")));
+        assertThat(tflLines.get(0), equalTo(stubLine("Bakerloo", "Runaway Train")));
+        assertThat(tflLines.get(1), equalTo(stubLine("Circle", "Leaves on the TflLine")));
     }
 
     @Test
@@ -140,13 +140,13 @@ public class IngestionTest {
         assertThat(disruptions, hasSize(2));
 
         assertLineData(disruptions.get(0), "Bakerloo", "Runaway Train", currentTime, currentTime, currentTime, currentTime);
-        assertLineData(disruptions.get(1), "Circle", "Leaves on the Line", currentTime.plusMinutes(10), currentTime.plusMinutes(10), currentTime.plusMinutes(10), currentTime.plusMinutes(10));
+        assertLineData(disruptions.get(1), "Circle", "Leaves on the TflLine", currentTime.plusMinutes(10), currentTime.plusMinutes(10), currentTime.plusMinutes(10), currentTime.plusMinutes(10));
     }
 
 
-    private Line stubLine(String name, String...lineStatus) {
-        Line line = new Line(name, stubLineStatuses(lineStatus));
-        return line;
+    private TflLine stubLine(String name, String...lineStatus) {
+        TflLine tflLine = new TflLine(name, stubLineStatuses(lineStatus));
+        return tflLine;
     }
 
     private List<LineStatus> stubLineStatuses(String... lineStatus) {
@@ -180,8 +180,8 @@ public class IngestionTest {
                 ongoingDisruptionsStore);
     }
 
-    private JsonAdapter<List<Line>> moshiTflLinesAdapter() {
-        return moshi().adapter(newParameterizedType(List.class, Line.class));
+    private JsonAdapter<List<TflLine>> moshiTflLinesAdapter() {
+        return moshi().adapter(newParameterizedType(List.class, TflLine.class));
     }
 
     private JsonAdapter<Digest> moshiDigestAdapter() {
@@ -196,7 +196,7 @@ public class IngestionTest {
         assertThat(rawFileStore.getLastName(), equalTo("tfl_api_line_mode_status_tube_" + clock.getCurrentTime().format(DATE_TIME_FORMAT) + ".json"));
     }
 
-    private List<Line> getLastRawFileContent() throws IOException {
+    private List<TflLine> getLastRawFileContent() throws IOException {
         String lastFileAsJson = rawFileStore.getLastFile();
         return moshiTflLinesAdapter().fromJson(lastFileAsJson);
     }

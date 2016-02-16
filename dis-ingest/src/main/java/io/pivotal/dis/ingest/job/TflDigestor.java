@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import io.pivotal.dis.ingest.domain.Digest;
 import io.pivotal.dis.ingest.domain.DisruptedLine;
-import io.pivotal.dis.ingest.domain.tfl.Line;
+import io.pivotal.dis.ingest.domain.tfl.TflLine;
 import io.pivotal.dis.ingest.domain.tfl.LineStatus;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class TflDigestor {
     public static final double EARLIEST_END_TIME_MULTIPLIER = 2d / 3d;
     public static final double LATEST_END_TIME_MULTIPLIER = 4d / 3d;
 
-    private final List<Line> lines;
+    private final List<TflLine> tflLines;
     private final LocalDateTime currentTime;
     private final Optional<Digest> previousDigest;
 
@@ -33,7 +33,7 @@ public class TflDigestor {
                        Optional<String> previousDigest) {
 
         try {
-            this.lines = moshiTflLinesAdapter().fromJson(tflData);
+            this.tflLines = moshiTflLinesAdapter().fromJson(tflData);
         } catch (IOException e) {
             System.out.printf("Error unmarshalling TfL raw data");
             throw new RuntimeException(e);
@@ -54,7 +54,7 @@ public class TflDigestor {
     }
 
     public String digest() throws JSONException, IOException {
-        Stream<Line> disruptedLines = lines.stream().filter(line -> {
+        Stream<TflLine> disruptedLines = tflLines.stream().filter(line -> {
             LineStatus lineStatus = line.getLineStatuses().get(0);
             return !lineStatus.getStatusSeverityDescription().equals("Good Service");
         });
@@ -118,8 +118,8 @@ public class TflDigestor {
         return latestEndTime.orElse(getTimeWithMultiplier(status, LATEST_END_TIME_MULTIPLIER));
     }
 
-    private JsonAdapter<List<Line>> moshiTflLinesAdapter() {
-        return moshi().adapter(newParameterizedType(List.class, Line.class));
+    private JsonAdapter<List<TflLine>> moshiTflLinesAdapter() {
+        return moshi().adapter(newParameterizedType(List.class, TflLine.class));
     }
 
     private JsonAdapter<Digest> moshiDigestAdapter() {

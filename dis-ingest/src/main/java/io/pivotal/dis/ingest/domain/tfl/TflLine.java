@@ -2,11 +2,11 @@ package io.pivotal.dis.ingest.domain.tfl;
 
 import java.util.List;
 
-public class Line {
+public class TflLine {
     private String name;
     private List<LineStatus> lineStatuses;
 
-    public Line(String name, List<LineStatus> lineStatuses) {
+    public TflLine(String name, List<LineStatus> lineStatuses) {
         this.name = name;
         this.lineStatuses = lineStatuses;
     }
@@ -25,10 +25,10 @@ public class Line {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Line line = (Line) o;
+        TflLine tflLine = (TflLine) o;
 
-        if (name != null ? !name.equals(line.name) : line.name != null) return false;
-        return !(lineStatuses != null ? !lineStatuses.equals(line.lineStatuses) : line.lineStatuses != null);
+        if (name != null ? !name.equals(tflLine.name) : tflLine.name != null) return false;
+        return !(lineStatuses != null ? !lineStatuses.equals(tflLine.lineStatuses) : tflLine.lineStatuses != null);
 
     }
 
