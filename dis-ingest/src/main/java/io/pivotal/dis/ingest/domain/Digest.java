@@ -43,12 +43,12 @@ public class Digest {
         }
     }
 
-    public boolean isLineDisrupted(String lineName) {
+    private boolean isLineDisrupted(String lineName) {
         return disruptions.stream()
                 .anyMatch(disruptedLine -> disruptedLine.getLine().equals(lineName));
     }
 
-    public Optional<DisruptedLine> getLine(String lineName) {
+    private Optional<DisruptedLine> getLine(String lineName) {
         return getDisruptions().stream()
                 .filter(disruptedLine -> disruptedLine.getLine().equals(lineName))
                 .findFirst();
