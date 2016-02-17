@@ -2,7 +2,14 @@ package io.pivotal.dis.ingest.domain;
 
 import io.pivotal.dis.ingest.domain.tfl.LineColor;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 public class DisruptedLine {
+
+    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     private final String status;
     private final String line;
@@ -19,10 +26,6 @@ public class DisruptedLine {
 
     public DisruptedLine(String status,
                          String line,
-                         String startTime,
-                         String endTime,
-                         String earliestEndTime,
-                         String latestEndTime,
                          Long startTimestamp,
                          Long endTimestamp,
                          Long earliestEndTimestamp,
@@ -30,18 +33,18 @@ public class DisruptedLine {
 
         this.status = status;
         this.line = line;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.earliestEndTime = earliestEndTime;
-        this.latestEndTime = latestEndTime;
+        this.backgroundColor = LineColor.getBackgroundColorForLine(line);
+        this.foregroundColor = LineColor.getForegroundColorForLine(line);
 
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
         this.earliestEndTimestamp = earliestEndTimestamp;
         this.latestEndTimestamp = latestEndTimestamp;
 
-        this.backgroundColor = LineColor.getBackgroundColorForLine(line);
-        this.foregroundColor = LineColor.getForegroundColorForLine(line);
+        this.startTime = epochMillisToTimeString(this.startTimestamp);
+        this.endTime = epochMillisToTimeString(this.endTimestamp);
+        this.earliestEndTime = epochMillisToTimeString(this.earliestEndTimestamp);
+        this.latestEndTime = epochMillisToTimeString(this.latestEndTimestamp);
     }
 
     public String getStatus() {
@@ -91,5 +94,9 @@ public class DisruptedLine {
 
     public Long getLatestEndTimestamp() {
         return latestEndTimestamp;
+    }
+
+    private String epochMillisToTimeString(Long millis) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC).format(TIME_FORMAT);
     }
 }

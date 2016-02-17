@@ -21,9 +21,6 @@ import static org.junit.Assert.assertThat;
 public class TflDigestorTest {
 
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
-    public static final int LATEST_END_TIME_BUFFER = 30 + 10;
-    public static final int END_TIME_BUFFER = 30;
-    public static final int EARLIEST_END_TIME_BUFFER = 30 - 10;
 
     @Test
     public void digestTflData_returnsDisruptedLines_WithCorrectDisruptionStartTimes() throws Exception {
@@ -166,14 +163,14 @@ public class TflDigestorTest {
         assertThat(disruptedLine.getBackgroundColor(), equalTo(expectedBackgroundColor));
 
         assertThat(disruptedLine.getStartTime(), equalTo(currentTime.format(TIME_FORMAT)));
-        assertThat(disruptedLine.getEndTime(), equalTo(currentTime.plusMinutes(END_TIME_BUFFER).format(TIME_FORMAT)));
-        assertThat(disruptedLine.getEarliestEndTime(), equalTo(currentTime.plusMinutes(EARLIEST_END_TIME_BUFFER).format(TIME_FORMAT)));
-        assertThat(disruptedLine.getLatestEndTime(), equalTo(currentTime.plusMinutes(LATEST_END_TIME_BUFFER).format(TIME_FORMAT)));
+        assertThat(disruptedLine.getEndTime(), equalTo(currentTime.plusMinutes(30).format(TIME_FORMAT)));
+        assertThat(disruptedLine.getEarliestEndTime(), equalTo(currentTime.plusMinutes(30 - 10).format(TIME_FORMAT)));
+        assertThat(disruptedLine.getLatestEndTime(), equalTo(currentTime.plusMinutes(30 + 10).format(TIME_FORMAT)));
 
         assertThat(epochMillisToTimeString(disruptedLine.getStartTimestamp()), equalTo(currentTime.format(TIME_FORMAT)));
-        assertThat(epochMillisToTimeString(disruptedLine.getEndTimestamp()), equalTo(currentTime.plusMinutes(END_TIME_BUFFER).format(TIME_FORMAT)));
-        assertThat(epochMillisToTimeString(disruptedLine.getEarliestEndTimestamp()), equalTo(currentTime.plusMinutes(EARLIEST_END_TIME_BUFFER).format(TIME_FORMAT)));
-        assertThat(epochMillisToTimeString(disruptedLine.getLatestEndTimestamp()), equalTo(currentTime.plusMinutes(LATEST_END_TIME_BUFFER).format(TIME_FORMAT)));
+        assertThat(epochMillisToTimeString(disruptedLine.getEndTimestamp()), equalTo(currentTime.plusMinutes(30).format(TIME_FORMAT)));
+        assertThat(epochMillisToTimeString(disruptedLine.getEarliestEndTimestamp()), equalTo(currentTime.plusMinutes(30 - 10).format(TIME_FORMAT)));
+        assertThat(epochMillisToTimeString(disruptedLine.getLatestEndTimestamp()), equalTo(currentTime.plusMinutes(30 + 10).format(TIME_FORMAT)));
 
         assertThat(disruptedLine.getStatus(), equalTo(expectedStatus));
     }

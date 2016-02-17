@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.toList;
 
 public class TflDigestor {
 
-    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
     public static final double EARLIEST_END_TIME_MULTIPLIER = 2d / 3d;
     public static final double LATEST_END_TIME_MULTIPLIER = 4d / 3d;
 
@@ -63,38 +62,42 @@ public class TflDigestor {
         });
 
         Stream<DisruptedLine> digestedLines = disruptedLines.map(line -> {
-            String status = line.getLineStatuses().get(0).getStatusSeverityDescription();
-            String lineName = line.getName();
-            String startTime = getStartTime(lineName);
-            String endTime = getEndTime(status, lineName);
-            String earliestEndTime = getEarliestEndTime(status, lineName);
-            String latestEndTime = getLatestEndTime(status, lineName);
+                    String status = line.getLineStatuses().get(0).getStatusSeverityDescription();
+                    String lineName = line.getName();
 
-            Long startTimestamp = getStartTimestamp(lineName);
-            Long endTimestamp = getEndTimestamp(status, lineName);
-            Long earliestEndTimestamp = getEarliestEndTimestamp(status, lineName);
-            Long latestEndTimestamp = getLatestEndTimestamp(status, lineName);
-
-            DisruptedLine disruptedLine =
-                    new DisruptedLine(
+                    return new DisruptedLine(
                             status,
                             lineName,
-                            startTime,
-                            endTime,
-                            earliestEndTime,
-                            latestEndTime,
-                            startTimestamp,
-                            endTimestamp,
-                            earliestEndTimestamp,
-                            latestEndTimestamp);
+                            getStartTimestamp(lineName),
+                            getEndTimestamp(status, lineName),
+                            getEarliestEndTimestamp(status, lineName),
+                            getLatestEndTimestamp(status, lineName));
 
-            return disruptedLine;
-
-        });
+                });
 
         Digest digest = new Digest(digestedLines.collect(toList()));
 
         return moshiDigestAdapter().toJson(digest);
+    }
+
+    private JsonAdapter<List<TflLine>> moshiTflLinesAdapter() {
+        return moshi().adapter(newParameterizedType(List.class, TflLine.class));
+    }
+
+    private JsonAdapter<Digest> moshiDigestAdapter() {
+        return moshi().adapter(Digest.class);
+    }
+
+    private Moshi moshi() {
+        return new Moshi.Builder().build();
+    }
+
+    private Long getTimestampWithMultiplier(String status,
+                                         double multiplier) {
+
+        int minutes = statusToMinutes(status);
+        int estimatedDelayInMinutes = (int) (minutes * multiplier);
+        return currentTime.plusMinutes(estimatedDelayInMinutes).toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
     private Long getStartTimestamp(String lineName) {
@@ -131,67 +134,6 @@ public class TflDigestor {
 
         return latestEndTime.orElse(
                 getTimestampWithMultiplier(status, LATEST_END_TIME_MULTIPLIER));
-    }
-
-    private String getStartTime(String lineName) {
-        Optional<String> startTime =
-                previousDigest.flatMap(
-                        d -> d.getStartTimeFromDisruptedLine(lineName));
-
-        return startTime.orElse(
-                currentTime.format(TIME_FORMAT));
-    }
-
-    private String getEndTime(String status, String lineName) {
-        Optional<String> endTime =
-                previousDigest.flatMap(
-                        d -> d.getEndTimeFromDisruptedLine(lineName));
-
-        return endTime.orElse(getTimeWithMultiplier(status, 1));
-    }
-
-    private String getEarliestEndTime(String status, String lineName) {
-        Optional<String> earliestEndTime =
-                previousDigest.flatMap(
-                        d -> d.getEarliestEndTimeFromDisruptedLine(lineName));
-
-        return earliestEndTime.orElse(getTimeWithMultiplier(status, EARLIEST_END_TIME_MULTIPLIER));
-    }
-
-    private String getLatestEndTime(String status, String lineName) {
-        Optional<String> latestEndTime =
-                previousDigest.flatMap(
-                        d -> d.getLatestEndTimeFromDisruptedLine(lineName));
-
-        return latestEndTime.orElse(getTimeWithMultiplier(status, LATEST_END_TIME_MULTIPLIER));
-    }
-
-    private JsonAdapter<List<TflLine>> moshiTflLinesAdapter() {
-        return moshi().adapter(newParameterizedType(List.class, TflLine.class));
-    }
-
-    private JsonAdapter<Digest> moshiDigestAdapter() {
-        return moshi().adapter(Digest.class);
-    }
-
-    private Moshi moshi() {
-        return new Moshi.Builder().build();
-    }
-
-    private String getTimeWithMultiplier(String status,
-                                         double multiplier) {
-
-        int minutes = statusToMinutes(status);
-        int estimatedDelayInMinutes = (int) (minutes * multiplier);
-        return currentTime.plusMinutes(estimatedDelayInMinutes).format(TIME_FORMAT);
-    }
-
-    private Long getTimestampWithMultiplier(String status,
-                                         double multiplier) {
-
-        int minutes = statusToMinutes(status);
-        int estimatedDelayInMinutes = (int) (minutes * multiplier);
-        return currentTime.plusMinutes(estimatedDelayInMinutes).toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
     private static int statusToMinutes(String status) {
