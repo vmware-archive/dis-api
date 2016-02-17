@@ -43,6 +43,17 @@ public class Digest {
         }
     }
 
+    private Optional<Long> getLongFieldFromDisruptedLine(String lineName,
+                                                       Function<DisruptedLine, Long> fieldExtractor) {
+
+        if (isLineDisrupted(lineName)) {
+            DisruptedLine line = getLine(lineName).get();
+            return Optional.of(fieldExtractor.apply(line));
+        } else {
+            return Optional.empty();
+        }
+    }
+
     private boolean isLineDisrupted(String lineName) {
         return disruptions.stream()
                 .anyMatch(disruptedLine -> disruptedLine.getLine().equals(lineName));
@@ -52,5 +63,21 @@ public class Digest {
         return getDisruptions().stream()
                 .filter(disruptedLine -> disruptedLine.getLine().equals(lineName))
                 .findFirst();
+    }
+
+    public Optional<Long> getStartTimestampFromDisruptedLine(String lineName) {
+        return getLongFieldFromDisruptedLine(lineName, DisruptedLine::getStartTimestamp);
+    }
+
+    public Optional<Long> getEndTimestampFromDisruptedLine(String lineName) {
+        return getLongFieldFromDisruptedLine(lineName, DisruptedLine::getEndTimestamp);
+    }
+
+    public Optional<Long> getEarliestEndTimestampFromDisruptedLine(String lineName) {
+        return getLongFieldFromDisruptedLine(lineName, DisruptedLine::getEarliestEndTimestamp);
+    }
+
+    public Optional<Long> getLatestEndTimestampFromDisruptedLine(String lineName) {
+        return getLongFieldFromDisruptedLine(lineName, DisruptedLine::getLatestEndTimestamp);
     }
 }

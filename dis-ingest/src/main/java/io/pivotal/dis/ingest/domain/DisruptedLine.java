@@ -12,13 +12,21 @@ public class DisruptedLine {
     private final String latestEndTime;
     private final String backgroundColor;
     private final String foregroundColor;
+    private final Long latestEndTimestamp;
+    private final Long earliestEndTimestamp;
+    private final Long endTimestamp;
+    private final Long startTimestamp;
 
     public DisruptedLine(String status,
                          String line,
                          String startTime,
                          String endTime,
                          String earliestEndTime,
-                         String latestEndTime) {
+                         String latestEndTime,
+                         Long startTimestamp,
+                         Long endTimestamp,
+                         Long earliestEndTimestamp,
+                         Long latestEndTimestamp) {
 
         this.status = status;
         this.line = line;
@@ -26,6 +34,12 @@ public class DisruptedLine {
         this.endTime = endTime;
         this.earliestEndTime = earliestEndTime;
         this.latestEndTime = latestEndTime;
+
+        this.startTimestamp = startTimestamp;
+        this.endTimestamp = endTimestamp;
+        this.earliestEndTimestamp = earliestEndTimestamp;
+        this.latestEndTimestamp = latestEndTimestamp;
+
         this.backgroundColor = LineColor.getBackgroundColorForLine(line);
         this.foregroundColor = LineColor.getForegroundColorForLine(line);
     }
@@ -60,5 +74,22 @@ public class DisruptedLine {
 
     public String getForegroundColor() {
         return foregroundColor;
+    }
+
+    public Long getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public Long getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public Long getEarliestEndTimestamp() {
+        
+        return earliestEndTimestamp;
+    }
+
+    public Long getLatestEndTimestamp() {
+        return latestEndTimestamp;
     }
 }

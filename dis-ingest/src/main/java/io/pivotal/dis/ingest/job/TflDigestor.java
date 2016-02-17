@@ -10,7 +10,10 @@ import io.pivotal.dis.ingest.domain.tfl.LineStatus;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -67,6 +70,11 @@ public class TflDigestor {
             String earliestEndTime = getEarliestEndTime(status, lineName);
             String latestEndTime = getLatestEndTime(status, lineName);
 
+            Long startTimestamp = getStartTimestamp(lineName);
+            Long endTimestamp = getEndTimestamp(status, lineName);
+            Long earliestEndTimestamp = getEarliestEndTimestamp(status, lineName);
+            Long latestEndTimestamp = getLatestEndTimestamp(status, lineName);
+
             DisruptedLine disruptedLine =
                     new DisruptedLine(
                             status,
@@ -74,7 +82,11 @@ public class TflDigestor {
                             startTime,
                             endTime,
                             earliestEndTime,
-                            latestEndTime);
+                            latestEndTime,
+                            startTimestamp,
+                            endTimestamp,
+                            earliestEndTimestamp,
+                            latestEndTimestamp);
 
             return disruptedLine;
 
@@ -83,6 +95,42 @@ public class TflDigestor {
         Digest digest = new Digest(digestedLines.collect(toList()));
 
         return moshiDigestAdapter().toJson(digest);
+    }
+
+    private Long getStartTimestamp(String lineName) {
+        Optional<Long> startTime =
+                previousDigest.flatMap(
+                        d -> d.getStartTimestampFromDisruptedLine(lineName));
+
+        return startTime.orElse(
+                currentTime.toInstant(ZoneOffset.UTC).toEpochMilli());
+    }
+
+    private Long getEndTimestamp(String status, String lineName) {
+        Optional<Long> endTime =
+                previousDigest.flatMap(
+                        d -> d.getEndTimestampFromDisruptedLine(lineName));
+
+        return endTime.orElse(
+                getTimestampWithMultiplier(status, 1));
+    }
+
+    private Long getEarliestEndTimestamp(String status, String lineName) {
+        Optional<Long> earliestEndTime =
+                previousDigest.flatMap(
+                        d -> d.getEarliestEndTimestampFromDisruptedLine(lineName));
+
+        return earliestEndTime.orElse(
+                getTimestampWithMultiplier(status, EARLIEST_END_TIME_MULTIPLIER));
+    }
+
+    private Long getLatestEndTimestamp(String status, String lineName) {
+        Optional<Long> latestEndTime =
+                previousDigest.flatMap(
+                        d -> d.getLatestEndTimestampFromDisruptedLine(lineName));
+
+        return latestEndTime.orElse(
+                getTimestampWithMultiplier(status, LATEST_END_TIME_MULTIPLIER));
     }
 
     private String getStartTime(String lineName) {
@@ -136,6 +184,14 @@ public class TflDigestor {
         int minutes = statusToMinutes(status);
         int estimatedDelayInMinutes = (int) (minutes * multiplier);
         return currentTime.plusMinutes(estimatedDelayInMinutes).format(TIME_FORMAT);
+    }
+
+    private Long getTimestampWithMultiplier(String status,
+                                         double multiplier) {
+
+        int minutes = statusToMinutes(status);
+        int estimatedDelayInMinutes = (int) (minutes * multiplier);
+        return currentTime.plusMinutes(estimatedDelayInMinutes).toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
     private static int statusToMinutes(String status) {
