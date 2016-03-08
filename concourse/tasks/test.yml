@@ -1,0 +1,9 @@
+platform: linux
+
+image: docker:///java#8
+
+inputs:
+  - name: github
+
+run:
+  path: github/concourse/scripts/test.sh

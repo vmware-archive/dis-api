@@ -1,0 +1,12 @@
+platform: linux
+
+image: docker:///java#8
+
+inputs:
+  - name: github
+
+outputs:
+  - name: package
+
+run:
+  path: github/concourse/package.sh

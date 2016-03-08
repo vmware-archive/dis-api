@@ -1,0 +1,35 @@
+resources:
+  - name: github
+    type: git
+    source:
+      uri: https://github.com/pivotal/dis-api.git
+      branch: master
+
+  - name: pws
+    type: cf
+    source:
+      api: https://api.run.pivotal.io
+      username:
+      password:
+      organization:
+      space:
+      skip_cert_check: false
+
+jobs:
+  - name: test
+    plan:
+      - get: github
+        trigger: true
+      - task: test
+        file: github/concourse/tasks/test.yml
+
+  - name: deploy
+    plan:
+      - get: github
+        trigger: true
+        passed: [test]
+      - task: package
+        file: github/concourse/tasks/package.yml
+      - put: pws
+        params:
+          manifest: package/manifest.yml
