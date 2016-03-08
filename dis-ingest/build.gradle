@@ -44,4 +44,5 @@ mainClassName = "io.pivotal.dis.ingest.app.Application"
 
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
+    test.java.srcDirs += 'src/main/kotlin'
 }
