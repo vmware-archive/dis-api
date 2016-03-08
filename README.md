@@ -1,7 +1,5 @@
 # dis
 
-[![Build Status](https://secure.travis-ci.org/pivotal/dis.png?branch=master)](http://travis-ci.org/pivotal/dis)
-
 ## Description
 
 [Pivotal Labs](http://pivotallabs.com) engineers and data scientists will collaborate on building an Android
