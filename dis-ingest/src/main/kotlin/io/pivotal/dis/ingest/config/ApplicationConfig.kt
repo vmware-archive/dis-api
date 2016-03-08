@@ -16,12 +16,29 @@ import java.io.IOException
 import java.net.URISyntaxException
 import java.net.URL
 
-class ApplicationConfig @Throws(IOException::class, CloudFoundryEnvironmentException::class, URISyntaxException::class)
-constructor() {
+class ApplicationConfig() {
 
-    private val tflUrl: URL
     private val rawBucketName: String
     private val digestedBucketName: String
+
+    val tflUrl: URL
+
+    val digestedFileStore: FileStore
+        get() {
+            val publicReadableAcl = AccessControlList()
+            publicReadableAcl.grantPermission(GroupGrantee.AllUsers, Permission.Read)
+            return AmazonS3FileStore(amazonS3, digestedBucketName, publicReadableAcl)
+        }
+
+    val rawFileStore: FileStore
+        get() {
+            return AmazonS3FileStore(amazonS3, rawBucketName, AccessControlList())
+        }
+
+    private val amazonS3: AmazonS3
+        get() {
+            return AmazonS3Client(EnvironmentVariableCredentialsProvider())
+        }
 
     init {
         val cloudFoundryEnvironment = CloudFoundryEnvironment(Environment { System.getenv(it) })
@@ -29,23 +46,5 @@ constructor() {
         tflUrl = cloudFoundryEnvironment.getService("tfl").uri.toURL()
         rawBucketName = System.getenv("S3_BUCKET_NAME_RAW")
         digestedBucketName = System.getenv("S3_BUCKET_NAME_DIGESTED")
-    }
-
-    fun tflUrl(): URL {
-        return tflUrl
-    }
-
-    fun digestedFileStore(): FileStore {
-        val publicReadableAcl = AccessControlList()
-        publicReadableAcl.grantPermission(GroupGrantee.AllUsers, Permission.Read)
-        return AmazonS3FileStore(amazonS3(), digestedBucketName, publicReadableAcl)
-    }
-
-    fun rawFileStore(): FileStore {
-        return AmazonS3FileStore(amazonS3(), rawBucketName, AccessControlList())
-    }
-
-    private fun amazonS3(): AmazonS3 {
-        return AmazonS3Client(EnvironmentVariableCredentialsProvider())
     }
 }
