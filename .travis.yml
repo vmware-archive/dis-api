@@ -1,19 +1,5 @@
-language: android
+language: java
 jdk: oraclejdk8
 
-android:
-  components:
-    - extra-android-m2repository
-    - build-tools-21.1.2
-    - android-19
-    - sys-img-armeabi-v7a-android-19
-env:
-  - COMPONENT=dis-client
-  - COMPONENT=dis-ingest
-
-before_script:
-  - 'if [ "${COMPONENT}" = "dis-client" ]; then dis-client/ci/script/before.sh; fi'
-
 script:
-  - 'if [ "${COMPONENT}" = "dis-client" ]; then (cd dis-client && ./gradlew test connectedAndroidTest); fi'
-  - 'if [ "${COMPONENT}" = "dis-ingest" ]; then (cd dis-ingest && ./gradlew test); fi'
+  - cd dis-ingest && ./gradlew test
