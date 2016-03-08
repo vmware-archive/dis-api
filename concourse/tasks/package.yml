@@ -9,4 +9,4 @@ outputs:
   - name: package
 
 run:
-  path: github/concourse/package.sh
+  path: github/concourse/scripts/package.sh
