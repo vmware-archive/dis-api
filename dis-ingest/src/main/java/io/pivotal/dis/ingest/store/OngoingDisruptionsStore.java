@@ -1,10 +1,7 @@
 package io.pivotal.dis.ingest.store;
 
-import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
 
-@Repository
 public class OngoingDisruptionsStore {
     private String previousDisruptionDigest;
 
