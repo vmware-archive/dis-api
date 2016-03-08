@@ -221,11 +221,14 @@ class IngestionTest {
 
     }
 
-    private class FakeClock(private var time: LocalDateTime) : Clock {
+    private class FakeClock(private var _time: LocalDateTime) : Clock {
 
-        override fun getCurrentTime(): LocalDateTime = time
+        override var currentTime: LocalDateTime
+            get() = _time
+            set(value) {
+                _time = value
+            }
 
-        fun setCurrentTime(newTime: LocalDateTime) { time = newTime }
     }
 
     companion object {
