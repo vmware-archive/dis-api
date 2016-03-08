@@ -10,6 +10,10 @@ repositories {
     jcenter()
 }
 
+distZip {
+    archiveName "dis-ingest.zip"
+}
+
 dependencies {
     compile("commons-io:commons-io:2.4")
     compile("com.amazonaws:aws-java-sdk:1.10.50")
