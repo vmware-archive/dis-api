@@ -8,4 +8,4 @@ pushd github/dis-ingest
 popd
 
 cp github/dis-ingest/manifest.yml package/manifest.yml
-cp github/dis-ingest/build/distributions/dis-ingest.zip package/app.zip
+cp github/dis-ingest/build/distributions/dis-ingest.zip package/dis-ingest.zip
