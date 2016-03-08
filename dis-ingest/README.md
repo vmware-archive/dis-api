@@ -33,3 +33,19 @@ gradle run
 ```
 
 This will set the necessary variables.
+
+## Configuring S3
+
+Dis stores its data in S3. The file containing the digested disruptions file must be public. An easy way to manage S3 resources is using [s3cmd](http://s3tools.org/s3cmd). You should be able to install this using any decent package manager, or Homebrew. Once installed, configure it:
+
+```
+s3cmd --configure
+```
+
+You will be prompted for all sorts of highly personal details, of which only the access key and secret key are essential. You can then make any file public:
+
+```
+s3cmd setacl --acl-public s3://pivotal-london-dis-digest/disruptions.json
+```
+
+Alternatively, use the ``--recursive`` flag to make a directory, or an entire bucket, public.
