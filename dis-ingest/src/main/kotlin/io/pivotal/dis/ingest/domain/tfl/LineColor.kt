@@ -2,7 +2,7 @@ package io.pivotal.dis.ingest.domain.tfl
 
 import java.util.HashMap
 
-class LineColor(private val foregroundColor: String, private val backgroundColor: String) {
+class LineColor(val foregroundColor: String, val backgroundColor: String) {
     companion object {
 
         private val DEFAULT_FOREGROUND = "#000000"
