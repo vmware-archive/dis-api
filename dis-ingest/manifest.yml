@@ -1,6 +1,7 @@
 name: dis-ingest
+no-route: true
 instances: 1
 memory: 512MB
-path: build/libs/dis-ingest-1.1.1.jar
+path: build/distributions/dis-ingest-1.1.1.zip
 services:
   - tfl
