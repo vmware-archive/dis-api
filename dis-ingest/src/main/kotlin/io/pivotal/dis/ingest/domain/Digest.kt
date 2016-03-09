@@ -7,33 +7,6 @@ import java.util.function.Function
 
 class Digest(val disruptions: List<DisruptedLine>, val lastUpdated: Long) {
 
-    fun getStartTimeFromDisruptedLine(lineName: String): Optional<String> {
-        return getFieldFromDisruptedLine(lineName, Function<DisruptedLine, String> { it.startTime })
-    }
-
-    fun getEndTimeFromDisruptedLine(lineName: String): Optional<String> {
-        return getFieldFromDisruptedLine(lineName, Function<DisruptedLine, String> { it.endTime })
-    }
-
-    fun getEarliestEndTimeFromDisruptedLine(lineName: String): Optional<String> {
-        return getFieldFromDisruptedLine(lineName, Function<DisruptedLine, String> { it.earliestEndTime })
-    }
-
-    fun getLatestEndTimeFromDisruptedLine(lineName: String): Optional<String> {
-        return getFieldFromDisruptedLine(lineName, Function<DisruptedLine, String> { it.latestEndTime })
-    }
-
-    private fun getFieldFromDisruptedLine(lineName: String,
-                                          fieldExtractor: Function<DisruptedLine, String>): Optional<String> {
-
-        if (isLineDisrupted(lineName)) {
-            val line = getLine(lineName).get()
-            return Optional.of(fieldExtractor.apply(line))
-        } else {
-            return Optional.empty<String>()
-        }
-    }
-
     private fun getLongFieldFromDisruptedLine(lineName: String,
                                               fieldExtractor: Function<DisruptedLine, Long>): Optional<Long> {
 
