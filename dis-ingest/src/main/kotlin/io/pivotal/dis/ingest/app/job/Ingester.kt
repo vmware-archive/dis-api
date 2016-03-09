@@ -11,23 +11,26 @@ import java.util.*
 
 class Ingester(private val url: URL,
                private val fileStore: FileStore,
-               private val digestedFileStore: FileStore,
-               private val ongoingDisruptionsStore: OngoingDisruptionsStore) {
+               private val digestedFileStore: FileStore) {
 
     fun ingest(clock: Clock) {
         url.openConnection().inputStream.use { inputStream ->
             val tflData = IOUtils.toString(inputStream)
             fileStore.save(nameRawFile(clock), tflData)
 
-            val previousDisruptionDigest = Optional.ofNullable<String>(ongoingDisruptionsStore.previousDisruptionDigest)
+            val previousDisruptionDigest = digestedFileStore.read("disruptions.json")
+            val previousDisruptionDigestOptional = if (previousDisruptionDigest != null) {
+                Optional.of(previousDisruptionDigest)
+            } else {
+                Optional.empty<String>()
+            }
 
             val digestedTflData = Digestor(
                     tflData,
                     clock.currentTime,
-                    previousDisruptionDigest).digest()
+                    previousDisruptionDigestOptional).digest()
 
             digestedFileStore.save("disruptions.json", digestedTflData)
-            ongoingDisruptionsStore.previousDisruptionDigest = digestedTflData
         }
     }
 

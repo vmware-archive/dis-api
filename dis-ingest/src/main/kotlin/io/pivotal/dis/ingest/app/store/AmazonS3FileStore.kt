@@ -8,6 +8,17 @@ import org.apache.commons.io.IOUtils
 class AmazonS3FileStore(private val amazonS3: AmazonS3,
                         private val bucketName: String,
                         private val disruptionsAcl: AccessControlList) : FileStore {
+    override fun read(name: String): String? {
+        val s3Object = amazonS3.getObject(bucketName, name)
+
+        if (s3Object != null) {
+            return IOUtils.toString(s3Object.objectContent)
+        } else {
+            return null;
+        }
+
+
+    }
 
     override fun save(name: String, input: String) {
         val putObjectRequest = PutObjectRequest(

@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-public class AmazonS3FileStoreTest {
+public class AmazonS3FileStoreJavaTest {
 
     private Map<String, Object> params;
     private AmazonS3 mockAmazonS3;

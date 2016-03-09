@@ -18,26 +18,30 @@ import org.junit.Test
 import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.ArrayList
 
 import com.squareup.moshi.Types.newParameterizedType
 import io.pivotal.dis.ingest.app.job.Ingester
 import java.util.Arrays.asList
-import java.util.stream.Collectors.toList
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.collection.IsCollectionWithSize.hasSize
 import org.junit.Assert.assertThat
+import java.util.*
 
 class IngestionTest {
 
-    private val tflMockWebServer = MockWebServer()
-    private val rawFileStore = MockFileStore()
-    private val digestedFileStore = MockFileStore()
-    private val ongoingDisruptionsStore = OngoingDisruptionsStore()
+    private lateinit var tflMockWebServer: MockWebServer
+    private lateinit var rawFileStore: MockFileStore
+    private lateinit var digestedFileStore: MockFileStore
+    private lateinit var ongoingDisruptionsStore: OngoingDisruptionsStore
 
     @Before
     @Throws(Exception::class)
     fun prepareServer() {
+        tflMockWebServer = MockWebServer()
+        rawFileStore = MockFileStore()
+        digestedFileStore = MockFileStore()
+        ongoingDisruptionsStore = OngoingDisruptionsStore()
+
         val moshiTflLinesAdapter = moshiTflLinesAdapter()
 
         var tflTflLines: MutableList<TflLine> = ArrayList()
@@ -171,8 +175,7 @@ class IngestionTest {
         return Ingester(
                 tflMockWebServer.getUrl("/"),
                 rawFileStore,
-                digestedFileStore,
-                ongoingDisruptionsStore)
+                digestedFileStore)
     }
 
     private fun moshiTflLinesAdapter(): JsonAdapter<List<TflLine>> {
@@ -210,6 +213,13 @@ class IngestionTest {
         }
 
     private inner class MockFileStore : FileStore {
+
+        private val fileMap = HashMap<String, String>()
+
+        override fun read(name: String): String? {
+            return fileMap[name]
+        }
+
         var lastName: String? = null
             private set
         var lastFile: String? = null
@@ -218,6 +228,8 @@ class IngestionTest {
         override fun save(name: String, input: String) {
             lastName = name
             lastFile = input
+
+            fileMap.put(name, input)
         }
 
     }
