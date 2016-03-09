@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
             applicationConfig.tflUrl,
             applicationConfig.rawFileStore,
             applicationConfig.digestedFileStore,
-            ClockImpl(),
+            applicationConfig.clock,
             OngoingDisruptionsStore())
 }
 

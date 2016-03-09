@@ -8,16 +8,20 @@ import com.amazonaws.services.s3.model.GroupGrantee
 import com.amazonaws.services.s3.model.Permission
 import io.pivotal.dis.ingest.app.store.AmazonS3FileStore
 import io.pivotal.dis.ingest.app.store.FileStore
+import io.pivotal.dis.ingest.app.system.Clock
+import io.pivotal.dis.ingest.app.system.ClockImpl
 import io.pivotal.labs.cfenv.CloudFoundryEnvironment
 import io.pivotal.labs.cfenv.Environment
 import java.net.URL
 
 class ApplicationConfig() {
 
-    private val rawBucketName: String
-    private val digestedBucketName: String
-
     val tflUrl: URL
+        get() {
+            val cloudFoundryEnvironment = CloudFoundryEnvironment(Environment { System.getenv(it) })
+
+            return cloudFoundryEnvironment.getService("tfl").uri.toURL()
+        }
 
     val digestedFileStore: FileStore
         get() {
@@ -31,16 +35,23 @@ class ApplicationConfig() {
             return AmazonS3FileStore(amazonS3, rawBucketName, AccessControlList())
         }
 
+    val clock: Clock
+        get() {
+            return ClockImpl()
+        }
+
     private val amazonS3: AmazonS3
         get() {
             return AmazonS3Client(EnvironmentVariableCredentialsProvider())
         }
 
-    init {
-        val cloudFoundryEnvironment = CloudFoundryEnvironment(Environment { System.getenv(it) })
+    private val rawBucketName: String
+        get() {
+            return System.getenv("S3_BUCKET_NAME_RAW")
+        }
 
-        tflUrl = cloudFoundryEnvironment.getService("tfl").uri.toURL()
-        rawBucketName = System.getenv("S3_BUCKET_NAME_RAW")
-        digestedBucketName = System.getenv("S3_BUCKET_NAME_DIGESTED")
-    }
+    private val digestedBucketName: String
+        get() {
+            return System.getenv("S3_BUCKET_NAME_DIGESTED")
+        }
 }
