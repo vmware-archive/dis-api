@@ -2,7 +2,7 @@ package io.pivotal.dis.ingest.test
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import io.pivotal.dis.ingest.app.job.TflDigestor
+import io.pivotal.dis.ingest.app.job.Digestor
 import io.pivotal.dis.ingest.domain.Digest
 import io.pivotal.dis.ingest.domain.DisruptedLine
 import org.apache.commons.io.IOUtils
@@ -18,7 +18,7 @@ import java.util.Optional
 import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertThat
 
-class TflDigestorTest {
+class DigestorTest {
 
     @Test
     @Throws(Exception::class)
@@ -26,7 +26,7 @@ class TflDigestorTest {
         val currentTime = LocalDateTime.now()
 
         val earlyTflLineStatus = loadFixture("line_mode_tube_status")
-        val earlierDigest = TflDigestor(earlyTflLineStatus,
+        val earlierDigest = Digestor(earlyTflLineStatus,
                 currentTime,
                 Optional.empty<String>()).digest()
 
@@ -43,7 +43,7 @@ class TflDigestorTest {
         val tenMinutesLater = currentTime.plusMinutes(10)
         val laterTflLineStatus = loadFixture("line_mode_tube_status_2")
 
-        val laterDigest = TflDigestor(laterTflLineStatus,
+        val laterDigest = Digestor(laterTflLineStatus,
                 tenMinutesLater,
                 Optional.of(earlierDigest)).digest()
 
@@ -66,7 +66,7 @@ class TflDigestorTest {
 
         val allStatusesJson = loadFixture("endTimeTest")
 
-        val digestJson = TflDigestor(allStatusesJson,
+        val digestJson = Digestor(allStatusesJson,
                 currentTime,
                 Optional.empty<String>()).digest()
 
@@ -93,7 +93,7 @@ class TflDigestorTest {
 
         val allStatusesJson = loadFixture("endTimeTest")
 
-        val digestJson = TflDigestor(allStatusesJson,
+        val digestJson = Digestor(allStatusesJson,
                 currentTime,
                 Optional.empty<String>()).digest()
 
@@ -119,7 +119,7 @@ class TflDigestorTest {
 
         val allStatusesJson = loadFixture("endTimeTest")
 
-        val digestJson = TflDigestor(allStatusesJson,
+        val digestJson = Digestor(allStatusesJson,
                 currentTime,
                 Optional.empty<String>()).digest()
 

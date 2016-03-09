@@ -9,11 +9,7 @@ import com.amazonaws.services.s3.model.Permission
 import io.pivotal.dis.ingest.app.store.AmazonS3FileStore
 import io.pivotal.dis.ingest.app.store.FileStore
 import io.pivotal.labs.cfenv.CloudFoundryEnvironment
-import io.pivotal.labs.cfenv.CloudFoundryEnvironmentException
 import io.pivotal.labs.cfenv.Environment
-
-import java.io.IOException
-import java.net.URISyntaxException
 import java.net.URL
 
 class ApplicationConfig() {

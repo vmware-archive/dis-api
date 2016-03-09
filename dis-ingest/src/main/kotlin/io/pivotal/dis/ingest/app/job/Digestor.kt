@@ -3,26 +3,18 @@ package io.pivotal.dis.ingest.app.job
 import com.amazonaws.util.json.JSONException
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types.newParameterizedType
 import io.pivotal.dis.ingest.domain.Digest
 import io.pivotal.dis.ingest.domain.DisruptedLine
 import io.pivotal.dis.ingest.domain.tfl.TflLine
-import io.pivotal.dis.ingest.domain.tfl.LineStatus
-
 import java.io.IOException
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAmount
-import java.time.temporal.TemporalUnit
-import java.util.Optional
-import java.util.stream.Stream
+import java.util.*
 
-import com.squareup.moshi.Types.newParameterizedType
-import java.util.stream.Collectors.toList
-
-class TflDigestor(tflData: String,
-                  private val currentTime: LocalDateTime,
-                  previousDigest: Optional<String>) {
+class Digestor(tflData: String,
+               private val currentTime: LocalDateTime,
+               previousDigest: Optional<String>) {
 
     private val tflLines: List<TflLine>
     private val previousDigest: Optional<Digest>
@@ -89,7 +81,7 @@ class TflDigestor(tflData: String,
     private fun getTimestampWithMultiplier(status: String,
                                            multiplier: Double): Long {
 
-        val minutes = TflDigestor.Companion.statusToMinutes(status)
+        val minutes = Digestor.Companion.statusToMinutes(status)
         val estimatedDelayInMinutes = (minutes * multiplier).toInt()
         return currentTime.plusMinutes(estimatedDelayInMinutes.toLong()).toInstant(ZoneOffset.UTC).toEpochMilli()
     }
@@ -112,14 +104,14 @@ class TflDigestor(tflData: String,
         val earliestEndTime = previousDigest.flatMap { d -> d.getEarliestEndTimestampFromDisruptedLine(lineName) }
 
         return earliestEndTime.orElse(
-                getTimestampWithMultiplier(status, TflDigestor.Companion.EARLIEST_END_TIME_MULTIPLIER))
+                getTimestampWithMultiplier(status, Digestor.Companion.EARLIEST_END_TIME_MULTIPLIER))
     }
 
     private fun getLatestEndTimestamp(status: String, lineName: String): Long {
         val latestEndTime = previousDigest.flatMap { d -> d.getLatestEndTimestampFromDisruptedLine(lineName) }
 
         return latestEndTime.orElse(
-                getTimestampWithMultiplier(status, TflDigestor.Companion.LATEST_END_TIME_MULTIPLIER))
+                getTimestampWithMultiplier(status, Digestor.Companion.LATEST_END_TIME_MULTIPLIER))
     }
 
     companion object {

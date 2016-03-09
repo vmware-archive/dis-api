@@ -1,17 +1,13 @@
 package io.pivotal.dis.ingest.app.job
 
-import com.amazonaws.util.json.JSONException
 import io.pivotal.dis.ingest.app.store.FileStore
 import io.pivotal.dis.ingest.app.store.OngoingDisruptionsStore
 import io.pivotal.dis.ingest.app.system.Clock
 import org.apache.commons.io.IOUtils
-
-import java.io.IOException
-import java.io.InputStream
 import java.net.URL
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.Optional
+import java.util.*
 
 class Ingester(private val url: URL,
                private val fileStore: FileStore,
@@ -25,7 +21,7 @@ class Ingester(private val url: URL,
 
             val previousDisruptionDigest = Optional.ofNullable<String>(ongoingDisruptionsStore.previousDisruptionDigest)
 
-            val digestedTflData = TflDigestor(
+            val digestedTflData = Digestor(
                     tflData,
                     clock.currentTime,
                     previousDisruptionDigest).digest()

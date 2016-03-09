@@ -1,6 +1,6 @@
 package io.pivotal.dis.ingest.domain.tfl
 
-import java.util.HashMap
+import java.util.*
 
 class LineColor(val foregroundColor: String, val backgroundColor: String) {
     companion object {

@@ -1,12 +1,10 @@
 package io.pivotal.dis.ingest.domain
 
 import io.pivotal.dis.ingest.domain.tfl.LineColor
-
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 class DisruptedLine(val status: String,
                     val line: String,

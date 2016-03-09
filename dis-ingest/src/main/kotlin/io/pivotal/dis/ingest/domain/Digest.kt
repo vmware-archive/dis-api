@@ -1,7 +1,7 @@
 package io.pivotal.dis.ingest.domain
 
 
-import java.util.Optional
+import java.util.*
 import java.util.function.Function
 
 class Digest(val disruptions: List<DisruptedLine>) {
