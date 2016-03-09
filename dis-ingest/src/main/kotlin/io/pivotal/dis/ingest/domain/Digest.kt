@@ -1,10 +1,11 @@
 package io.pivotal.dis.ingest.domain
 
 
+import java.time.LocalDateTime
 import java.util.*
 import java.util.function.Function
 
-class Digest(val disruptions: List<DisruptedLine>) {
+class Digest(val disruptions: List<DisruptedLine>, val lastUpdated: Long) {
 
     fun getStartTimeFromDisruptedLine(lineName: String): Optional<String> {
         return getFieldFromDisruptedLine(lineName, Function<DisruptedLine, String> { it.startTime })

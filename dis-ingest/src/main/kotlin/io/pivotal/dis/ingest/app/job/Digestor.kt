@@ -61,7 +61,7 @@ class Digestor(tflData: String,
 
         })
 
-        val digest = Digest(digestedLines)
+        val digest = Digest(digestedLines, currentTime.toInstant(ZoneOffset.UTC).toEpochMilli())
 
         return moshiDigestAdapter().toJson(digest)
     }
