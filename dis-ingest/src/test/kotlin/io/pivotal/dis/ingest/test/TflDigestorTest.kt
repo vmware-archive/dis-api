@@ -1,7 +1,8 @@
-package io.pivotal.dis.ingest.job
+package io.pivotal.dis.ingest.test
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import io.pivotal.dis.ingest.app.job.TflDigestor
 import io.pivotal.dis.ingest.domain.Digest
 import io.pivotal.dis.ingest.domain.DisruptedLine
 import org.apache.commons.io.IOUtils

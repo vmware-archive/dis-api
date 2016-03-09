@@ -1,9 +1,9 @@
-package io.pivotal.dis.ingest.job
+package io.pivotal.dis.ingest.app.job
 
 import com.amazonaws.util.json.JSONException
-import io.pivotal.dis.ingest.store.FileStore
-import io.pivotal.dis.ingest.store.OngoingDisruptionsStore
-import io.pivotal.dis.ingest.system.Clock
+import io.pivotal.dis.ingest.app.store.FileStore
+import io.pivotal.dis.ingest.app.store.OngoingDisruptionsStore
+import io.pivotal.dis.ingest.app.system.Clock
 import org.apache.commons.io.IOUtils
 
 import java.io.IOException
@@ -36,7 +36,7 @@ class Ingester(private val url: URL,
     }
 
     private fun nameRawFile(clock: Clock): String {
-        val timestamp = clock.currentTime.atOffset(ZoneOffset.UTC).format(FILE_NAME_DATE_TIME)
+        val timestamp = clock.currentTime.atOffset(ZoneOffset.UTC).format(Ingester.Companion.FILE_NAME_DATE_TIME)
 
         return String.format("tfl_api_line_mode_status_tube_%s.json", timestamp)
     }

@@ -1,4 +1,4 @@
-package io.pivotal.dis.ingest.config
+package io.pivotal.dis.ingest.app.config
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.AmazonS3
@@ -6,8 +6,8 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.AccessControlList
 import com.amazonaws.services.s3.model.GroupGrantee
 import com.amazonaws.services.s3.model.Permission
-import io.pivotal.dis.ingest.store.AmazonS3FileStore
-import io.pivotal.dis.ingest.store.FileStore
+import io.pivotal.dis.ingest.app.store.AmazonS3FileStore
+import io.pivotal.dis.ingest.app.store.FileStore
 import io.pivotal.labs.cfenv.CloudFoundryEnvironment
 import io.pivotal.labs.cfenv.CloudFoundryEnvironmentException
 import io.pivotal.labs.cfenv.Environment

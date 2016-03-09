@@ -1,4 +1,4 @@
-package io.pivotal.dis.ingest.job
+package io.pivotal.dis.ingest.test
 
 import com.amazonaws.util.json.JSONException
 import com.squareup.moshi.JsonAdapter
@@ -9,9 +9,9 @@ import io.pivotal.dis.ingest.domain.Digest
 import io.pivotal.dis.ingest.domain.DisruptedLine
 import io.pivotal.dis.ingest.domain.tfl.TflLine
 import io.pivotal.dis.ingest.domain.tfl.LineStatus
-import io.pivotal.dis.ingest.store.FileStore
-import io.pivotal.dis.ingest.store.OngoingDisruptionsStore
-import io.pivotal.dis.ingest.system.Clock
+import io.pivotal.dis.ingest.app.store.FileStore
+import io.pivotal.dis.ingest.app.store.OngoingDisruptionsStore
+import io.pivotal.dis.ingest.app.system.Clock
 import org.junit.Before
 import org.junit.Test
 
@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter
 import java.util.ArrayList
 
 import com.squareup.moshi.Types.newParameterizedType
+import io.pivotal.dis.ingest.app.job.Ingester
 import java.util.Arrays.asList
 import java.util.stream.Collectors.toList
 import org.hamcrest.CoreMatchers.equalTo

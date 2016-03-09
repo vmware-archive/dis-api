@@ -1,4 +1,4 @@
-package io.pivotal.dis.ingest.job
+package io.pivotal.dis.ingest.app.job
 
 import com.amazonaws.util.json.JSONException
 import com.squareup.moshi.JsonAdapter
@@ -89,7 +89,7 @@ class TflDigestor(tflData: String,
     private fun getTimestampWithMultiplier(status: String,
                                            multiplier: Double): Long {
 
-        val minutes = statusToMinutes(status)
+        val minutes = TflDigestor.Companion.statusToMinutes(status)
         val estimatedDelayInMinutes = (minutes * multiplier).toInt()
         return currentTime.plusMinutes(estimatedDelayInMinutes.toLong()).toInstant(ZoneOffset.UTC).toEpochMilli()
     }
@@ -112,14 +112,14 @@ class TflDigestor(tflData: String,
         val earliestEndTime = previousDigest.flatMap { d -> d.getEarliestEndTimestampFromDisruptedLine(lineName) }
 
         return earliestEndTime.orElse(
-                getTimestampWithMultiplier(status, EARLIEST_END_TIME_MULTIPLIER))
+                getTimestampWithMultiplier(status, TflDigestor.Companion.EARLIEST_END_TIME_MULTIPLIER))
     }
 
     private fun getLatestEndTimestamp(status: String, lineName: String): Long {
         val latestEndTime = previousDigest.flatMap { d -> d.getLatestEndTimestampFromDisruptedLine(lineName) }
 
         return latestEndTime.orElse(
-                getTimestampWithMultiplier(status, LATEST_END_TIME_MULTIPLIER))
+                getTimestampWithMultiplier(status, TflDigestor.Companion.LATEST_END_TIME_MULTIPLIER))
     }
 
     companion object {

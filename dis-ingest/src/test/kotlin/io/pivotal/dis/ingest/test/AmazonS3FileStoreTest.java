@@ -1,11 +1,11 @@
-package io.pivotal.dis.ingest.store;
+package io.pivotal.dis.ingest.test;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AccessControlList;
 import com.amazonaws.services.s3.model.GroupGrantee;
 import com.amazonaws.services.s3.model.Permission;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import io.pivotal.dis.ingest.store.AmazonS3FileStore;
+import io.pivotal.dis.ingest.app.store.AmazonS3FileStore;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;

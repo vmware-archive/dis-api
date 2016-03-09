@@ -1,4 +1,4 @@
-package io.pivotal.dis.ingest.store
+package io.pivotal.dis.ingest.app.store
 
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.AccessControlList

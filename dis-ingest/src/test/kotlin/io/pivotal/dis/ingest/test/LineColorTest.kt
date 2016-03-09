@@ -1,5 +1,6 @@
-package io.pivotal.dis.ingest.domain.tfl
+package io.pivotal.dis.ingest.test
 
+import io.pivotal.dis.ingest.domain.tfl.LineColor
 import org.junit.Test
 
 import org.hamcrest.CoreMatchers.equalTo

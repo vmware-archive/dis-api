@@ -1,4 +1,4 @@
-package io.pivotal.dis.ingest.system
+package io.pivotal.dis.ingest.app.system
 
 import java.time.LocalDateTime
 

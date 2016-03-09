@@ -1,11 +1,11 @@
 package io.pivotal.dis.ingest.app
 
-import io.pivotal.dis.ingest.config.ApplicationConfig
-import io.pivotal.dis.ingest.job.Ingester
-import io.pivotal.dis.ingest.store.FileStore
-import io.pivotal.dis.ingest.store.OngoingDisruptionsStore
-import io.pivotal.dis.ingest.system.Clock
-import io.pivotal.dis.ingest.system.ClockImpl
+import io.pivotal.dis.ingest.app.config.ApplicationConfig
+import io.pivotal.dis.ingest.app.job.Ingester
+import io.pivotal.dis.ingest.app.store.FileStore
+import io.pivotal.dis.ingest.app.store.OngoingDisruptionsStore
+import io.pivotal.dis.ingest.app.system.Clock
+import io.pivotal.dis.ingest.app.system.ClockImpl
 import java.net.URL
 
 fun main(args: Array<String>) {
